@@ -1,0 +1,25 @@
+/* CSS de la pagina de registro */
+@import url(views/registro.css);
+/* CSS de botones de toda la pagina en general */
+@import url(views/botones.css);
+/* CSS del header incluyendo navs del header */
+@import url(views/header.css);
+/* CSS del body siendo articulos, secciones generales */
+@import url(views/body.css);
+/* CSS para listas */
+@import url(views/lists.css);
+/* CSS para las columnas laterales */
+@import url(views/columns.css);
+/* CSS de la paginacion */
+@import url(views/pagination.css);
+/* CSS de la pagina de perfil */
+@import url(views/profile.css);
+/* CSS de los comentarios de articulos */
+@import url(views/comentarios.css);
+/* CSS del footer */
+@import url(views/footer.css);
+
+/*
+Fonts
+*/
+@import url(../fonts/roboto_regular_macroman/stylesheet.css);
