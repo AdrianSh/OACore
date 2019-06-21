@@ -1,31 +1,40 @@
 /**
  * 
  */
-package es.jovenesadventistas.oacore.process;
+package es.jovenesadventistas.Arnion.Process;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import es.jovenesadventistas.Arnion.Process.Definitions.DeliverableType;
+import es.jovenesadventistas.Arnion.Process.Definitions.ExecutionMode;
+
 import java.util.Map;
 
 /**
  * @author Adrian E. Sanchez Hurtado
  *
  */
-public abstract class MProcess {
-	private ArrayList<String> command;
-	private File workingDirectory;
-	private ExecutionMode executionMode;
-	private Set<DeliverableType> supportedInputs;
-	private Set<DeliverableType> supportedOutputs;
-	private Map<String, String> modifiedEnvironment;
-	private boolean inheritIO;
+public abstract class AProcess {
+	@SuppressWarnings("unused")
+	private static final Logger logger = LoggerFactory.getLogger(AProcess.class);
+	protected ArrayList<String> command;
+	protected File workingDirectory;
+	protected ExecutionMode executionMode;
+	protected Set<DeliverableType> supportedInputs;
+	protected Set<DeliverableType> supportedOutputs;
+	protected Map<String, String> modifiedEnvironment;
+	protected boolean inheritIO;
 	protected ProcessBuilder pBuilder;
 	
 
-	public MProcess(String ...strings ) {
+	public AProcess(String ...strings ) {
 		this.command = new ArrayList<String>(Arrays.asList(strings));
 		this.executionMode = ExecutionMode.synchronous;
 		this.supportedInputs = Set.of(DeliverableType.CompleteDeliverable);
@@ -91,4 +100,13 @@ public abstract class MProcess {
 	public void setInheritIO(boolean inheritIO) {
 		this.inheritIO = inheritIO;
 	}
+
+	@Override
+	public String toString() {
+		return "AProcess [command=" + command + ", workingDirectory=" + workingDirectory + ", executionMode="
+				+ executionMode + ", supportedInputs=" + supportedInputs + ", supportedOutputs=" + supportedOutputs
+				+ ", modifiedEnvironment=" + modifiedEnvironment + "]";
+	}
+	
+	
 }

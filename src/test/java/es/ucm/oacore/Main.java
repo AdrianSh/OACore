@@ -5,14 +5,14 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import es.jovenesadventistas.oacore.process.*;
+import es.jovenesadventistas.Arnion.Process.*;
 
 public class Main {
 	public static void main(String[] args) {
 		String filesDir = "C:\\Privado\\TFG\\OACORE POC\\src\\main\\java\\es\\ucm\\files\\";
 		
 		try {
-			MProcess p = new SynchProcess("java", "-version");
+			AProcess p = new SynchProcess("java", "-version");
 			p.execute();
 			
 

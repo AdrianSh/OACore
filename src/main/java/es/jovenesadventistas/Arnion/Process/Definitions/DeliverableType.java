@@ -1,7 +1,7 @@
 /**
  * 
  */
-package es.jovenesadventistas.oacore.process;
+package es.jovenesadventistas.Arnion.Process.Definitions;
 
 /**
  * @author face_
