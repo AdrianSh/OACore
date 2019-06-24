@@ -2,7 +2,6 @@ package es.ucm.oacore;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,15 +15,28 @@ import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecutor;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
 
 public class RunProcess {
-	
-	
-	
+	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger(RunProcess.class);
+
 	public static void main(String[] args) {
+
 		try {
-			Properties props = new Properties();
-			props.load(RunProcess.class.getClassLoader().getResourceAsStream("log4j.properties"));
-			System.setProperties(props);
 			
+			String message = "Hello there!";
+		    System.out.println(message);
+		    logger.debug(message);
+		    logger.info(message);
+		    logger.error(message);
+
+		    
+			System.err.println("TESTTTTTTTTTTTTTTT");
+			
+			logger.debug("test");
+			
+			/*
+			 * Properties props = new Properties();
+			 * props.load(RunProcess.class.getClassLoader().getResourceAsStream(
+			 * "log4j.properties")); System.setProperties(props);
+			 */
 			ProcessExecutor pExecutor = ProcessExecutor.getInstance();
 			ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -40,8 +52,10 @@ public class RunProcess {
 			pExecutor.execute(executorService, pExec1);
 			pExecutor.execute(executorService, pExec2);
 
-			executorService.shutdown();
+			logger.error("Executing somes...");
 			
+			executorService.shutdown();
+
 			try {
 				printStreams(pExec1);
 				printStreams(pExec2);
@@ -49,14 +63,15 @@ public class RunProcess {
 				e.printStackTrace();
 			}
 
-			System.out.println("ExitCode1: " + pExec1.getExitCode() + " ExitCode2: " + pExec2.getExitCode());
+			logger.error("ExitCode1: " + pExec1.getExitCode() + " ExitCode2: " + pExec2.getExitCode());
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static void printStreams(ProcessExecutionDetails p) throws IOException, InterruptedException, ExecutionException {
+	public static void printStreams(ProcessExecutionDetails p)
+			throws IOException, InterruptedException, ExecutionException {
 		Process proc = p.getSystemProcess().get();
 
 		if (proc != null) {

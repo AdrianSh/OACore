@@ -1,13 +1,11 @@
 package es.jovenesadventistas.Arnion.Process.Definitions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ExitCode extends Exception {
 	private static final long serialVersionUID = 4555964545042008449L;
 	
 	@SuppressWarnings("unused")
-	private static final Logger logger = LoggerFactory.getLogger(ExitCode.class);
+	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
 	private Exception e;
 	private int exitCode;
 

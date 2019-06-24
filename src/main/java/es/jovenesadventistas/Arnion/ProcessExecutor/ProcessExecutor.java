@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import es.jovenesadventistas.Arnion.Process.Definitions.ExitCode;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
 
@@ -16,7 +13,8 @@ import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExec
  *
  */
 public class ProcessExecutor {
-	private static final Logger logger = LoggerFactory.getLogger(ProcessExecutor.class);
+	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
+	
 	private static ProcessExecutor instance;
 	private AtomicBoolean running;
 

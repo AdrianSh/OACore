@@ -9,9 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import es.jovenesadventistas.Arnion.Process.Definitions.DeliverableType;
 import es.jovenesadventistas.Arnion.Process.Definitions.ExecutionMode;
 
@@ -23,7 +20,7 @@ import java.util.Map;
  */
 public abstract class AProcess {
 	@SuppressWarnings("unused")
-	private static final Logger logger = LoggerFactory.getLogger(AProcess.class);
+	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
 	protected ArrayList<String> command;
 	protected File workingDirectory;
 	protected ExecutionMode executionMode;

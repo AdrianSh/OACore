@@ -5,13 +5,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.slf4j.LoggerFactory;
-
 import es.jovenesadventistas.Arnion.Process.AProcess;
 import es.jovenesadventistas.Arnion.Process.Definitions.ExitCode;
 
 public class ProcessExecutionDetails {
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ProcessExecutionDetails.class);
+	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
 	
 	private AProcess process;
 	private AtomicBoolean executed;
