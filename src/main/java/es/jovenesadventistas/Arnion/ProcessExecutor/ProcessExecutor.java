@@ -33,7 +33,6 @@ public class ProcessExecutor {
 		logger.debug("Submiting a new job to the executorService  {}", p);
 		executorService.submit((Runnable) () -> {
 				// Thread.currentThread().setDaemon(true);
-			
 				try {
 					logger.debug("Executing the process {}", p);
 					running.set(true);

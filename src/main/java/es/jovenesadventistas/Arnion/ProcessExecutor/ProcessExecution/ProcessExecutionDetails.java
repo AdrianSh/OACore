@@ -72,8 +72,6 @@ public class ProcessExecutionDetails {
 				return null;
 			}
 		});
-		
-		// = proc.onExit();
 	}
 
 	@Override

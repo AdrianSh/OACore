@@ -10,21 +10,21 @@ import com.google.common.base.Charsets;
 import com.google.common.io.ByteSource;
 
 import es.jovenesadventistas.Arnion.Process.AProcess;
-import es.jovenesadventistas.Arnion.Process.SynchProcess;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecutor;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
 
 public class RunProcess {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger(RunProcess.class);
-
+	
+	
 	public static void main(String[] args) {
 
 		try {
 			ProcessExecutor pExecutor = ProcessExecutor.getInstance();
 			ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-			AProcess p1 = new SynchProcess("java", "-version");
-			AProcess p2 = new SynchProcess("java", "-version");
+			AProcess p1 = new AProcess("java", "-version");
+			AProcess p2 = new AProcess("java", "-version");
 
 			p1.setInheritIO(true);
 			p2.setInheritIO(true);
@@ -47,7 +47,7 @@ public class RunProcess {
 			}
 
 			logger.debug("ExitCode1 {} ExitCode2 {}", pExec1.getExitCode().get(), pExec2.getExitCode().get());
-
+			
 		} catch (IOException | InterruptedException | ExecutionException e) {
 			logger.error("Error when running a process...", e);
 		}

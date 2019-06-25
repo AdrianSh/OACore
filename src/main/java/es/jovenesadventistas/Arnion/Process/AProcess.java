@@ -10,37 +10,57 @@ import java.util.Arrays;
 import java.util.Set;
 
 import es.jovenesadventistas.Arnion.Process.Definitions.DeliverableType;
-import es.jovenesadventistas.Arnion.Process.Definitions.ExecutionMode;
-
 import java.util.Map;
 
 /**
  * @author Adrian E. Sanchez Hurtado
  *
  */
-public abstract class AProcess {
-	@SuppressWarnings("unused")
+public class AProcess {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
+	
 	protected ArrayList<String> command;
 	protected File workingDirectory;
-	protected ExecutionMode executionMode;
 	protected Set<DeliverableType> supportedInputs;
 	protected Set<DeliverableType> supportedOutputs;
 	protected Map<String, String> modifiedEnvironment;
 	protected boolean inheritIO;
 	protected ProcessBuilder pBuilder;
-	
 
-	public AProcess(String ...strings ) {
+	public AProcess(String... strings) {
 		this.command = new ArrayList<String>(Arrays.asList(strings));
-		this.executionMode = ExecutionMode.synchronous;
 		this.supportedInputs = Set.of(DeliverableType.CompleteDeliverable);
 		this.supportedOutputs = Set.of(DeliverableType.CompleteDeliverable);
 		this.setInheritIO(false);
 	}
 
-	abstract public java.lang.Process execute() throws IOException;
+	public void buildProcess() {
+		logger.debug("Building process {}", this);
+		pBuilder = new ProcessBuilder(this.command);
+
+		if (this.modifiedEnvironment != null) {
+			logger.debug("Applying environment changes... {}", this.modifiedEnvironment);
+			Map<String, String> env = pBuilder.environment();
+			env.putAll(this.modifiedEnvironment);
+		}
+
+		if (this.workingDirectory != null)
+			pBuilder.directory(this.workingDirectory);
+
+		if (this.isInheritIO())
+			pBuilder.inheritIO();
+		else {
+			pBuilder.redirectInput();
+			pBuilder.redirectError();
+			pBuilder.redirectOutput();
+		}
+	}
 	
+	public java.lang.Process execute() throws IOException {
+		this.buildProcess();
+		logger.debug("Starting process... {}", this.command);
+		return pBuilder.start();
+	}
 	
 	public ArrayList<String> getCommand() {
 		return command;
@@ -56,14 +76,6 @@ public abstract class AProcess {
 
 	public void setWorkingDirectory(File workingDirectory) {
 		this.workingDirectory = workingDirectory;
-	}
-
-	public ExecutionMode getExecutionMode() {
-		return executionMode;
-	}
-
-	public void setExecutionMode(ExecutionMode executionMode) {
-		this.executionMode = executionMode;
 	}
 
 	public Set<DeliverableType> getSupportedOutputs() {
@@ -100,10 +112,8 @@ public abstract class AProcess {
 
 	@Override
 	public String toString() {
-		return "AProcess [command=" + command + ", workingDirectory=" + workingDirectory + ", executionMode="
-				+ executionMode + ", supportedInputs=" + supportedInputs + ", supportedOutputs=" + supportedOutputs
+		return "AProcess [command=" + command + ", workingDirectory=" + workingDirectory + ", supportedInputs=" + supportedInputs + ", supportedOutputs=" + supportedOutputs
 				+ ", modifiedEnvironment=" + modifiedEnvironment + "]";
 	}
-	
-	
+
 }
