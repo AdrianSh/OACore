@@ -20,23 +20,6 @@ public class RunProcess {
 	public static void main(String[] args) {
 
 		try {
-			
-			String message = "Hello there!";
-		    System.out.println(message);
-		    logger.debug(message);
-		    logger.info(message);
-		    logger.error(message);
-
-		    
-			System.err.println("TESTTTTTTTTTTTTTTT");
-			
-			logger.debug("test");
-			
-			/*
-			 * Properties props = new Properties();
-			 * props.load(RunProcess.class.getClassLoader().getResourceAsStream(
-			 * "log4j.properties")); System.setProperties(props);
-			 */
 			ProcessExecutor pExecutor = ProcessExecutor.getInstance();
 			ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -49,11 +32,11 @@ public class RunProcess {
 			ProcessExecutionDetails pExec1 = new ProcessExecutionDetails(p1);
 			ProcessExecutionDetails pExec2 = new ProcessExecutionDetails(p2);
 
+			logger.debug("Executing somes...");
+			
 			pExecutor.execute(executorService, pExec1);
 			pExecutor.execute(executorService, pExec2);
 
-			logger.error("Executing somes...");
-			
 			executorService.shutdown();
 
 			try {
@@ -63,10 +46,10 @@ public class RunProcess {
 				e.printStackTrace();
 			}
 
-			logger.error("ExitCode1: " + pExec1.getExitCode() + " ExitCode2: " + pExec2.getExitCode());
+			logger.debug("ExitCode1 {} ExitCode2 {}", pExec1.getExitCode().get(), pExec2.getExitCode().get());
 
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException | InterruptedException | ExecutionException e) {
+			logger.error("Error when running a process...", e);
 		}
 	}
 

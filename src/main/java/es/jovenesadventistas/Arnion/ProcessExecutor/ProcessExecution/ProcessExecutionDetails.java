@@ -2,7 +2,6 @@ package es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import es.jovenesadventistas.Arnion.Process.AProcess;
@@ -13,6 +12,7 @@ public class ProcessExecutionDetails {
 	
 	private AProcess process;
 	private AtomicBoolean executed;
+	private CompletableFuture<Process> exitProcess;
 	private CompletableFuture<ExitCode> exitCode;
 	private CompletableFuture<Process> systemProcess;
 
@@ -20,12 +20,13 @@ public class ProcessExecutionDetails {
 		this.process = processDef;
 		this.systemProcess = new CompletableFuture<Process>();
 		this.executed = new AtomicBoolean(false);
+		this.exitProcess = new CompletableFuture<Process>();
 		this.exitCode = CompletableFuture.supplyAsync(() -> {
 			logger.debug("Getting exit code... (asynch)");
 			try {
-				return new ExitCode(systemProcess.get().exitValue());
+				return new ExitCode(this.exitProcess.get().exitValue());
 			} catch (InterruptedException | ExecutionException e) {
-				logger.debug("Exception when getting the Process.");
+				logger.error("Exception when getting the Process.", e);
 				return new ExitCode(e);
 			}
 		});
@@ -53,7 +54,7 @@ public class ProcessExecutionDetails {
 		this.exitCode.complete(exitCode);
 	}
 	
-	public Future<ExitCode> getExitCode() {
+	public CompletableFuture<ExitCode> getExitCode() {
 		return this.exitCode;
 	}
 
@@ -63,6 +64,16 @@ public class ProcessExecutionDetails {
 	
 	public void setSystemProcess(Process proc) {
 		this.systemProcess.complete(proc);
+		this.exitProcess.completeAsync(() -> {
+			try {
+				return proc.onExit().get();
+			} catch (InterruptedException | ExecutionException e) {
+				logger.error("Couldn´t get the attached process on exit.",e);
+				return null;
+			}
+		});
+		
+		// = proc.onExit();
 	}
 
 	@Override

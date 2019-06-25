@@ -29,11 +29,13 @@ public class ProcessExecutor {
 	}
 
 	public void execute(ExecutorService executorService, ProcessExecutionDetails p) throws IOException {
+		
+		logger.debug("Submiting a new job to the executorService  {}", p);
 		executorService.submit((Runnable) () -> {
-				Thread.currentThread().setDaemon(true);
+				// Thread.currentThread().setDaemon(true);
 			
 				try {
-					logger.debug("Executing the process %s", p);
+					logger.debug("Executing the process {}", p);
 					running.set(true);
 					Process proc = p.getProcess().execute();
 					p.setSystemProcess(proc);

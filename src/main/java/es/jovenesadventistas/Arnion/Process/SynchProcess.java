@@ -15,11 +15,11 @@ public class SynchProcess extends AProcess {
 	}
 	
 	public void buildProcess(){
-		logger.debug("Building process %s", this);
+		logger.debug("Building process {}", this);
 		pBuilder = new ProcessBuilder(this.command);
 
 		if (this.modifiedEnvironment != null) {
-			logger.debug("Applying environment changes... %s", this.modifiedEnvironment);
+			logger.debug("Applying environment changes... {}", this.modifiedEnvironment);
 			Map<String, String> env = pBuilder.environment();
 			env.putAll(this.modifiedEnvironment);
 		}
@@ -39,7 +39,7 @@ public class SynchProcess extends AProcess {
 	@Override
 	public java.lang.Process execute() throws IOException {
 		this.buildProcess();
-		logger.debug("Starting process... %s", this.command);
+		logger.debug("Starting process... {}", this.command);
 		return pBuilder.start();
 	}
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="DEBUG" dest="out">
-<!-- https://logging.apache.org/log4j/2.x/manual/configuration.html -->
+	<!-- https://logging.apache.org/log4j/2.x/manual/configuration.html -->
 	<Appenders>
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout
@@ -8,5 +8,8 @@
 		</Console>
 	</Appenders>
 	<Loggers>
+		<Root level="all">
+			<AppenderRef ref="Console" />
+		</Root>
 	</Loggers>
 </Configuration>
