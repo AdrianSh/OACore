@@ -10,8 +10,8 @@ public class ExitCode extends Exception {
 	private int exitCode;
 
 	public enum ExitCodes {
-		NOTEXECUTED(-10000000), InterruptedException(-1000001), IOException(-1000002), ExecutionException(-1000003),
-		Exception(-1000004);
+		NOTEXECUTED(-10000000), NOTBINDERREADY(-1000001), IOException(-1000002), ExecutionException(-1000003),
+		Exception(-1000004), InterruptedException(-1000005);
 		private int code;
 
 		private ExitCodes(int code) {
@@ -31,6 +31,10 @@ public class ExitCode extends Exception {
 
 	public ExitCode(int exitCode) {
 		this.exitCode = exitCode;
+	}
+	
+	public ExitCode(ExitCodes code) {
+		this.exitCode = code.code;
 	}
 
 	public ExitCode(String message) {

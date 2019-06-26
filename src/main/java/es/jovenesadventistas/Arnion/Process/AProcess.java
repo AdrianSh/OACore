@@ -7,29 +7,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-
-import es.jovenesadventistas.Arnion.Process.Binders.Binder;
-import es.jovenesadventistas.Arnion.Process.Binders.Transfers.Transfer;
-import es.jovenesadventistas.Arnion.Process.Definitions.DeliverableType;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Flow.Publisher;
-import java.util.concurrent.Flow.Subscriber;
-import java.util.concurrent.Flow.Subscription;
 
 /**
  * @author Adrian E. Sanchez Hurtado
  *
  */
-public class AProcess<T extends Transfer, S extends Transfer> implements Subscriber<T>, Publisher<S> {
+public class AProcess {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
-	private Subscription inputSubscription;
-	
-	https://www.baeldung.com/java-9-reactive-streams
-		
-		
-	private Set<Subscriber<S>> outputSubscribers;
 	private ArrayList<String> command;
 	private File workingDirectory; 
 	private Map<String, String> modifiedEnvironment;
@@ -69,34 +54,6 @@ public class AProcess<T extends Transfer, S extends Transfer> implements Subscri
 		return pBuilder.start();
 	}
 
-	@Override
-	public void onSubscribe(Subscription inputSubscription) {
-		this.inputSubscription = inputSubscription;
-		inputSubscription.request(1);
-	}
-	
-	@Override
-	public void onNext(T item) {
-	    System.out.println("Got : " + item);
-	    inputSubscription.request(1);
-	}
-	
-	@Override
-	public void onError(Throwable t) {
-	    t.printStackTrace();
-	}
-	 
-	@Override
-	public void onComplete() {
-	    System.out.println("Done");
-	}
-	
-	@Override
-	public void subscribe(Subscriber<? super S> subscriber) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public ArrayList<String> getCommand() {
 		return command;
 	}
@@ -111,14 +68,6 @@ public class AProcess<T extends Transfer, S extends Transfer> implements Subscri
 
 	public void setWorkingDirectory(File workingDirectory) {
 		this.workingDirectory = workingDirectory;
-	}
-
-	public HashMap<DeliverableType, Binder> getSupportedOutputs() {
-		return supportedOutputs;
-	}
-
-	public void setSupportedOutputs(HashMap<DeliverableType, Binder> supportedOutputs) {
-		this.supportedOutputs = supportedOutputs;
 	}
 
 	public Map<String, String> getModifiedEnvironment() {
@@ -139,8 +88,7 @@ public class AProcess<T extends Transfer, S extends Transfer> implements Subscri
 
 	@Override
 	public String toString() {
-		return "AProcess [command=" + command + ", workingDirectory=" + workingDirectory + ", inputSubscription="
-				+ inputSubscription + ", supportedOutputs=" + supportedOutputs + ", modifiedEnvironment="
+		return "AProcess [command=" + command + ", workingDirectory=" + workingDirectory + ", modifiedEnvironment="
 				+ modifiedEnvironment + "]";
 	}
 }

@@ -10,6 +10,10 @@ import com.google.common.base.Charsets;
 import com.google.common.io.ByteSource;
 
 import es.jovenesadventistas.Arnion.Process.AProcess;
+import es.jovenesadventistas.Arnion.Process.Binders.SplitBinder;
+import es.jovenesadventistas.Arnion.Process.Binders.Publishers.ExitCodePublisher;
+import es.jovenesadventistas.Arnion.Process.Binders.Subscribers.ExitCodeSubscriber;
+import es.jovenesadventistas.Arnion.Process.Binders.Transfers.IntegerTransfer;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecutor;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
 
@@ -29,9 +33,17 @@ public class RunProcess {
 			p1.setInheritIO(true);
 			p2.setInheritIO(true);
 
-			ProcessExecutionDetails pExec1 = new ProcessExecutionDetails(p1);
-			ProcessExecutionDetails pExec2 = new ProcessExecutionDetails(p2);
+			ProcessExecutionDetails<IntegerTransfer, IntegerTransfer> pExec1 = new ProcessExecutionDetails<>(p1);
+			ProcessExecutionDetails<IntegerTransfer, IntegerTransfer> pExec2 = new ProcessExecutionDetails<>(p2);
 
+			ExitCodeSubscriber inputSubscriber1 = new ExitCodeSubscriber();
+			ExitCodeSubscriber inputSubscriber2 = new ExitCodeSubscriber();
+			ExitCodePublisher outputPublisher1 = new ExitCodePublisher();
+			ExitCodePublisher outputPublisher2 = new ExitCodePublisher();
+			
+			pExec1.setBinder(new SplitBinder<IntegerTransfer, IntegerTransfer>(inputSubscriber1, outputPublisher1));
+			pExec2.setBinder(new SplitBinder<IntegerTransfer, IntegerTransfer>(inputSubscriber2, outputPublisher2));
+			
 			logger.debug("Executing somes...");
 			
 			pExecutor.execute(executorService, pExec1);
@@ -46,14 +58,14 @@ public class RunProcess {
 				e.printStackTrace();
 			}
 
-			logger.debug("ExitCode1 {} ExitCode2 {}", pExec1.getExitCode().get(), pExec2.getExitCode().get());
+			// logger.debug("ExitCode1 {} ExitCode2 {}", pExec1.getExitCode().get(), pExec2.getExitCode().get());
 			
-		} catch (IOException | InterruptedException | ExecutionException e) {
+		} catch (IOException /* | InterruptedException | ExecutionException */ e) {
 			logger.error("Error when running a process...", e);
 		}
 	}
 
-	public static void printStreams(ProcessExecutionDetails p)
+	public static void printStreams(ProcessExecutionDetails<IntegerTransfer, IntegerTransfer> p)
 			throws IOException, InterruptedException, ExecutionException {
 		Process proc = p.getSystemProcess().get();
 

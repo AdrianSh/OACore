@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import es.jovenesadventistas.Arnion.Process.Definitions.ExitCode;
+import es.jovenesadventistas.Arnion.Process.Definitions.ExitCode.ExitCodes;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
 
 /**
@@ -14,7 +15,7 @@ import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExec
  */
 public class ProcessExecutor {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
-	
+
 	private static ProcessExecutor instance;
 	private AtomicBoolean running;
 
@@ -28,10 +29,10 @@ public class ProcessExecutor {
 		return instance;
 	}
 
-	public void execute(ExecutorService executorService, ProcessExecutionDetails p) throws IOException {
-		
-		logger.debug("Submiting a new job to the executorService  {}", p);
-		executorService.submit((Runnable) () -> {
+	public void execute(ExecutorService executorService, ProcessExecutionDetails<?, ?> p) throws IOException {
+		if (p.getBinder() != null && p.getBinder().ready() || p.getBinder() == null) {
+			logger.debug("Submiting a new job to the executorService  {}", p);
+			executorService.submit((Runnable) () -> {
 				// Thread.currentThread().setDaemon(true);
 				try {
 					logger.debug("Executing the process {}", p);
@@ -44,6 +45,10 @@ public class ProcessExecutor {
 					running.set(false);
 					p.executed();
 				}
-		});
+			});
+		} else {
+			logger.warn("Cannot execute the process because it's binder is not ready");
+			p.setExitCode(new ExitCode(ExitCodes.NOTBINDERREADY));
+		}
 	}
 }
