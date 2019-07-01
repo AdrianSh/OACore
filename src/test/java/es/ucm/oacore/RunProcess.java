@@ -5,15 +5,17 @@ import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteSource;
 
 import es.jovenesadventistas.Arnion.Process.AProcess;
+import es.jovenesadventistas.Arnion.Process.Binders.Binder;
+import es.jovenesadventistas.Arnion.Process.Binders.ExitCodeBinder;
 import es.jovenesadventistas.Arnion.Process.Binders.SplitBinder;
-import es.jovenesadventistas.Arnion.Process.Binders.Publishers.ExitCodePublisher;
-import es.jovenesadventistas.Arnion.Process.Binders.Subscribers.ExitCodeSubscriber;
+import es.jovenesadventistas.Arnion.Process.Binders.Publishers.ConcurrentLinkedQueuePublisher;
+import es.jovenesadventistas.Arnion.Process.Binders.Subscribers.ConcurrentLinkedQueueSubscriber;
 import es.jovenesadventistas.Arnion.Process.Binders.Transfers.IntegerTransfer;
+import es.jovenesadventistas.Arnion.Process.Binders.Transfers.StringTransfer;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecutor;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
 
@@ -26,6 +28,7 @@ public class RunProcess {
 		try {
 			ProcessExecutor pExecutor = ProcessExecutor.getInstance();
 			ExecutorService executorService = Executors.newSingleThreadExecutor();
+			ExecutorService executorService2 = Executors.newSingleThreadExecutor();
 
 			AProcess p1 = new AProcess("java", "-version");
 			AProcess p2 = new AProcess("java", "-version");
@@ -33,21 +36,33 @@ public class RunProcess {
 			p1.setInheritIO(true);
 			p2.setInheritIO(true);
 
-			ProcessExecutionDetails<IntegerTransfer, IntegerTransfer> pExec1 = new ProcessExecutionDetails<>(p1);
-			ProcessExecutionDetails<IntegerTransfer, IntegerTransfer> pExec2 = new ProcessExecutionDetails<>(p2);
-
-			ExitCodeSubscriber inputSubscriber1 = new ExitCodeSubscriber();
-			ExitCodeSubscriber inputSubscriber2 = new ExitCodeSubscriber();
-			ExitCodePublisher outputPublisher1 = new ExitCodePublisher();
-			ExitCodePublisher outputPublisher2 = new ExitCodePublisher();
+			ProcessExecutionDetails<IntegerTransfer, StringTransfer> pExec1 = new ProcessExecutionDetails<>(p1);
+			ProcessExecutionDetails<StringTransfer, IntegerTransfer> pExec2 = new ProcessExecutionDetails<>(p2);
 			
-			pExec1.setBinder(new SplitBinder<IntegerTransfer, IntegerTransfer>(inputSubscriber1, outputPublisher1));
-			pExec2.setBinder(new SplitBinder<IntegerTransfer, IntegerTransfer>(inputSubscriber2, outputPublisher2));
+			// Binder section
+			ConcurrentLinkedQueueSubscriber<IntegerTransfer> inputSubscriber1 = new ConcurrentLinkedQueueSubscriber<>();
+			ConcurrentLinkedQueueSubscriber<StringTransfer> inputSubscriber2 = new ConcurrentLinkedQueueSubscriber<>();
+			
+			ConcurrentLinkedQueuePublisher<StringTransfer> outputPublisher1 = new ConcurrentLinkedQueuePublisher<>();
+			ConcurrentLinkedQueuePublisher<IntegerTransfer> outputPublisher2 = new ConcurrentLinkedQueuePublisher<>();
+			
+			ExitCodeBinder<IntegerTransfer, StringTransfer> b1 = new ExitCodeBinder<>(pExec1, inputSubscriber1, outputPublisher1);
+			ExitCodeBinder<StringTransfer, IntegerTransfer> b2 = new ExitCodeBinder<>(pExec2, inputSubscriber2, outputPublisher2);
+			
+			// Join the output of the process 1 to the input of the process 2
+			b1.markAsReady();
+			b1.subscribe(b2);
+			
+			pExec1.setBinder(b1);
+			pExec2.setBinder(b2);
 			
 			logger.debug("Executing somes...");
 			
-			pExecutor.execute(executorService, pExec1);
-			pExecutor.execute(executorService, pExec2);
+			pExecutor.execute(executorService, b1);
+			pExecutor.execute(executorService, b2);
+			
+			pExecutor.execute(executorService2, pExec1);
+			pExecutor.execute(executorService2, pExec2);
 
 			executorService.shutdown();
 
@@ -65,7 +80,7 @@ public class RunProcess {
 		}
 	}
 
-	public static void printStreams(ProcessExecutionDetails<IntegerTransfer, IntegerTransfer> p)
+	public static void printStreams(ProcessExecutionDetails<?, ?> p)
 			throws IOException, InterruptedException, ExecutionException {
 		Process proc = p.getSystemProcess().get();
 

@@ -1,9 +1,13 @@
 package es.jovenesadventistas.Arnion.ProcessExecutor;
 
 import java.io.IOException;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import es.jovenesadventistas.Arnion.Process.Binders.Binder;
+import es.jovenesadventistas.Arnion.Process.Binders.Transfers.Transfer;
 import es.jovenesadventistas.Arnion.Process.Definitions.ExitCode;
 import es.jovenesadventistas.Arnion.Process.Definitions.ExitCode.ExitCodes;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
@@ -29,26 +33,52 @@ public class ProcessExecutor {
 		return instance;
 	}
 
-	public void execute(ExecutorService executorService, ProcessExecutionDetails<?, ?> p) throws IOException {
-		if (p.getBinder() != null && p.getBinder().ready() || p.getBinder() == null) {
-			logger.debug("Submiting a new job to the executorService  {}", p);
-			executorService.submit((Runnable) () -> {
-				// Thread.currentThread().setDaemon(true);
+	public <T extends Transfer, S extends Transfer> void execute(ExecutorService executorService, Binder<T, S> binder) {
+		executorService.submit(() -> {
+			logger.debug("Running binder... {}", binder);
+			binder.run();
+		});
+	}
+
+	public <T extends Transfer, S extends Transfer> void execute(ExecutorService executorService,
+			ProcessExecutionDetails<T, S> p) throws IOException {
+		if (p.getBinder() != null && p.getBinder().ready()) {
+			this._execute(executorService, p);
+		} else {
+			executorService.submit((Runnable)() -> {
 				try {
-					logger.debug("Executing the process {}", p);
-					running.set(true);
-					Process proc = p.getProcess().execute();
-					p.setSystemProcess(proc);
-				} catch (IOException e) {
+					logger.debug("Waiting for an asynch. ready response from the binder... {p}", p);
+					if(p.getBinder().asynchReady().get()) {
+						this._execute(executorService, p);
+					} else {
+						logger.warn("Cannot execute the process because it's binder is not ready: {}", p);
+						p.setExitCode(new ExitCode(ExitCodes.NOTBINDERREADY));
+					}
+				} catch (CancellationException | InterruptedException | ExecutionException | IOException e) {
+					logger.error("Couldn't wait for binder to be ready.", e);
 					p.setExitCode(new ExitCode(e));
-				} finally {
-					running.set(false);
-					p.executed();
 				}
 			});
-		} else {
-			logger.warn("Cannot execute the process because it's binder is not ready");
-			p.setExitCode(new ExitCode(ExitCodes.NOTBINDERREADY));
 		}
+	}
+
+	private <T extends Transfer, S extends Transfer> void _execute(ExecutorService executorService,
+			ProcessExecutionDetails<T, S> p) throws IOException {
+		logger.debug("Submiting a new job to the executorService  {}", p);
+		executorService.submit((Runnable) () -> {
+			// Thread.currentThread().setDaemon(true); // It's a daemon thread by default
+			// (or could be eclipse IDE)
+			try {
+				logger.debug("Executing the process {}", p);
+				running.set(true);
+				Process proc = p.getProcess().execute();
+				p.setSystemProcess(proc);
+			} catch (IOException e) {
+				p.setExitCode(new ExitCode(e));
+			} finally {
+				running.set(false);
+				p.executed();
+			}
+		});
 	}
 }

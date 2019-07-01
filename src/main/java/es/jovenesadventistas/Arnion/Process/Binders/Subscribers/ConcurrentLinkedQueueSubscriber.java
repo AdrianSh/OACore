@@ -5,18 +5,18 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 
-import es.jovenesadventistas.Arnion.Process.Binders.Transfers.IntegerTransfer;
+import es.jovenesadventistas.Arnion.Process.Binders.Transfers.Transfer;
 
-public class ExitCodeSubscriber implements Subscriber<IntegerTransfer> {
+public class ConcurrentLinkedQueueSubscriber<T extends Transfer> implements Subscriber<T> {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
 
 	private Subscription subscription;
-	private ConcurrentLinkedQueue<IntegerTransfer> data;
+	private ConcurrentLinkedQueue<T> data;
 	private boolean open;
 	private boolean complete;
 
-	public ExitCodeSubscriber() {
-		this.data = new ConcurrentLinkedQueue<IntegerTransfer>();
+	public ConcurrentLinkedQueueSubscriber() {
+		this.data = new ConcurrentLinkedQueue<T>();
 		this.open = false;
 	}
 
@@ -28,7 +28,7 @@ public class ExitCodeSubscriber implements Subscriber<IntegerTransfer> {
 	}
 
 	@Override
-	public void onNext(IntegerTransfer item) {
+	public void onNext(T item) {
 		logger.info("Got {}", item);
 		this.data.add(item);
 		// subscription.request(1);
@@ -46,11 +46,11 @@ public class ExitCodeSubscriber implements Subscriber<IntegerTransfer> {
 		this.request(1L);
 	}
 
-	public IntegerTransfer getData() {
+	public T getData() {
 		return this.data.poll();
 	}
 	
-	public ConcurrentLinkedQueue<IntegerTransfer> getAllData() {
+	public ConcurrentLinkedQueue<T> getAllData() {
 		return this.data;
 	}
 

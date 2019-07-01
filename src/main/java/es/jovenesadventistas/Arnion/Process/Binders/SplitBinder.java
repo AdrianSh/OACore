@@ -1,6 +1,6 @@
 package es.jovenesadventistas.Arnion.Process.Binders;
 
-import java.util.concurrent.Flow.Publisher;
+import java.util.concurrent.SubmissionPublisher;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -12,15 +12,17 @@ import es.jovenesadventistas.Arnion.Process.Binders.Transfers.Transfer;
  * @author Adrian E. Sanchez Hurtado
  *
  */
-public class SplitBinder<T extends Transfer, S extends Transfer> implements Binder<T, S> {
-	private Subscriber<T> subscriber;
-	private Publisher<S> publisher;
-	private AtomicBoolean ready;
+public abstract class SplitBinder<T extends Transfer, S extends Transfer> implements Binder<T, S> {
+	protected Subscriber<T> subscriber;
+	protected SubmissionPublisher<S> publisher;
+	protected AtomicBoolean ready;
+	protected AtomicBoolean join;
 	
-	public SplitBinder(Subscriber<T> inputSubscriber, Publisher<S> outputPublisher) {
+	public SplitBinder(Subscriber<T> inputSubscriber, SubmissionPublisher<S> outputPublisher) {
 		this.subscriber = inputSubscriber;
 		this.publisher = outputPublisher;
 		this.ready = new AtomicBoolean(false);
+		this.join = new AtomicBoolean(false);
 	}
 	
 	@Override
@@ -45,12 +47,27 @@ public class SplitBinder<T extends Transfer, S extends Transfer> implements Bind
 
 	@Override
 	public void subscribe(Subscriber<? super S> subscriber) {
-		this.ready.set(true);
+		this.join.set(true);
 		this.publisher.subscribe(subscriber);
 	}
 
 	@Override
 	public boolean ready() {
 		return this.ready.get();
+	}
+
+	@Override
+	public void markAsReady() {
+		this.ready.set(true);
+	}
+
+	@Override
+	public boolean joined() {
+		return this.join.get();
+	}
+
+	@Override
+	public void submit(S i) {
+		this.publisher.submit(i);
 	}
 }

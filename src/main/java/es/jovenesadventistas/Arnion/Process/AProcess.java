@@ -11,12 +11,14 @@ import java.util.Map;
 
 /**
  * @author Adrian E. Sanchez Hurtado
+ * @param <S>
+ * @param <T>
  *
  */
 public class AProcess {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
 	private ArrayList<String> command;
-	private File workingDirectory; 
+	private File workingDirectory;
 	private Map<String, String> modifiedEnvironment;
 	private boolean inheritIO;
 	private ProcessBuilder pBuilder;
