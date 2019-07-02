@@ -48,7 +48,7 @@ public class ProcessExecutor {
 				this._execute(executorService, p);
 			} else {
 				try {
-					logger.debug("Waiting for an asynch. ready response from the binder... {p}", p);
+					logger.debug("Waiting for an asynch. ready response from the binder... {}", p);
 					if (p.getBinder().asynchReady().get()) {
 						this._execute(executorService, p);
 					} else {
