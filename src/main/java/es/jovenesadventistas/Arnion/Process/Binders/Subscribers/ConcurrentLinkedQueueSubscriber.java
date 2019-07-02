@@ -12,18 +12,18 @@ public class ConcurrentLinkedQueueSubscriber<T extends Transfer> implements Subs
 
 	private Subscription subscription;
 	private ConcurrentLinkedQueue<T> data;
-	private boolean open;
+	private boolean subscribed;
 	private boolean complete;
 
 	public ConcurrentLinkedQueueSubscriber() {
 		this.data = new ConcurrentLinkedQueue<T>();
-		this.open = false;
+		this.subscribed = false;
 	}
 
 	@Override
 	public void onSubscribe(Subscription subscription) {
 		this.subscription = subscription;
-		this.open = true;
+		this.subscribed = true;
 		// this.subscription.request(1);
 	}
 
@@ -36,8 +36,8 @@ public class ConcurrentLinkedQueueSubscriber<T extends Transfer> implements Subs
 
 	public void request(Long n) throws IOException {
 		if (!this.complete)
-			throw new IOException("Subscription completed.");
-		if (!this.open)
+			throw new IOException("Subscription not completed.");
+		if (!this.subscribed)
 			throw new IOException("Subscription not yet started.");
 		this.subscription.request(n);
 	}
@@ -53,17 +53,21 @@ public class ConcurrentLinkedQueueSubscriber<T extends Transfer> implements Subs
 	public ConcurrentLinkedQueue<T> getAllData() {
 		return this.data;
 	}
+	
+	public boolean isSubscribed() {
+		return this.subscribed;
+	}
 
 	@Override
 	public void onError(Throwable throwable) {
 		logger.error("An error ocurred in the exit-code subscriber", throwable);
-		this.open = false;
+		this.subscribed = false;
 	}
 
 	@Override
 	public void onComplete() {
 		// this.data.clear();
-		this.open = false;
+		this.subscribed = false;
 		this.complete = true;
 		logger.debug("No more data from the subscription: {}", this.subscription);
 	}

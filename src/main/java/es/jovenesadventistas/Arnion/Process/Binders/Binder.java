@@ -12,6 +12,7 @@ public interface Binder<T extends Transfer, S extends Transfer> extends Subscrib
 	public boolean joined();
 	public void markAsReady();
 	public void submit(S i);
+	public void close();
 	default public Future<Boolean> asynchReady(){
 		CompletableFuture<Boolean> r = new CompletableFuture<Boolean>();
 		r.complete(this.ready());

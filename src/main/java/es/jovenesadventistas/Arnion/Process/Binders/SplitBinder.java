@@ -50,6 +50,16 @@ public abstract class SplitBinder<T extends Transfer, S extends Transfer> implem
 		this.join.set(true);
 		this.publisher.subscribe(subscriber);
 	}
+	
+	@Override
+	public void submit(S i) {
+		this.publisher.submit(i);
+	}
+	
+	@Override
+	public void close() {
+		this.publisher.close();
+	}
 
 	@Override
 	public boolean ready() {
@@ -64,10 +74,5 @@ public abstract class SplitBinder<T extends Transfer, S extends Transfer> implem
 	@Override
 	public boolean joined() {
 		return this.join.get();
-	}
-
-	@Override
-	public void submit(S i) {
-		this.publisher.submit(i);
 	}
 }

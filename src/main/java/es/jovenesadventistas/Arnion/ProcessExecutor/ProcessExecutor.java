@@ -37,48 +37,47 @@ public class ProcessExecutor {
 		executorService.submit(() -> {
 			logger.debug("Running binder... {}", binder);
 			binder.run();
+			logger.debug("Binder ends... {}", binder);
 		});
 	}
 
 	public <T extends Transfer, S extends Transfer> void execute(ExecutorService executorService,
 			ProcessExecutionDetails<T, S> p) throws IOException {
-		if (p.getBinder() != null && p.getBinder().ready()) {
-			this._execute(executorService, p);
-		} else {
-			executorService.submit((Runnable)() -> {
+		executorService.submit((Runnable) () -> {
+			if (p.getBinder() != null && p.getBinder().ready()) {
+				this._execute(executorService, p);
+			} else {
 				try {
 					logger.debug("Waiting for an asynch. ready response from the binder... {p}", p);
-					if(p.getBinder().asynchReady().get()) {
+					if (p.getBinder().asynchReady().get()) {
 						this._execute(executorService, p);
 					} else {
 						logger.warn("Cannot execute the process because it's binder is not ready: {}", p);
 						p.setExitCode(new ExitCode(ExitCodes.NOTBINDERREADY));
 					}
-				} catch (CancellationException | InterruptedException | ExecutionException | IOException e) {
+				} catch (CancellationException | InterruptedException | ExecutionException e) {
 					logger.error("Couldn't wait for binder to be ready.", e);
 					p.setExitCode(new ExitCode(e));
 				}
-			});
-		}
+			}
+		});
 	}
 
 	private <T extends Transfer, S extends Transfer> void _execute(ExecutorService executorService,
-			ProcessExecutionDetails<T, S> p) throws IOException {
-		logger.debug("Submiting a new job to the executorService  {}", p);
-		executorService.submit((Runnable) () -> {
+			ProcessExecutionDetails<T, S> p) {
+		try {
 			// Thread.currentThread().setDaemon(true); // It's a daemon thread by default
 			// (or could be eclipse IDE)
-			try {
-				logger.debug("Executing the process {}", p);
-				running.set(true);
-				Process proc = p.getProcess().execute();
-				p.setSystemProcess(proc);
-			} catch (IOException e) {
-				p.setExitCode(new ExitCode(e));
-			} finally {
-				running.set(false);
-				p.executed();
-			}
-		});
+
+			logger.debug("Executing the process {}", p);
+			running.set(true);
+			Process proc = p.getProcess().execute();
+			p.setSystemProcess(proc);
+		} catch (IOException e) {
+			p.setExitCode(new ExitCode(e));
+		} finally {
+			running.set(false);
+			p.executed();
+		}
 	}
 }
