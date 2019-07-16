@@ -14,7 +14,6 @@ public class ProcessExecutionDetails {
 
 	private AProcess process;
 	private AtomicBoolean executed;
-	private CompletableFuture<Process> exitProcess;
 	private ExitCode exitCode;
 	private CompletableFuture<Process> systemProcess;
 	private Binder binder;
@@ -23,7 +22,6 @@ public class ProcessExecutionDetails {
 		this.process = processDef;
 		this.systemProcess = new CompletableFuture<Process>();
 		this.executed = new AtomicBoolean(false);
-		this.exitProcess = new CompletableFuture<Process>();
 	}
 
 	public AProcess getProcess() {
@@ -54,7 +52,7 @@ public class ProcessExecutionDetails {
 			try {
 				if(this.exitCode != null)
 					return this.exitCode;
-				return new ExitCode(this.exitProcess.get().exitValue());
+				return new ExitCode(this.systemProcess.get().onExit().get().exitValue());
 			} catch (InterruptedException | ExecutionException e) {
 				logger.error("Exception when getting the Process.", e);
 				return new ExitCode(e);
@@ -68,14 +66,6 @@ public class ProcessExecutionDetails {
 
 	public void setSystemProcess(Process proc) {
 		this.systemProcess.complete(proc);
-		this.exitProcess.completeAsync(() -> {
-			try {
-				return proc.onExit().get();
-			} catch (InterruptedException | ExecutionException e) {
-				logger.error("Couldn´t get the attached process on exit.", e);
-				return null;
-			}
-		});
 	}
 
 	public Binder getBinder() {

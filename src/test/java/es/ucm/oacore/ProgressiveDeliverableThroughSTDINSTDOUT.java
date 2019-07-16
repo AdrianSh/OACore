@@ -2,9 +2,14 @@ package es.ucm.oacore;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import com.google.common.base.Charsets;
+import com.google.common.io.ByteSource;
+
 import es.jovenesadventistas.Arnion.Process.AProcess;
 import es.jovenesadventistas.Arnion.Process.Binders.StdInBinder;
 import es.jovenesadventistas.Arnion.Process.Binders.Publishers.ConcurrentLinkedQueuePublisher;
@@ -92,6 +97,19 @@ public class ProgressiveDeliverableThroughSTDINSTDOUT {
 			pExecutor.execute(executorService, b1);
 			pExecutor.execute(executorService2, pExec2);
 			pExecutor.execute(executorService2, b2);
+			executorService2.execute(() -> {
+				try {
+					System.out.println("Al parecer no ha terminado el proceso 1");
+					// pExec1.getSystemProcess().get().getOutputStream().close();
+					printStreams(pExec1);
+					System.out.println(pExec1.getSystemProcess().get().info());
+					// pExec1.getSystemProcess().get().destroy();
+				} catch (InterruptedException | ExecutionException | IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			});
 			
 
 			executorService.shutdown();
@@ -103,5 +121,31 @@ public class ProgressiveDeliverableThroughSTDINSTDOUT {
 		} catch (IOException e) { 
 			logger.error("Error when running a process...", e);
 		}
+	}
+	
+	public static void printStreams(ProcessExecutionDetails p)
+			throws IOException, InterruptedException, ExecutionException {
+		Process proc = p.getSystemProcess().get();
+
+		if (proc != null) {
+			InputStream inpStream = proc.getInputStream();
+			InputStream errStream = proc.getErrorStream();
+			if (inpStream != null)
+				readStream(inpStream, "INPUT");
+			if (errStream != null)
+				readStream(errStream, "ERROR");
+		}
+	}
+
+	public static void readStream(InputStream is, String desc) throws IOException {
+		ByteSource byteSource = new ByteSource() {
+			@Override
+			public InputStream openStream() throws IOException {
+				return is;
+			}
+		};
+
+		String text = byteSource.asCharSource(Charsets.UTF_8).read();
+		System.out.println("[" + desc + "]" + text);
 	}
 }
