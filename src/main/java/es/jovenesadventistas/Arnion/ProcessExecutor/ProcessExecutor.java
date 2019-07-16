@@ -33,7 +33,7 @@ public class ProcessExecutor {
 		return instance;
 	}
 
-	public <T extends Transfer, S extends Transfer> void execute(ExecutorService executorService, Binder<T, S> binder) {
+	public <T extends Transfer, S extends Transfer> void execute(ExecutorService executorService, Binder binder) {
 		executorService.submit(() -> {
 			logger.debug("Running binder... {}", binder);
 			binder.run();
@@ -42,7 +42,7 @@ public class ProcessExecutor {
 	}
 
 	public <T extends Transfer, S extends Transfer> void execute(ExecutorService executorService,
-			ProcessExecutionDetails<T, S> p) throws IOException {
+			ProcessExecutionDetails p) throws IOException {
 		executorService.submit((Runnable) () -> {
 			if (p.getBinder() != null && p.getBinder().ready()) {
 				this._execute(executorService, p);
@@ -64,7 +64,7 @@ public class ProcessExecutor {
 	}
 
 	private <T extends Transfer, S extends Transfer> void _execute(ExecutorService executorService,
-			ProcessExecutionDetails<T, S> p) {
+			ProcessExecutionDetails p) {
 		try {
 			// Thread.currentThread().setDaemon(true); // It's a daemon thread by default
 			// (or could be eclipse IDE)

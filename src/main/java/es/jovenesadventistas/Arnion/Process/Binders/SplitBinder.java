@@ -12,7 +12,7 @@ import es.jovenesadventistas.Arnion.Process.Binders.Transfers.Transfer;
  * @author Adrian E. Sanchez Hurtado
  *
  */
-public abstract class SplitBinder<T extends Transfer, S extends Transfer> implements Binder<T, S> {
+public abstract class SplitBinder<T extends Transfer, S extends Transfer> implements ReactiveStreamBinder<T, S> {
 	protected Subscriber<T> subscriber;
 	protected SubmissionPublisher<S> publisher;
 	protected AtomicBoolean ready;
@@ -30,6 +30,9 @@ public abstract class SplitBinder<T extends Transfer, S extends Transfer> implem
 		this.subscriber.onSubscribe(subscription);
 	}
 
+	/**
+	 * this is called whenever the Publisher publishes a new message
+	 */
 	@Override
 	public void onNext(T item) {
 		this.subscriber.onNext(item);

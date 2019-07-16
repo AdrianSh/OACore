@@ -7,10 +7,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import es.jovenesadventistas.Arnion.Process.AProcess;
 import es.jovenesadventistas.Arnion.Process.Binders.Binder;
-import es.jovenesadventistas.Arnion.Process.Binders.Transfers.Transfer;
 import es.jovenesadventistas.Arnion.Process.Definitions.ExitCode;
 
-public class ProcessExecutionDetails<T extends Transfer, S extends Transfer> {
+public class ProcessExecutionDetails {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
 
 	private AProcess process;
@@ -18,7 +17,7 @@ public class ProcessExecutionDetails<T extends Transfer, S extends Transfer> {
 	private CompletableFuture<Process> exitProcess;
 	private ExitCode exitCode;
 	private CompletableFuture<Process> systemProcess;
-	private Binder<T, S> binder;
+	private Binder binder;
 
 	public ProcessExecutionDetails(AProcess processDef) {
 		this.process = processDef;
@@ -79,11 +78,11 @@ public class ProcessExecutionDetails<T extends Transfer, S extends Transfer> {
 		});
 	}
 
-	public Binder<T, S> getBinder() {
+	public Binder getBinder() {
 		return binder;
 	}
 
-	public void setBinder(Binder<T, S> binder) {
+	public void setBinder(Binder binder) {
 		this.binder = binder;
 	}
 

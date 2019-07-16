@@ -12,7 +12,6 @@ import es.jovenesadventistas.Arnion.Process.AProcess;
 import es.jovenesadventistas.Arnion.Process.Binders.ExitCodeBinder;
 import es.jovenesadventistas.Arnion.Process.Binders.Publishers.ConcurrentLinkedQueuePublisher;
 import es.jovenesadventistas.Arnion.Process.Binders.Subscribers.ConcurrentLinkedQueueSubscriber;
-import es.jovenesadventistas.Arnion.Process.Binders.Transfers.IntegerTransfer;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecutor;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
 
@@ -25,7 +24,6 @@ public class RunProcess {
 		try {
 			ProcessExecutor pExecutor = ProcessExecutor.getInstance();
 			ExecutorService executorService = Executors.newSingleThreadExecutor();
-			ExecutorService executorService2 = Executors.newSingleThreadExecutor();
 
 			AProcess p1 = new AProcess("java", "-version");
 			AProcess p2 = new AProcess("java", "-version");
@@ -33,8 +31,8 @@ public class RunProcess {
 			p1.setInheritIO(true);
 			p2.setInheritIO(true);
 
-			ProcessExecutionDetails<IntegerTransfer, IntegerTransfer> pExec1 = new ProcessExecutionDetails<>(p1);
-			ProcessExecutionDetails<IntegerTransfer, IntegerTransfer> pExec2 = new ProcessExecutionDetails<>(p2);
+			ProcessExecutionDetails pExec1 = new ProcessExecutionDetails(p1);
+			ProcessExecutionDetails pExec2 = new ProcessExecutionDetails(p2);
 			
 			// Binder section			
 			ExitCodeBinder b1 = new ExitCodeBinder(pExec1, new ConcurrentLinkedQueueSubscriber<>(), new ConcurrentLinkedQueuePublisher<>());
@@ -49,13 +47,12 @@ public class RunProcess {
 			
 			logger.debug("Executing somes...");
 			
+			pExecutor.execute(executorService, pExec1);
 			pExecutor.execute(executorService, b1);
-			pExecutor.execute(executorService2, pExec1);
-			pExecutor.execute(executorService2, pExec2);
+			pExecutor.execute(executorService, pExec2);
 			pExecutor.execute(executorService, b2);
 			
 			executorService.shutdown();
-			executorService2.shutdown();
 
 			printStreams(pExec1);
 			printStreams(pExec2);
@@ -65,7 +62,7 @@ public class RunProcess {
 		}
 	}
 
-	public static void printStreams(ProcessExecutionDetails<?, ?> p)
+	public static void printStreams(ProcessExecutionDetails p)
 			throws IOException, InterruptedException, ExecutionException {
 		Process proc = p.getSystemProcess().get();
 
