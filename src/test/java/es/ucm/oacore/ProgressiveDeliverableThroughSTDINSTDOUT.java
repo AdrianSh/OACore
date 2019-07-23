@@ -27,48 +27,6 @@ public class ProgressiveDeliverableThroughSTDINSTDOUT {
 			ExecutorService executorService = Executors.newSingleThreadExecutor();
 			ExecutorService executorService2 = Executors.newSingleThreadExecutor();
 
-			
-			/*
-			 * ***************************************************************************
-			 * 
-			 * Progressive Deliverable through stdin stdout
-			 * 
-			 * ***************************************************************************
-			 * La ejecución de un proceso que lea de un fichero y lo escriba por consola
-			 * linea a linea progresivamente.
-			 * 
-			 * El binder de este proceso estaría ready y cada linea leida la sacaria por la
-			 * salida estandar.
-			 * 
-			 * 
-			 * El siguiente proceso recibiria estas lineas por su entrada estandar y las
-			 * escribiria en un fichero.
-			 * 
-			 * El binder de este tendría que esperar a estar ready (que estaría tan pronto
-			 * comience a recibir mensajes) [IDEA: initial count of messages for being
-			 * ready]
-			 * 
-			 * 
-			 * *****************************************************************************
-			 * 
-			 * Para saber cuando comienza... termina... el flujo de mensajes por la salida /
-			 * entrada estandar, debo poder manejarlos como FLUJOS en los que pueda
-			 * comprobar si siguen abierto... en el caso de que se termine terminar... sino
-			 * continuar... y asi...
-			 * 
-			 * 
-			 * El primer proceso seguira ejecutandose en paralelo mientras va generando
-			 * mensajes que pasara al otro...
-			 * 
-			 * El segundo proceso que leera de la entrada estandar debe saber como
-			 * terminar... (o matar el proceso) ¿Cuándo? Controlando como FLUJO para
-			 * comprobar de que ya se ha terminado de escribir en el anterior... En este
-			 * caso se puede comprobar directamente en el binder si no se puede en el flujo
-			 * directamente; ya que el productor del binder terminara (Complete)
-			 * 
-			 * 
-			 */
-
 			AProcess p1 = new AProcess("C:\\Program Files\\nodejs\\node.exe", "index.js", "read", "input0.txt");
 			p1.setWorkingDirectory(new File("C:\\Privado\\TFG\\Arnion-Processes\\File\\"));
 			AProcess p2 = new AProcess("C:\\\\Program Files\\\\nodejs\\\\node.exe", "index.js", "write", "output1.txt");
@@ -100,11 +58,11 @@ public class ProgressiveDeliverableThroughSTDINSTDOUT {
 			executorService2.execute(() -> {
 				try {
 					System.out.println("Al parecer no ha terminado el proceso 1");
-					// pExec1.getSystemProcess().get().getOutputStream().close();
-					printStreams(pExec1);
+				
+					// printStreams(pExec1);
 					System.out.println(pExec1.getSystemProcess().get().info());
 					// pExec1.getSystemProcess().get().destroy();
-				} catch (InterruptedException | ExecutionException | IOException e) {
+				} catch (InterruptedException | ExecutionException  e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

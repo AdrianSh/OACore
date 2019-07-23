@@ -1,6 +1,8 @@
 package es.jovenesadventistas.Arnion.Process.Binders;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -31,7 +33,16 @@ public class StdInBinder extends SplitBinder<StreamTransfer, StreamTransfer> {
 		this.futureReady.complete(true);
 		
 		try {
-			item.getData().getKey().transferTo(this.procExecDetails.getSystemProcess().get().getOutputStream());
+			InputStream in = item.getData().getKey();
+			OutputStream out = this.procExecDetails.getSystemProcess().get().getOutputStream();
+
+			byte[] result = in.readAllBytes();
+			
+			do {
+				out.write(result);
+				result = in.readAllBytes();
+			} while(result != null && result.length > 0);
+			
 			this.close();
 		} catch (IOException | InterruptedException | ExecutionException e) {
 			logger.error("Error while binding inputStream to the outputStream {} binder will stay open.", e);
@@ -68,7 +79,8 @@ public class StdInBinder extends SplitBinder<StreamTransfer, StreamTransfer> {
 	public void processOutput() throws InterruptedException, ExecutionException {
 		// Process output for this running process
 		logger.debug("Processing output...");
-		this.publisher.submit(new StreamTransfer(this.procExecDetails.getSystemProcess().get().getInputStream(), this.procExecDetails.getSystemProcess().get().getErrorStream()));
+		this.publisher.submit(new StreamTransfer(this.procExecDetails.getSystemProcess().get().getInputStream(),
+				this.procExecDetails.getSystemProcess().get().getErrorStream()));
 	}
 
 	@Override
