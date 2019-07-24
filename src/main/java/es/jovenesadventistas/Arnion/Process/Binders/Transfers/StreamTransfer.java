@@ -3,6 +3,8 @@ package es.jovenesadventistas.Arnion.Process.Binders.Transfers;
 import java.io.InputStream;
 import java.util.Map;
 
+import com.google.gson.Gson;
+
 public class StreamTransfer implements Transfer {
 	private InputStream inputStream, errorStream;
 
@@ -46,5 +48,10 @@ public class StreamTransfer implements Transfer {
 	@Override
 	public String toString() {
 		return "StreamTransfer [inputStream=" + inputStream + ", errorStream=" + errorStream + "]";
+	}
+
+	@Override
+	public Transfer parse(String json) {
+		return new Gson().fromJson(json, StreamTransfer.class);
 	}
 }

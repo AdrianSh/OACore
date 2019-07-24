@@ -7,7 +7,6 @@ import java.io.OutputStream;
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteSource;
 
-import es.jovenesadventistas.Arnion.Process.Binders.Binder;
 import es.jovenesadventistas.Arnion.Process.Binders.Transfers.StreamTransfer;
 import es.jovenesadventistas.Arnion.Process.Binders.Transfers.StringTransfer;
 

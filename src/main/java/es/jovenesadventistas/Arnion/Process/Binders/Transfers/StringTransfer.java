@@ -1,5 +1,7 @@
 package es.jovenesadventistas.Arnion.Process.Binders.Transfers;
 
+import com.google.gson.Gson;
+
 public class StringTransfer implements Transfer {
 	private String data;
 	
@@ -13,5 +15,11 @@ public class StringTransfer implements Transfer {
 
 	public void setData(String data) {
 		this.data = data;
+	}
+
+	@Override
+	public Transfer parse(String json) {
+		Gson gson = new Gson();
+		return gson.fromJson(json, StringTransfer.class);
 	}
 }

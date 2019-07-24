@@ -17,7 +17,7 @@ import es.jovenesadventistas.Arnion.Process.Binders.Subscribers.ConcurrentLinked
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecutor;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
 
-public class ProgressiveDeliverableThroughSTDINSTDOUT {
+public class ProcessBindSTDInOut {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
 
 	public static void main(String[] args) {
@@ -66,7 +66,6 @@ public class ProgressiveDeliverableThroughSTDINSTDOUT {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
 			});
 			
 
