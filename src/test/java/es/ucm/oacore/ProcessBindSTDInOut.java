@@ -11,7 +11,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.ByteSource;
 
 import es.jovenesadventistas.Arnion.Process.AProcess;
-import es.jovenesadventistas.Arnion.Process.Binders.StdInBinder;
+import es.jovenesadventistas.Arnion.Process.Binders.DirectStdInBinder;
 import es.jovenesadventistas.Arnion.Process.Binders.Publishers.ConcurrentLinkedQueuePublisher;
 import es.jovenesadventistas.Arnion.Process.Binders.Subscribers.ConcurrentLinkedQueueSubscriber;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecutor;
@@ -37,9 +37,9 @@ public class ProcessBindSTDInOut {
 			ProcessExecutionDetails pExec2 = new ProcessExecutionDetails(p2);
 			
 			// Binder section
-			StdInBinder b1 = new StdInBinder(pExec1, new ConcurrentLinkedQueueSubscriber<>(),
+			DirectStdInBinder b1 = new DirectStdInBinder(pExec1, new ConcurrentLinkedQueueSubscriber<>(),
 					new ConcurrentLinkedQueuePublisher<>());
-			StdInBinder b2 = new StdInBinder(pExec2, new ConcurrentLinkedQueueSubscriber<>(),
+			DirectStdInBinder b2 = new DirectStdInBinder(pExec2, new ConcurrentLinkedQueueSubscriber<>(),
 					new ConcurrentLinkedQueuePublisher<>());
 
 			// Join the output of the process 1 to the input of the process 2
