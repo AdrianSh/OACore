@@ -5,30 +5,31 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Flow.Subscriber;
+import java.util.concurrent.Flow.Subscription;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.Future;
+import java.util.concurrent.SubmissionPublisher;
 
-import es.jovenesadventistas.Arnion.Process.Binders.Publishers.ConcurrentLinkedQueuePublisher;
-import es.jovenesadventistas.Arnion.Process.Binders.Subscribers.ConcurrentLinkedQueueSubscriber;
 import es.jovenesadventistas.Arnion.Process.Binders.Transfers.StreamTransfer;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
 
-public class DirectStdInBinder extends SplitBinder<StreamTransfer, StreamTransfer> {
+public class DirectStdInBinder extends SubmissionPublisher<StreamTransfer> implements Binder, Subscriber<StreamTransfer> {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
-
+	
 	private ProcessExecutionDetails procExecDetails;
 	private CompletableFuture<Boolean> futureReady;
+	private AtomicBoolean ready;
+	private AtomicBoolean join;
+	private Subscription subscription;
 
-	public DirectStdInBinder(ProcessExecutionDetails procExecDetails,
-			ConcurrentLinkedQueueSubscriber<StreamTransfer> inputSubscriber,
-			ConcurrentLinkedQueuePublisher<StreamTransfer> outputPublisher) {
-		super(inputSubscriber, outputPublisher);
+	public DirectStdInBinder(ProcessExecutionDetails procExecDetails) {
 		this.procExecDetails = procExecDetails;
 		this.futureReady = new CompletableFuture<Boolean>();
 	}
 
 	@Override
 	public void onNext(StreamTransfer item) {
-		super.onNext(item);
 		this.ready.set(true);
 		this.futureReady.complete(true);
 		
@@ -56,7 +57,7 @@ public class DirectStdInBinder extends SplitBinder<StreamTransfer, StreamTransfe
 
 	@Override
 	public void run() {
-		logger.debug("StdIn binder running, {}", this.procExecDetails);
+		logger.debug("Direct StdIn binder running, {}", this.procExecDetails);
 		try {
 			this.processInput();
 			this.processOutput();
@@ -69,9 +70,9 @@ public class DirectStdInBinder extends SplitBinder<StreamTransfer, StreamTransfe
 	public void processInput() throws IOException {
 		// Process input for the already running process
 		logger.debug("Processing input...");
-		ConcurrentLinkedQueueSubscriber<StreamTransfer> subscriber = (ConcurrentLinkedQueueSubscriber<StreamTransfer>) this.subscriber;
-		if (subscriber.isSubscribed()) {
-			subscriber.requestOne();
+		
+		if (this.subscription != null) {
+			this.subscription.request(1L);
 		}
 	}
 
@@ -79,12 +80,50 @@ public class DirectStdInBinder extends SplitBinder<StreamTransfer, StreamTransfe
 	public void processOutput() throws InterruptedException, ExecutionException {
 		// Process output for this running process
 		logger.debug("Processing output...");
-		this.publisher.submit(new StreamTransfer(this.procExecDetails.getSystemProcess().get().getInputStream(),
+		super.submit(new StreamTransfer(this.procExecDetails.getSystemProcess().get().getInputStream(),
 				this.procExecDetails.getSystemProcess().get().getErrorStream()));
 	}
 
 	@Override
+	public void onSubscribe(Subscription subscription) {
+		this.subscription = subscription;
+	}
+
+	@Override
+	public void subscribe(Subscriber<? super StreamTransfer> subscriber) {
+		super.subscribe(subscriber);
+	}
+
+	@Override
+	public void onError(Throwable throwable) {
+		logger.error("An error ocurred while receiving a StreamTransfer for the StdIn.", throwable);
+	}
+
+	@Override
+	public void onComplete() {
+		// This could be useful for stop the reading of all the bytes from the stdin.
+		logger.debug("Complete... no more transfers to receive.");
+	}
+
+	@Override
+	public boolean ready() {
+		return this.ready.get();
+	}
+
+	@Override
+	public boolean joined() {
+		return this.join.get();
+	}
+
+	@Override
+	public void markAsReady() {
+		this.ready.set(true);
+		this.futureReady.complete(true);
+	}
+
+	@Override
 	public String toString() {
-		return "StdInBinder [procExecDetails=" + procExecDetails + ", futureReady=" + futureReady + "]";
+		return "DirectStdInBinder [procExecDetails=" + procExecDetails + ", futureReady=" + futureReady + ", ready="
+				+ ready + ", join=" + join + ", subscription=" + subscription + "]";
 	}
 }

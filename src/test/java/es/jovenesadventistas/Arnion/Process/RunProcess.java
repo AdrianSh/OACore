@@ -1,10 +1,12 @@
-package es.ucm.oacore;
+package es.jovenesadventistas.Arnion.Process;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import org.junit.jupiter.api.Test;
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteSource;
 
@@ -15,11 +17,16 @@ import es.jovenesadventistas.Arnion.Process.Binders.Subscribers.ConcurrentLinked
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecutor;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
 
+
 public class RunProcess {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger(RunProcess.class);
 	
+	@Test
+	void test() {
+		new RunProcess();
+	}
 	
-	public static void main(String[] args) {
+	public RunProcess() {
 
 		try {
 			ProcessExecutor pExecutor = ProcessExecutor.getInstance();

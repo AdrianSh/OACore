@@ -22,4 +22,10 @@ public class StringTransfer implements Transfer {
 		Gson gson = new Gson();
 		return gson.fromJson(json, StringTransfer.class);
 	}
+
+	@Override
+	public String toString() {
+		Gson gson = new Gson();
+		return gson.toJson(this);
+	}
 }

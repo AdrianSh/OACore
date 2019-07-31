@@ -1,31 +1,28 @@
 package es.jovenesadventistas.Arnion.Process.Binders;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStreamReader;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Flow.Publisher;
-import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.SubmissionPublisher;
 
-import es.jovenesadventistas.Arnion.Process.Binders.Transfers.StringCollectionTransfer;
-import es.jovenesadventistas.Arnion.Process.Binders.Transfers.Transfer;
+import es.jovenesadventistas.Arnion.Process.Binders.Transfers.StringTransfer;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
 
-public class StdInBinder extends SubmissionPublisher<StringCollectionTransfer> implements Binder {
+public class StdInBinder implements Binder {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
 
 	private ProcessExecutionDetails procExecDetails;
 	private CompletableFuture<Boolean> futureReady;
-	private Publisher<StringCollectionTransfer> publisher;
+	private SubmissionPublisher<StringTransfer> publisher;
 	private InputStream in;
 	private InputStream inError;
 
-	public StdInBinder(ProcessExecutionDetails procExecDetails, SubmissionPublisher<StringCollectionTransfer> publisher) {
-		this.publisher = publisher;
+	public StdInBinder(ProcessExecutionDetails procExecDetails, SubmissionPublisher<StringTransfer> publisher) {
 		this.procExecDetails = procExecDetails;
 		this.futureReady = new CompletableFuture<Boolean>();
+		this.publisher = publisher;
 	}
 
 	@Override
@@ -40,12 +37,20 @@ public class StdInBinder extends SubmissionPublisher<StringCollectionTransfer> i
 		/**
 		 * LEER CADA LINEA DE INPUT Y SUBMITEAR
 		 */
-		while(in.available() > 0) {
-			List<String> strs = new ArrayList<String>();
-			StringCollectionTransfer t = new StringCollectionTransfer(strs);
-			strs.add(in.)
-			submit(t);
+
+		try {
+			final BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				this.publisher.submit(new StringTransfer(line));
+				System.out.println(line);
+				System.out.println("----------------------------------------");
+			}
+			reader.close();
+		} catch (final Exception e) {
+			e.printStackTrace();
 		}
+
 	}
 
 	@Override
@@ -57,13 +62,7 @@ public class StdInBinder extends SubmissionPublisher<StringCollectionTransfer> i
 			logger.error("An error ocurred while processing input/output on the StdInBinder.", e);
 		}
 	}
-
-	@Override
-	public void subscribe(Subscriber<? super StringCollectionTransfer> subscriber) {
-		futureReady.complete(true);
-		this.publisher.subscribe(subscriber);
-	}
-
+	
 	@Override
 	public boolean ready() {
 		try {

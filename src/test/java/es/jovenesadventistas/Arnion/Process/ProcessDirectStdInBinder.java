@@ -1,4 +1,4 @@
-package es.ucm.oacore;
+package es.jovenesadventistas.Arnion.Process;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,20 +7,24 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.junit.jupiter.api.Test;
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteSource;
 
 import es.jovenesadventistas.Arnion.Process.AProcess;
-import es.jovenesadventistas.Arnion.Process.Binders.StdInBinder;
-import es.jovenesadventistas.Arnion.Process.Binders.Publishers.ConcurrentLinkedQueuePublisher;
-import es.jovenesadventistas.Arnion.Process.Binders.Subscribers.ConcurrentLinkedQueueSubscriber;
+import es.jovenesadventistas.Arnion.Process.Binders.DirectStdInBinder;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecutor;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
 
-public class ProcessBindSocket {
+public class ProcessDirectStdInBinder {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
 
-	public static void main(String[] args) {
+	@Test
+	void test() {
+		new ProcessDirectStdInBinder();		
+	}
+	
+	public ProcessDirectStdInBinder() {
 
 		try {
 			ProcessExecutor pExecutor = ProcessExecutor.getInstance();
@@ -37,10 +41,8 @@ public class ProcessBindSocket {
 			ProcessExecutionDetails pExec2 = new ProcessExecutionDetails(p2);
 			
 			// Binder section
-			StdInBinder b1 = new StdInBinder(pExec1, new ConcurrentLinkedQueueSubscriber<>(),
-					new ConcurrentLinkedQueuePublisher<>());
-			StdInBinder b2 = new StdInBinder(pExec2, new ConcurrentLinkedQueueSubscriber<>(),
-					new ConcurrentLinkedQueuePublisher<>());
+			DirectStdInBinder b1 = new DirectStdInBinder(pExec1);
+			DirectStdInBinder b2 = new DirectStdInBinder(pExec2);
 
 			// Join the output of the process 1 to the input of the process 2
 			b1.markAsReady();

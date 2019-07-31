@@ -1,4 +1,4 @@
-package es.ucm.oacore;
+package es.jovenesadventistas.Arnion.Process;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,19 +7,23 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteSource;
 
 import es.jovenesadventistas.Arnion.Process.AProcess;
-import es.jovenesadventistas.Arnion.Process.Binders.DirectStdInBinder;
+import es.jovenesadventistas.Arnion.Process.Binders.StdInBinder;
+import es.jovenesadventistas.Arnion.Process.Binders.StdOutBinder;
 import es.jovenesadventistas.Arnion.Process.Binders.Publishers.ConcurrentLinkedQueuePublisher;
-import es.jovenesadventistas.Arnion.Process.Binders.Subscribers.ConcurrentLinkedQueueSubscriber;
+import es.jovenesadventistas.Arnion.Process.Binders.Transfers.StringTransfer;
+import es.jovenesadventistas.Arnion.Process.Persistence.TransferService;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecutor;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
 
-public class ProcessBindSTDInOut {
+public class ProcessStdInBinder {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
-
+	
+	// public ProcessStdInBinder() {
 	public static void main(String[] args) {
 
 		try {
@@ -32,54 +36,58 @@ public class ProcessBindSTDInOut {
 			AProcess p2 = new AProcess("C:\\\\Program Files\\\\nodejs\\\\node.exe", "index.js", "write", "output1.txt");
 			p2.setWorkingDirectory(new File("C:\\Privado\\TFG\\Arnion-Processes\\File\\"));
 
-
 			ProcessExecutionDetails pExec1 = new ProcessExecutionDetails(p1);
 			ProcessExecutionDetails pExec2 = new ProcessExecutionDetails(p2);
-			
+
 			// Binder section
-			DirectStdInBinder b1 = new DirectStdInBinder(pExec1, new ConcurrentLinkedQueueSubscriber<>(),
-					new ConcurrentLinkedQueuePublisher<>());
-			DirectStdInBinder b2 = new DirectStdInBinder(pExec2, new ConcurrentLinkedQueueSubscriber<>(),
-					new ConcurrentLinkedQueuePublisher<>());
+			ConcurrentLinkedQueuePublisher<StringTransfer> pub1 = new ConcurrentLinkedQueuePublisher<StringTransfer>();
+			StdInBinder b1 = new StdInBinder(pExec1, pub1);
+
+			StdOutBinder b2 = new StdOutBinder(pExec2);
 
 			// Join the output of the process 1 to the input of the process 2
 			b1.markAsReady();
-			b1.subscribe(b2);
+			pub1.subscribe(b2);
 
 			pExec1.setBinder(b1);
 			pExec2.setBinder(b2);
 
 			logger.debug("Executing somes...");
-			
+
 			pExecutor.execute(executorService, pExec1);
 			pExecutor.execute(executorService, b1);
 			pExecutor.execute(executorService2, pExec2);
 			pExecutor.execute(executorService2, b2);
+
 			executorService2.execute(() -> {
 				try {
 					System.out.println("Al parecer no ha terminado el proceso 1");
-				
+
 					// printStreams(pExec1);
 					System.out.println(pExec1.getSystemProcess().get().info());
 					// pExec1.getSystemProcess().get().destroy();
-				} catch (InterruptedException | ExecutionException  e) {
+				} catch (InterruptedException | ExecutionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
+				TransferService.getInstance().close();
+				
 			});
-			
 
 			executorService.shutdown();
 			executorService2.shutdown();
-			
+
 			// printStreams(pExec1);
 			// printStreams(pExec2);
 
-		} catch (IOException e) { 
+		} catch (IOException e) {
 			logger.error("Error when running a process...", e);
 		}
-	}
+		
 	
+	}
+
 	public static void printStreams(ProcessExecutionDetails p)
 			throws IOException, InterruptedException, ExecutionException {
 		Process proc = p.getSystemProcess().get();

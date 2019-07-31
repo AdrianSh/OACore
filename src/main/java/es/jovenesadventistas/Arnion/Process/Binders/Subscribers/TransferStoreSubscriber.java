@@ -4,20 +4,15 @@ import java.io.IOException;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import es.jovenesadventistas.Arnion.Persistence.TransferBatch;
-import es.jovenesadventistas.Arnion.Persistence.TransferBatchService;
 import es.jovenesadventistas.Arnion.Process.Binders.Transfers.Transfer;
+import es.jovenesadventistas.Arnion.Process.Persistence.TransferStore;
 
-public class TransferBatchSubscriber<T extends Transfer> implements Subscriber<T> {
-	@Autowired
-	private TransferBatchService transferBatchService;
-	private TransferBatch tBatch;
+public class TransferStoreSubscriber<T extends Transfer> implements Subscriber<T> {
 	private Subscription subscription;
-
-	public TransferBatchSubscriber() {
-		this.tBatch = new TransferBatch();
+	private TransferStore<T> store;
+	
+	public TransferStoreSubscriber() {
+		this.store = new TransferStore<T>();
 	}
 
 	public void request(Long n) throws IOException {
@@ -36,7 +31,7 @@ public class TransferBatchSubscriber<T extends Transfer> implements Subscriber<T
 
 	@Override
 	public void onNext(T item) {
-		this.tBatch.addTransfer(item.toString());
+		this.store.add(item);
 	}
 
 	@Override
@@ -46,15 +41,12 @@ public class TransferBatchSubscriber<T extends Transfer> implements Subscriber<T
 
 	@Override
 	public void onComplete() {
-		this.transferBatchService.save(this.tBatch);
+		
 	}
 
-	public TransferBatch gettBatch() {
-		return tBatch;
+	public TransferStore<T> getStore() {
+		return this.store;
 	}
 
-	public void settBatch(TransferBatch tBatch) {
-		this.tBatch = tBatch;
-	}
 
 }
