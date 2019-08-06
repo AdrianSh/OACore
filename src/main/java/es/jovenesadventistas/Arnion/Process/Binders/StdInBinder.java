@@ -15,14 +15,16 @@ public class StdInBinder implements Binder {
 
 	private ProcessExecutionDetails procExecDetails;
 	private CompletableFuture<Boolean> futureReady;
-	private SubmissionPublisher<StringTransfer> publisher;
+	private SubmissionPublisher<StringTransfer> stdInPublisher, stdInErrorPublisher;
 	private InputStream in;
 	private InputStream inError;
 
-	public StdInBinder(ProcessExecutionDetails procExecDetails, SubmissionPublisher<StringTransfer> publisher) {
+	public StdInBinder(ProcessExecutionDetails procExecDetails, SubmissionPublisher<StringTransfer> stdInPublisher,
+			SubmissionPublisher<StringTransfer> stdInErrorPublisher) {
 		this.procExecDetails = procExecDetails;
 		this.futureReady = new CompletableFuture<Boolean>();
-		this.publisher = publisher;
+		this.stdInPublisher = stdInPublisher;
+		this.stdInErrorPublisher = stdInErrorPublisher;
 	}
 
 	@Override
@@ -34,23 +36,26 @@ public class StdInBinder implements Binder {
 
 	@Override
 	public void processOutput() throws Exception {
-		/**
-		 * LEER CADA LINEA DE INPUT Y SUBMITEAR
-		 */
+		this.readInputStream(this.in, this.stdInPublisher);
+		this.readInputStream(this.inError, this.stdInErrorPublisher);
+	}
 
+	private void readInputStream(InputStream in, SubmissionPublisher<StringTransfer> publisher) {
 		try {
-			final BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				this.publisher.submit(new StringTransfer(line));
-				System.out.println(line);
-				System.out.println("----------------------------------------");
+			if (in != null && publisher != null) {
+				final BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+				String line = null;
+				while ((line = reader.readLine()) != null) {
+					publisher.submit(new StringTransfer(line));
+				}
+				reader.close();
+				publisher.close();
+			} else {
+				logger.info("Cannot read from a null InputStream {}.", in);
 			}
-			reader.close();
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	@Override
@@ -62,7 +67,7 @@ public class StdInBinder implements Binder {
 			logger.error("An error ocurred while processing input/output on the StdInBinder.", e);
 		}
 	}
-	
+
 	@Override
 	public boolean ready() {
 		try {
@@ -87,4 +92,13 @@ public class StdInBinder implements Binder {
 	public void markAsReady() {
 		this.futureReady.complete(true);
 	}
+
+	@Override
+	public String toString() {
+		return "StdInBinder [procExecDetails=" + procExecDetails + ", futureReady=" + futureReady + ", stdInPublisher="
+				+ stdInPublisher + ", stdInErrorPublisher=" + stdInErrorPublisher + ", in=" + in + ", inError="
+				+ inError + "]";
+	}
+	
+	
 }

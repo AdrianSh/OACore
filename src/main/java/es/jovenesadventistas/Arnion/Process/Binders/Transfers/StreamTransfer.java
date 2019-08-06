@@ -1,20 +1,28 @@
 package es.jovenesadventistas.Arnion.Process.Binders.Transfers;
 
 import java.io.InputStream;
+import java.time.Instant;
 import java.util.Map;
 
 import com.google.gson.Gson;
 
 public class StreamTransfer implements Transfer {
+	private static long __id = 0;
+	private long id;
+	private long timeStampSeconds;
 	private InputStream inputStream, errorStream;
 
 	public StreamTransfer(InputStream inputStream, InputStream errorStream) {
 		this.inputStream = inputStream;
 		this.errorStream = errorStream;
+		this.timeStampSeconds = Instant.now().getEpochSecond();
+		this.id = ++StreamTransfer.__id;
 	}
 
 	public StreamTransfer(InputStream stream) {
 		this.inputStream = stream;
+		this.timeStampSeconds = Instant.now().getEpochSecond();
+		this.id = ++StreamTransfer.__id;
 	}
 
 	public Map.Entry<InputStream, InputStream> getData() {
@@ -43,6 +51,14 @@ public class StreamTransfer implements Transfer {
 
 	public void setData(InputStream stream) {
 		this.inputStream = stream;
+	}
+
+	public long getTimeStampSeconds() {
+		return this.timeStampSeconds;
+	}
+	
+	public long getId() {
+		return id;
 	}
 
 	@Override

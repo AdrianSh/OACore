@@ -27,6 +27,7 @@ public class ProcessStdInBinder {
 	public static void main(String[] args) {
 
 		try {
+			
 			ProcessExecutor pExecutor = ProcessExecutor.getInstance();
 			ExecutorService executorService = Executors.newSingleThreadExecutor();
 			ExecutorService executorService2 = Executors.newSingleThreadExecutor();
@@ -41,7 +42,7 @@ public class ProcessStdInBinder {
 
 			// Binder section
 			ConcurrentLinkedQueuePublisher<StringTransfer> pub1 = new ConcurrentLinkedQueuePublisher<StringTransfer>();
-			StdInBinder b1 = new StdInBinder(pExec1, pub1);
+			StdInBinder b1 = new StdInBinder(pExec1, pub1, null);
 
 			StdOutBinder b2 = new StdOutBinder(pExec2);
 

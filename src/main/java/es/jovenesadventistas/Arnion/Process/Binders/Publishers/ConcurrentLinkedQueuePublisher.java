@@ -3,10 +3,12 @@ package es.jovenesadventistas.Arnion.Process.Binders.Publishers;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.concurrent.Flow.Subscriber;
+import java.util.concurrent.Flow.Subscription;
 
 import es.jovenesadventistas.Arnion.Process.Binders.Transfers.Transfer;
 
-public class ConcurrentLinkedQueuePublisher<T extends Transfer> extends SubmissionPublisher<T> {
+public class ConcurrentLinkedQueuePublisher<T extends Transfer> extends SubmissionPublisher<T> implements Subscription {
+	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
 	private ConcurrentLinkedQueue<Subscriber<? super T>> subscribers;
 	
 	public ConcurrentLinkedQueuePublisher() {
@@ -14,6 +16,7 @@ public class ConcurrentLinkedQueuePublisher<T extends Transfer> extends Submissi
 	}
 
 	public void subscribe(Subscriber<? super T> subscriber) {
+		subscriber.onSubscribe(this);
 		this.subscribers.add(subscriber);
 	}
 	
@@ -21,7 +24,7 @@ public class ConcurrentLinkedQueuePublisher<T extends Transfer> extends Submissi
 		this.subscribers.forEach(c -> {
 			c.onNext(data);
 		});
-		return 0;
+		return 1;
 	}
 	
 	public void close() {
@@ -29,6 +32,16 @@ public class ConcurrentLinkedQueuePublisher<T extends Transfer> extends Submissi
 			c.onComplete();
 		});
 		this.subscribers.clear();
+	}
+
+	@Override
+	public void request(long n) {
+		logger.debug("{} requested.", n);
+	}
+
+	@Override
+	public void cancel() {
+		logger.debug("Cancel request.");
 	}
 
 }

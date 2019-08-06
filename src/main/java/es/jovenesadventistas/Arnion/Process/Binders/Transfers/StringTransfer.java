@@ -1,12 +1,21 @@
 package es.jovenesadventistas.Arnion.Process.Binders.Transfers;
 
+import java.time.Instant;
+
 import com.google.gson.Gson;
 
 public class StringTransfer implements Transfer {
+	private static long __id = 0;
+	private long id;
+	private long timeStampSeconds;
+	
 	private String data;
+	
 	
 	public StringTransfer(String data) {
 		this.setData(data);
+		this.timeStampSeconds = Instant.now().getEpochSecond();
+		this.id = ++StringTransfer.__id;
 	}
 
 	public String getData() {
@@ -15,6 +24,14 @@ public class StringTransfer implements Transfer {
 
 	public void setData(String data) {
 		this.data = data;
+	}
+	
+	public long getTimeStampSeconds() {
+		return this.timeStampSeconds;
+	}
+	
+	public long getId() {
+		return id;
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import es.jovenesadventistas.Arnion.Process.Binders.Transfers.StringTransfer;
 import es.jovenesadventistas.Arnion.Process.Persistence.TransferStore;
@@ -13,25 +14,41 @@ import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExec
 
 public class StdOutBinder implements Binder, Subscriber<StringTransfer> {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
-	
-	private TransferStore<StringTransfer> transferStore;
+
+	private TransferStore<StringTransfer> transfStore;
 	private ProcessExecutionDetails procExecDetails;
 	private CompletableFuture<Boolean> futureReady;
+	private AtomicBoolean transferingStore;
+	private CompletableFuture<Boolean> transferingStoreFlag;
 	private OutputStream out;
-	
+
 	@SuppressWarnings("unused")
 	private Subscription subscription;
 
 	public StdOutBinder(ProcessExecutionDetails procExecDetails) {
 		this.procExecDetails = procExecDetails;
 		this.futureReady = new CompletableFuture<Boolean>();
-		this.transferStore = new TransferStore<StringTransfer>();
+		this.transferingStore = new AtomicBoolean(false);
+		this.transferingStoreFlag = new CompletableFuture<Boolean>();
+		this.transfStore = new TransferStore<StringTransfer>();
 	}
 
 	@Override
 	public void processInput() throws Exception {
 		Process proc = this.procExecDetails.getSystemProcess().get();
 		this.out = proc.getOutputStream();
+		transferStore();
+	}
+
+	private void transferStore() throws IOException {
+		if (this.transfStore.size() > 0) {
+			this.transferingStore.set(true);
+			for (StringTransfer t : this.transfStore) {
+				this.out.write(t.getData().getBytes());
+			}
+			this.transfStore.clear();
+			this.transferingStoreFlag.complete(true);
+		}
 	}
 
 	@Override
@@ -83,14 +100,19 @@ public class StdOutBinder implements Binder, Subscriber<StringTransfer> {
 	@Override
 	public void onNext(StringTransfer item) {
 		if (this.out == null) {
-			this.transferStore.add(item);
+			this.transfStore.add(item);
 		} else {
 			try {
-				for (StringTransfer t : this.transferStore) {
-					this.out.write(t.toString().getBytes());
-				}
-				this.transferStore.clear();
-				this.out.write(item.toString().getBytes());
+				if (this.transferingStore.get())
+					try {
+						this.transferingStoreFlag.get();
+					} catch (InterruptedException | ExecutionException e) {
+						logger.error(
+								"Couldn't wait for the transfering of the String Transfer Store into the standard output stream.",
+								e);
+					}
+				this.out.write(item.getData().getBytes());
+
 			} catch (IOException e) {
 				logger.error("Couldn't write String Transfer into the standard output stream.", e);
 			}
@@ -104,11 +126,14 @@ public class StdOutBinder implements Binder, Subscriber<StringTransfer> {
 
 	@Override
 	public void onComplete() {
+		logger.debug("Complete.");
+		/*
 		try {
-			this.transferStore.clear();
+			this.transfStore.clear();
 			this.out.close();
 		} catch (IOException e) {
 			logger.error("Error while closing the standard output stream.", e);
 		}
+		*/
 	}
 }

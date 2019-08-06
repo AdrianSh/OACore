@@ -7,10 +7,11 @@ import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.concurrent.Flow.Subscriber;
+import java.util.concurrent.Flow.Subscription;
 
 import es.jovenesadventistas.Arnion.Process.Binders.Transfers.SocketTransfer;
 
-public class SocketServerPublisher<T extends SocketTransfer> extends SubmissionPublisher<T> {
+public class SocketServerPublisher<T extends SocketTransfer> extends SubmissionPublisher<T> implements Subscription {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
 	private ConcurrentHashMap<Subscriber<? super T>, Socket> subscribers;
 	private ServerSocket ss;
@@ -22,6 +23,7 @@ public class SocketServerPublisher<T extends SocketTransfer> extends SubmissionP
 
 	public void subscribe(Subscriber<? super T> subscriber) {
 		try {
+			subscriber.onSubscribe(this);
 			this.subscribers.put(subscriber, this.ss.accept());
 		} catch (IOException e) {
 			logger.error("An exception occurs when subscribing and waiting for the socket.", e);
@@ -40,11 +42,10 @@ public class SocketServerPublisher<T extends SocketTransfer> extends SubmissionP
 
 			s.onNext(data);
 		});
-		return 0;
+		return 1;
 	}
 
 	public void close() {
-
 		this.subscribers.forEach((c, socket) -> {
 			c.onComplete();
 			try {
@@ -62,4 +63,13 @@ public class SocketServerPublisher<T extends SocketTransfer> extends SubmissionP
 		this.subscribers.clear();
 	}
 
+	@Override
+	public void request(long n) {
+		logger.debug("{} requested.", n);
+	}
+
+	@Override
+	public void cancel() {
+		logger.debug("Cancel request.");
+	}
 }

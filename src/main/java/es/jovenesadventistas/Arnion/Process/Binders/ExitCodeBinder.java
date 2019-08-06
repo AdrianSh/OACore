@@ -65,5 +65,6 @@ public class ExitCodeBinder extends SplitBinder<IntegerTransfer, IntegerTransfer
 		int exitCode = this.procExecDetails.getExitCode().get().getExitCode();
 		logger.debug("Exit code {} of {}", exitCode, this.procExecDetails);
 		this.publisher.submit(new IntegerTransfer(exitCode));
+		this.publisher.close();
 	}
 }
