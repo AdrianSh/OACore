@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 import es.jovenesadventistas.Arnion.Process.Binders.Transfers.StringTransfer;
 import es.jovenesadventistas.Arnion.Process.Persistence.TransferStore;
@@ -21,8 +22,8 @@ public class StdOutBinder implements Binder, Subscriber<StringTransfer> {
 	private AtomicBoolean transferingStore;
 	private CompletableFuture<Boolean> transferingStoreFlag;
 	private OutputStream out;
-
-	@SuppressWarnings("unused")
+	// private InputStream in;
+	private Function<Void, Void> onFinishFunc;
 	private Subscription subscription;
 
 	public StdOutBinder(ProcessExecutionDetails procExecDetails) {
@@ -31,12 +32,16 @@ public class StdOutBinder implements Binder, Subscriber<StringTransfer> {
 		this.transferingStore = new AtomicBoolean(false);
 		this.transferingStoreFlag = new CompletableFuture<Boolean>();
 		this.transfStore = new TransferStore<StringTransfer>();
+		this.onFinishFunc = null;
+		this.out = null;
+		// this.in = null;
 	}
 
 	@Override
 	public void processInput() throws Exception {
 		Process proc = this.procExecDetails.getSystemProcess().get();
 		this.out = proc.getOutputStream();
+		// this.in = proc.getInputStream();
 		transferStore();
 	}
 
@@ -112,6 +117,9 @@ public class StdOutBinder implements Binder, Subscriber<StringTransfer> {
 								e);
 					}
 				this.out.write(item.getData().getBytes());
+				this.out.flush();
+				
+				logger.debug("Writting: {} on: {} of: {}", item.getData(), this.out, this.procExecDetails);
 
 			} catch (IOException e) {
 				logger.error("Couldn't write String Transfer into the standard output stream.", e);
@@ -127,6 +135,7 @@ public class StdOutBinder implements Binder, Subscriber<StringTransfer> {
 	@Override
 	public void onComplete() {
 		logger.debug("Complete.");
+		if(this.onFinishFunc != null) this.onFinishFunc.apply(null);
 		/*
 		try {
 			this.transfStore.clear();
@@ -135,5 +144,15 @@ public class StdOutBinder implements Binder, Subscriber<StringTransfer> {
 			logger.error("Error while closing the standard output stream.", e);
 		}
 		*/
+	}
+	
+	@Override
+	public void onFinish(Function<Void, Void> f) {
+		this.onFinishFunc = f;
+	}
+
+	@Override
+	public String toString() {
+		return "StdOutBinder [procExecDetails=" + procExecDetails + ", futureReady=" + futureReady + ", out=" + out + ", subscription=" + subscription + "]";
 	}
 }

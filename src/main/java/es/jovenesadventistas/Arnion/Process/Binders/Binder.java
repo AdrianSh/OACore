@@ -2,6 +2,7 @@ package es.jovenesadventistas.Arnion.Process.Binders;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.function.Function;
 
 public interface Binder extends Runnable {
 	public boolean ready();
@@ -29,4 +30,12 @@ public interface Binder extends Runnable {
 	 * @throws Exception
 	 */
 	abstract void processOutput() throws Exception;
+	
+	/**
+	 * If something needs to be executed when the binder has finished
+	 * @param <T>
+	 * @param <R>
+	 * @param f Function
+	 */
+	public void onFinish(Function<Void, Void> f);
 }

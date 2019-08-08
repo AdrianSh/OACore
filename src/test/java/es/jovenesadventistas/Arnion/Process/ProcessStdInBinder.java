@@ -78,6 +78,9 @@ public class ProcessStdInBinder {
 
 			executorService.shutdown();
 			executorService2.shutdown();
+			
+			
+			
 
 			// printStreams(pExec1);
 			// printStreams(pExec2);

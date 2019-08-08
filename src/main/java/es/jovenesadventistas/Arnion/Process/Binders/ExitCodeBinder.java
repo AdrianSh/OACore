@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.function.Function;
+
 import es.jovenesadventistas.Arnion.Process.Binders.Publishers.ConcurrentLinkedQueuePublisher;
 import es.jovenesadventistas.Arnion.Process.Binders.Subscribers.ConcurrentLinkedQueueSubscriber;
 import es.jovenesadventistas.Arnion.Process.Binders.Transfers.IntegerTransfer;
@@ -14,6 +16,7 @@ public class ExitCodeBinder extends SplitBinder<IntegerTransfer, IntegerTransfer
 
 	private ProcessExecutionDetails procExecDetails;
 	private CompletableFuture<Boolean> futureReady;
+	private Function<Void, Void> onFinishFunc;
 
 	public ExitCodeBinder(ProcessExecutionDetails procExecDetails,
 			ConcurrentLinkedQueueSubscriber<IntegerTransfer> inputSubscriber,
@@ -21,6 +24,7 @@ public class ExitCodeBinder extends SplitBinder<IntegerTransfer, IntegerTransfer
 		super(inputSubscriber, outputPublisher);
 		this.procExecDetails = procExecDetails;
 		this.futureReady = new CompletableFuture<Boolean>();
+		this.onFinishFunc = null;
 	}
 
 	@Override
@@ -45,6 +49,7 @@ public class ExitCodeBinder extends SplitBinder<IntegerTransfer, IntegerTransfer
 		} catch (InterruptedException | ExecutionException | IOException e) {
 			logger.error("Error while binding exit codes.", e);
 		}
+		this.onFinishFunc.apply(null);
 	}
 
 	@Override
@@ -66,5 +71,16 @@ public class ExitCodeBinder extends SplitBinder<IntegerTransfer, IntegerTransfer
 		logger.debug("Exit code {} of {}", exitCode, this.procExecDetails);
 		this.publisher.submit(new IntegerTransfer(exitCode));
 		this.publisher.close();
+	}
+
+	@Override
+	public void onFinish(Function<Void, Void> f) {
+		this.onFinishFunc = f;
+	}
+
+	@Override
+	public String toString() {
+		return "ExitCodeBinder [procExecDetails=" + procExecDetails + ", futureReady=" + futureReady + ", onFinishFunc="
+				+ onFinishFunc + "]";
 	}
 }

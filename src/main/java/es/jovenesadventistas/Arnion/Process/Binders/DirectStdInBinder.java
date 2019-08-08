@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 import java.util.concurrent.Future;
 import java.util.concurrent.SubmissionPublisher;
 
@@ -22,10 +23,12 @@ public class DirectStdInBinder extends SubmissionPublisher<StreamTransfer> imple
 	private AtomicBoolean ready;
 	private AtomicBoolean join;
 	private Subscription subscription;
+	private Function<Void, Void> onFinishFunc;
 
 	public DirectStdInBinder(ProcessExecutionDetails procExecDetails) {
 		this.procExecDetails = procExecDetails;
 		this.futureReady = new CompletableFuture<Boolean>();
+		this.onFinishFunc = null;
 	}
 
 	@Override
@@ -45,6 +48,8 @@ public class DirectStdInBinder extends SubmissionPublisher<StreamTransfer> imple
 			} while(result != null && result.length > 0);
 			
 			this.close();
+			this.onFinishFunc.apply(null);
+			
 		} catch (IOException | InterruptedException | ExecutionException e) {
 			logger.error("Error while binding inputStream to the outputStream {} binder will stay open.", e);
 		}
@@ -120,10 +125,17 @@ public class DirectStdInBinder extends SubmissionPublisher<StreamTransfer> imple
 		this.ready.set(true);
 		this.futureReady.complete(true);
 	}
+	
+	@Override
+	public void onFinish(Function<Void, Void> f) {
+		this.onFinishFunc = f;
+	}
 
 	@Override
 	public String toString() {
 		return "DirectStdInBinder [procExecDetails=" + procExecDetails + ", futureReady=" + futureReady + ", ready="
 				+ ready + ", join=" + join + ", subscription=" + subscription + "]";
 	}
+
+	
 }

@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.SubmissionPublisher;
+import java.util.function.Function;
 
 import es.jovenesadventistas.Arnion.Process.Binders.Transfers.StringTransfer;
 import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
@@ -18,6 +19,7 @@ public class StdInBinder implements Binder {
 	private SubmissionPublisher<StringTransfer> stdInPublisher, stdInErrorPublisher;
 	private InputStream in;
 	private InputStream inError;
+	private Function<Void, Void> onFinishFunc;
 
 	public StdInBinder(ProcessExecutionDetails procExecDetails, SubmissionPublisher<StringTransfer> stdInPublisher,
 			SubmissionPublisher<StringTransfer> stdInErrorPublisher) {
@@ -25,6 +27,7 @@ public class StdInBinder implements Binder {
 		this.futureReady = new CompletableFuture<Boolean>();
 		this.stdInPublisher = stdInPublisher;
 		this.stdInErrorPublisher = stdInErrorPublisher;
+		this.onFinishFunc = null;
 	}
 
 	@Override
@@ -38,6 +41,8 @@ public class StdInBinder implements Binder {
 	public void processOutput() throws Exception {
 		this.readInputStream(this.in, this.stdInPublisher);
 		this.readInputStream(this.inError, this.stdInErrorPublisher);
+		if (this.onFinishFunc != null)
+			this.onFinishFunc.apply(null);
 	}
 
 	private void readInputStream(InputStream in, SubmissionPublisher<StringTransfer> publisher) {
@@ -94,11 +99,14 @@ public class StdInBinder implements Binder {
 	}
 
 	@Override
+	public void onFinish(Function<Void, Void> f) {
+		this.onFinishFunc = f;
+	}
+
+	@Override
 	public String toString() {
 		return "StdInBinder [procExecDetails=" + procExecDetails + ", futureReady=" + futureReady + ", stdInPublisher="
 				+ stdInPublisher + ", stdInErrorPublisher=" + stdInErrorPublisher + ", in=" + in + ", inError="
 				+ inError + "]";
 	}
-	
-	
 }
