@@ -11,16 +11,17 @@ public class User {
 
 	@Indexed(unique = true)
 	private String username;
+	
 	private String roles; // split by , to separate roles
 	private boolean enabled = true;
 	private String password;
 	private String name;
-	private String lname;
+	private String surname;
 	private String email;
 	private String avatar = "http://lorempixel.com/100/100/people/10/";
 	private String profileBackground = "http://lorempixel.com/100/100/people/10/";
-	private String preguntaDeSeguridad;
-	private String respuestaDeSeguridad;
+	private String securityQuestion;
+	private String securityAnswer;
 
 	// @DBRef  // It will be eager loaded private List<Actividad> activities;
 
@@ -29,17 +30,17 @@ public class User {
 
 	// @PersistenceConstructor public User(String username, String roles, String password, String name) USE LITERAL NAMES 
 	
-	public static User createUser(String login, String pass, String roles, String nombre, String apellido, String email,
-			String preguntaDeSeguridad, String respuestaDeSeguridad) {
+	public static User createUser(String username, String password, String roles, String name, String surname, String email,
+			String securityQuestion, String securityAnswer) {
 		User u = new User();
-		u.username = Encode.forHtmlContent(login);
-		u.password = pass; // Encode.forHtmlContent(pass));
+		u.username = Encode.forHtmlContent(username);
+		u.password = password; // Encode.forHtmlContent(pass));
 		u.roles = Encode.forHtmlContent(roles);
-		u.name = Encode.forHtmlContent(nombre);
+		u.name = Encode.forHtmlContent(name);
 		u.email = Encode.forHtmlContent(email);
-		u.lname = Encode.forHtmlContent(apellido);
-		u.preguntaDeSeguridad = Encode.forHtmlContent(preguntaDeSeguridad);
-		u.respuestaDeSeguridad = Encode.forHtmlContent(respuestaDeSeguridad);
+		u.surname = Encode.forHtmlContent(surname);
+		u.securityQuestion = Encode.forHtmlContent(securityQuestion);
+		u.securityAnswer = Encode.forHtmlContent(securityAnswer);
 		u.enabled = true;
 		return u;
 	}
@@ -118,11 +119,11 @@ public class User {
 	}
 
 	public String getLname() {
-		return lname;
+		return surname;
 	}
 
 	public void setLname(String lname) {
-		this.lname = lname;
+		this.surname = lname;
 	}
 
 	public String getEmail() {
@@ -150,19 +151,19 @@ public class User {
 	}
 
 	public String getPreguntaDeSeguridad() {
-		return preguntaDeSeguridad;
+		return securityQuestion;
 	}
 
 	public void setPreguntaDeSeguridad(String preguntaDeSeguridad) {
-		this.preguntaDeSeguridad = preguntaDeSeguridad;
+		this.securityQuestion = preguntaDeSeguridad;
 	}
 
 	public String getRespuestaDeSeguridad() {
-		return respuestaDeSeguridad;
+		return securityAnswer;
 	}
 
 	public void setRespuestaDeSeguridad(String respuestaDeSeguridad) {
-		this.respuestaDeSeguridad = respuestaDeSeguridad;
+		this.securityAnswer = respuestaDeSeguridad;
 	}
 
 	public boolean getEnabled() {
