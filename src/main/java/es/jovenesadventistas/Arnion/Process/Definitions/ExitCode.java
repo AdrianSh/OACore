@@ -1,4 +1,4 @@
-package es.jovenesadventistas.Arnion.Process.Definitions;
+package es.jovenesadventistas.arnion.process.definitions;
 
 
 public class ExitCode extends Exception {

@@ -1,11 +1,11 @@
-package es.jovenesadventistas.Arnion.Process.Binders.Subscribers;
+package es.jovenesadventistas.arnion.process.binders.Subscribers;
 
 import java.io.IOException;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 
-import es.jovenesadventistas.Arnion.Process.Binders.Transfers.Transfer;
-import es.jovenesadventistas.Arnion.Process.Persistence.TransferStore;
+import es.jovenesadventistas.arnion.process.binders.Transfers.Transfer;
+import es.jovenesadventistas.arnion.process.persistence.TransferStore;
 
 public class TransferStoreSubscriber<T extends Transfer> implements Subscriber<T> {
 	private Subscription subscription;

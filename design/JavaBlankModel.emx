@@ -28,46 +28,46 @@
           <children xmi:type="notation:ListCompartment" xmi:id="_RFv40K8LEemTuYfC7BGjsA" type="ANNOTATED_ATTRIBUTE_COMPARTMENT" showTitle="true"/>
           <children xmi:type="notation:ListCompartment" xmi:id="_RFv40a8LEemTuYfC7BGjsA" type="ANNOTATED_OPERATION_COMPARTMENT" showTitle="true">
             <children xmi:type="notation:BasicCompartment" xmi:id="_RbCzYK8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=AProcess%5Esign=(%255bQString;)V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=AProcess%5Esign=(%255bQString;)V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
             </children>
             <children xmi:type="notation:BasicCompartment" xmi:id="_RbCzYq8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=buildProcess%5Esign=()V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=buildProcess%5Esign=()V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
             </children>
             <children xmi:type="notation:BasicCompartment" xmi:id="_RbCzZK8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=execute%5Esign=()Qjava.lang.Process;%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=execute%5Esign=()Qjava.lang.Process;%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
             </children>
             <children xmi:type="notation:BasicCompartment" xmi:id="_RbCzZq8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=getCommand%5Esign=()QArrayList%3CQString;%3E;%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=getCommand%5Esign=()QArrayList%3CQString;%3E;%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
             </children>
             <children xmi:type="notation:BasicCompartment" xmi:id="_RbCzaK8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=setCommand%5Esign=(QArrayList%3CQString;%3E;)V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=setCommand%5Esign=(QArrayList%3CQString;%3E;)V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
             </children>
             <children xmi:type="notation:BasicCompartment" xmi:id="_RbCzaq8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=getWorkingDirectory%5Esign=()QFile;%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=getWorkingDirectory%5Esign=()QFile;%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
             </children>
             <children xmi:type="notation:BasicCompartment" xmi:id="_RbCzbK8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=setWorkingDirectory%5Esign=(QFile;)V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=setWorkingDirectory%5Esign=(QFile;)V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
             </children>
             <children xmi:type="notation:BasicCompartment" xmi:id="_RbMkYa8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=getModifiedEnvironment%5Esign=()QMap%3CQString;QString;%3E;%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=getModifiedEnvironment%5Esign=()QMap%3CQString;QString;%3E;%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
             </children>
             <children xmi:type="notation:BasicCompartment" xmi:id="_RbMkY68LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=setModifiedEnvironment%5Esign=(QMap%3CQString;QString;%3E;)V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=setModifiedEnvironment%5Esign=(QMap%3CQString;QString;%3E;)V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
             </children>
             <children xmi:type="notation:BasicCompartment" xmi:id="_RbMkZa8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=isInheritIO%5Esign=()Z%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=isInheritIO%5Esign=()Z%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
             </children>
             <children xmi:type="notation:BasicCompartment" xmi:id="_RbMkZ68LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=setInheritIO%5Esign=(Z)V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=setInheritIO%5Esign=(Z)V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
             </children>
             <children xmi:type="notation:BasicCompartment" xmi:id="_RbMkaa8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=toString%5Esign=()QString;%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=toString%5Esign=()QString;%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
             </children>
           </children>
           <children xmi:type="notation:SemanticListCompartment" xmi:id="_RV_URa8LEemTuYfC7BGjsA" type="TemplateCompartment">
-            <element xmi:type="uml:RedefinableTemplateSignature" href="mmi:///#jtsig%5Ename=AProcess%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.RedefinableTemplateSignature"/>
+            <element xmi:type="uml:RedefinableTemplateSignature" href="mmi:///#jtsig%5Ename=AProcess%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.RedefinableTemplateSignature"/>
           </children>
-          <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
+          <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
           <layoutConstraint xmi:type="notation:Bounds" xmi:id="_RBuUca8LEemTuYfC7BGjsA" x="9510" y="3170"/>
         </children>
         <element xsi:nil="true"/>
@@ -83,7 +83,7 @@
     <packagedElement xmi:type="uml:UseCase" xmi:id="_JBSq4KJtEem144s7M8tvgQ" name="Input"/>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_KmYZYKJtEem144s7M8tvgQ" name="Output"/>
     <packagedElement xmi:type="uml:InformationFlow" xmi:id="_uoFGAKJtEem144s7M8tvgQ" informationSource="_KmYZYKJtEem144s7M8tvgQ" informationTarget="_sOCFcKJtEem144s7M8tvgQ">
-      <conveyed xmi:type="uml:Interface" href="mmi:///#jsrctype%5Ename=Transfer%5Bjcu%5Ename=Transfer.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders.Transfers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Interface"/>
+      <conveyed xmi:type="uml:Interface" href="mmi:///#jsrctype%5Ename=Transfer%5Bjcu%5Ename=Transfer.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders.Transfers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Interface"/>
     </packagedElement>
     <packagedElement xmi:type="uml:Package" xmi:id="_f_rKQK42Eem2nftTHBfw1Q" name="Subscriber">
       <eAnnotations xmi:id="_f_0UMK42Eem2nftTHBfw1Q" source="uml2.diagrams" references="_f_0UMa42Eem2nftTHBfw1Q">
@@ -883,53 +883,53 @@
       <message xmi:id="_dUDcsboXEemCPKcEC-xgSQ" name="onFinish" messageSort="reply" receiveEvent="_dUEDwLoXEemCPKcEC-xgSQ" sendEvent="_dUDcsLoXEemCPKcEC-xgSQ" connector="_PPCEd6fcEem4KcUfFcIsQQ"/>
     </ownedBehavior>
     <ownedAttribute xmi:id="_S1HNkafMEemee54fztM9Wg" name="processExecutor">
-      <type xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=ProcessExecutor%5Bjcu%5Ename=ProcessExecutor.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.ProcessExecutor%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
+      <type xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=ProcessExecutor%5Bjcu%5Ename=ProcessExecutor.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process_executor%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
     </ownedAttribute>
     <ownedAttribute xmi:id="__9MP4KfMEemee54fztM9Wg" name="ExecutorService"/>
     <ownedAttribute xmi:id="_YuwA0afUEemee54fztM9Wg" name="processExecutionDetails">
-      <type xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=ProcessExecutionDetails%5Bjcu%5Ename=ProcessExecutionDetails.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
+      <type xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=ProcessExecutionDetails%5Bjcu%5Ename=ProcessExecutionDetails.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process_executor.ProcessExecution%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
     </ownedAttribute>
     <ownedAttribute xmi:id="_iTd4UafUEemee54fztM9Wg" name="aProcess">
-      <type xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
+      <type xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
     </ownedAttribute>
     <ownedAttribute xmi:id="_FF-N8KfVEemee54fztM9Wg" name="ProcessBuilder"/>
     <ownedAttribute xmi:id="__NpTMafVEemee54fztM9Wg" name="binder">
-      <type xmi:type="uml:Interface" href="mmi:///#jsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Interface"/>
+      <type xmi:type="uml:Interface" href="mmi:///#jsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Interface"/>
     </ownedAttribute>
   </packagedElement>
   <packagedElement xmi:type="uml:SendOperationEvent" xmi:id="_Yo_QsKfMEemee54fztM9Wg" name="SendOperationEvent1">
-    <operation href="mmi:///#jmethod%5Ename=execute%5Esign=(QExecutorService;QBinder;)V%5Bjsrctype%5Ename=ProcessExecutor%5Bjcu%5Ename=ProcessExecutor.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.ProcessExecutor%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+    <operation href="mmi:///#jmethod%5Ename=execute%5Esign=(QExecutorService;QBinder;)V%5Bjsrctype%5Ename=ProcessExecutor%5Bjcu%5Ename=ProcessExecutor.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process_executor%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
   </packagedElement>
   <packagedElement xmi:type="uml:ReceiveOperationEvent" xmi:id="_YpAe0KfMEemee54fztM9Wg" name="ReceiveOperationEvent1">
-    <operation href="mmi:///#jmethod%5Ename=execute%5Esign=(QExecutorService;QBinder;)V%5Bjsrctype%5Ename=ProcessExecutor%5Bjcu%5Ename=ProcessExecutor.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.ProcessExecutor%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+    <operation href="mmi:///#jmethod%5Ename=execute%5Esign=(QExecutorService;QBinder;)V%5Bjsrctype%5Ename=ProcessExecutor%5Bjcu%5Ename=ProcessExecutor.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process_executor%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
   </packagedElement>
   <packagedElement xmi:type="uml:SendOperationEvent" xmi:id="_jlD8sKfMEemee54fztM9Wg" name="SendOperationEvent2">
-    <operation href="mmi:///#jmethod%5Ename=execute%5Esign=(QExecutorService;QProcessExecutionDetails;)V%5Bjsrctype%5Ename=ProcessExecutor%5Bjcu%5Ename=ProcessExecutor.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.ProcessExecutor%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+    <operation href="mmi:///#jmethod%5Ename=execute%5Esign=(QExecutorService;QProcessExecutionDetails;)V%5Bjsrctype%5Ename=ProcessExecutor%5Bjcu%5Ename=ProcessExecutor.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process_executor%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
   </packagedElement>
   <packagedElement xmi:type="uml:ReceiveOperationEvent" xmi:id="_jlEjwKfMEemee54fztM9Wg" name="ReceiveOperationEvent2">
-    <operation href="mmi:///#jmethod%5Ename=execute%5Esign=(QExecutorService;QProcessExecutionDetails;)V%5Bjsrctype%5Ename=ProcessExecutor%5Bjcu%5Ename=ProcessExecutor.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.ProcessExecutor%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+    <operation href="mmi:///#jmethod%5Ename=execute%5Esign=(QExecutorService;QProcessExecutionDetails;)V%5Bjsrctype%5Ename=ProcessExecutor%5Bjcu%5Ename=ProcessExecutor.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process_executor%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
   </packagedElement>
   <packagedElement xmi:type="uml:SendOperationEvent" xmi:id="_anY9cKfUEemee54fztM9Wg" name="SendOperationEvent3">
-    <operation href="mmi:///#jmethod%5Ename=getProcess%5Esign=()QAProcess;%5Bjsrctype%5Ename=ProcessExecutionDetails%5Bjcu%5Ename=ProcessExecutionDetails.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+    <operation href="mmi:///#jmethod%5Ename=getProcess%5Esign=()QAProcess;%5Bjsrctype%5Ename=ProcessExecutionDetails%5Bjcu%5Ename=ProcessExecutionDetails.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process_executor.ProcessExecution%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
   </packagedElement>
   <packagedElement xmi:type="uml:ReceiveOperationEvent" xmi:id="_anY9cafUEemee54fztM9Wg" name="ReceiveOperationEvent3">
-    <operation href="mmi:///#jmethod%5Ename=getProcess%5Esign=()QAProcess;%5Bjsrctype%5Ename=ProcessExecutionDetails%5Bjcu%5Ename=ProcessExecutionDetails.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+    <operation href="mmi:///#jmethod%5Ename=getProcess%5Esign=()QAProcess;%5Bjsrctype%5Ename=ProcessExecutionDetails%5Bjcu%5Ename=ProcessExecutionDetails.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process_executor.ProcessExecution%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
   </packagedElement>
   <packagedElement xmi:type="uml:CreationEvent" xmi:id="_t35k0KfUEemee54fztM9Wg" name="CreationEvent1"/>
   <packagedElement xmi:type="uml:SendOperationEvent" xmi:id="_vAin4KfUEemee54fztM9Wg" name="SendOperationEvent4">
-    <operation href="mmi:///#jmethod%5Ename=AProcess%5Esign=(%255bQString;)V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+    <operation href="mmi:///#jmethod%5Ename=AProcess%5Esign=(%255bQString;)V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
   </packagedElement>
   <packagedElement xmi:type="uml:SendOperationEvent" xmi:id="_wtAwwKfUEemee54fztM9Wg" name="SendOperationEvent5">
-    <operation href="mmi:///#jmethod%5Ename=execute%5Esign=()Qjava.lang.Process;%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+    <operation href="mmi:///#jmethod%5Ename=execute%5Esign=()Qjava.lang.Process;%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
   </packagedElement>
   <packagedElement xmi:type="uml:ReceiveOperationEvent" xmi:id="_wtBX0KfUEemee54fztM9Wg" name="ReceiveOperationEvent4">
-    <operation href="mmi:///#jmethod%5Ename=execute%5Esign=()Qjava.lang.Process;%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+    <operation href="mmi:///#jmethod%5Ename=execute%5Esign=()Qjava.lang.Process;%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
   </packagedElement>
   <packagedElement xmi:type="uml:SendOperationEvent" xmi:id="_2kwAMKfUEemee54fztM9Wg" name="SendOperationEvent6">
-    <operation href="mmi:///#jmethod%5Ename=buildProcess%5Esign=()V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+    <operation href="mmi:///#jmethod%5Ename=buildProcess%5Esign=()V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
   </packagedElement>
   <packagedElement xmi:type="uml:ReceiveOperationEvent" xmi:id="_2kwnQKfUEemee54fztM9Wg" name="ReceiveOperationEvent5">
-    <operation href="mmi:///#jmethod%5Ename=buildProcess%5Esign=()V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+    <operation href="mmi:///#jmethod%5Ename=buildProcess%5Esign=()V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
   </packagedElement>
   <packagedElement xmi:type="uml:Package" xmi:id="_IwtoEKfaEemee54fztM9Wg" name="ProcessDataBinding">
     <eAnnotations xmi:id="_Iw2yAKfaEemee54fztM9Wg" source="uml2.diagrams">
@@ -1129,22 +1129,22 @@
     </packagedElement>
   </packagedElement>
   <packagedElement xmi:type="uml:SendOperationEvent" xmi:id="_P06_wKfcEem4KcUfFcIsQQ" name="SendOperationEvent7">
-    <operation href="mmi:///#jmethod%5Ename=processInput%5Esign=()V%5Bjsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+    <operation href="mmi:///#jmethod%5Ename=processInput%5Esign=()V%5Bjsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
   </packagedElement>
   <packagedElement xmi:type="uml:ReceiveOperationEvent" xmi:id="_P06_wafcEem4KcUfFcIsQQ" name="ReceiveOperationEvent6">
-    <operation href="mmi:///#jmethod%5Ename=processInput%5Esign=()V%5Bjsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+    <operation href="mmi:///#jmethod%5Ename=processInput%5Esign=()V%5Bjsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
   </packagedElement>
   <packagedElement xmi:type="uml:SendOperationEvent" xmi:id="_Q5QKkKfcEem4KcUfFcIsQQ" name="SendOperationEvent8">
-    <operation href="mmi:///#jmethod%5Ename=processOutput%5Esign=()V%5Bjsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+    <operation href="mmi:///#jmethod%5Ename=processOutput%5Esign=()V%5Bjsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
   </packagedElement>
   <packagedElement xmi:type="uml:ReceiveOperationEvent" xmi:id="_Q5QKkafcEem4KcUfFcIsQQ" name="ReceiveOperationEvent7">
-    <operation href="mmi:///#jmethod%5Ename=processOutput%5Esign=()V%5Bjsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+    <operation href="mmi:///#jmethod%5Ename=processOutput%5Esign=()V%5Bjsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
   </packagedElement>
   <packagedElement xmi:type="uml:SendOperationEvent" xmi:id="_eAXwILoXEemCPKcEC-xgSQ" name="SendOperationEvent9">
-    <operation href="mmi:///#jmethod%5Ename=onFinish%5Esign=(QFunction%3CQVoid;QVoid;%3E;)V%5Bjsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+    <operation href="mmi:///#jmethod%5Ename=onFinish%5Esign=(QFunction%3CQVoid;QVoid;%3E;)V%5Bjsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
   </packagedElement>
   <packagedElement xmi:type="uml:ReceiveOperationEvent" xmi:id="_eAYXMLoXEemCPKcEC-xgSQ" name="ReceiveOperationEvent8">
-    <operation href="mmi:///#jmethod%5Ename=onFinish%5Esign=(QFunction%3CQVoid;QVoid;%3E;)V%5Bjsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
+    <operation href="mmi:///#jmethod%5Ename=onFinish%5Esign=(QFunction%3CQVoid;QVoid;%3E;)V%5Bjsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
   </packagedElement>
   <profileApplication xmi:id="_KPFF9aJoEemlwLnqn7IqcA">
     <eAnnotations xmi:id="_KPFF9qJoEemlwLnqn7IqcA" source="http://www.eclipse.org/uml2/2.0.0/UML">

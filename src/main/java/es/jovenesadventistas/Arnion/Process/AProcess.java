@@ -1,7 +1,7 @@
 /**
  * 
  */
-package es.jovenesadventistas.Arnion.Process;
+package es.jovenesadventistas.arnion.process;
 
 import java.io.File;
 import java.io.IOException;

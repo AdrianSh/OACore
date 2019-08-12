@@ -1,4 +1,4 @@
-package es.jovenesadventistas.Arnion;
+package es.jovenesadventistas.arnion;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

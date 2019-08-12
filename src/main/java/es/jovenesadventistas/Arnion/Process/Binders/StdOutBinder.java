@@ -1,4 +1,4 @@
-package es.jovenesadventistas.Arnion.Process.Binders;
+package es.jovenesadventistas.arnion.process.binders;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -9,9 +9,9 @@ import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
-import es.jovenesadventistas.Arnion.Process.Binders.Transfers.StringTransfer;
-import es.jovenesadventistas.Arnion.Process.Persistence.TransferStore;
-import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process.binders.Transfers.StringTransfer;
+import es.jovenesadventistas.arnion.process.persistence.TransferStore;
 
 public class StdOutBinder implements Binder, Subscriber<StringTransfer> {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();

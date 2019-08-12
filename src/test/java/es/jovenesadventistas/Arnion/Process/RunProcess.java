@@ -1,4 +1,4 @@
-package es.jovenesadventistas.Arnion.Process;
+package es.jovenesadventistas.arnion.process;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,12 +10,12 @@ import org.junit.jupiter.api.Test;
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteSource;
 
-import es.jovenesadventistas.Arnion.Process.AProcess;
-import es.jovenesadventistas.Arnion.Process.Binders.ExitCodeBinder;
-import es.jovenesadventistas.Arnion.Process.Binders.Publishers.ConcurrentLinkedQueuePublisher;
-import es.jovenesadventistas.Arnion.Process.Binders.Subscribers.ConcurrentLinkedQueueSubscriber;
-import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecutor;
-import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process_executor.ProcessExecutor;
+import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process.AProcess;
+import es.jovenesadventistas.arnion.process.binders.ExitCodeBinder;
+import es.jovenesadventistas.arnion.process.binders.Publishers.ConcurrentLinkedQueuePublisher;
+import es.jovenesadventistas.arnion.process.binders.Subscribers.ConcurrentLinkedQueueSubscriber;
 
 
 public class RunProcess {

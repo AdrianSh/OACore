@@ -1,4 +1,4 @@
-package es.jovenesadventistas.Arnion.Process;
+package es.jovenesadventistas.arnion.process;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test;
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteSource;
 
-import es.jovenesadventistas.Arnion.Process.AProcess;
-import es.jovenesadventistas.Arnion.Process.Binders.DirectStdInBinder;
-import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecutor;
-import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process_executor.ProcessExecutor;
+import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process.AProcess;
+import es.jovenesadventistas.arnion.process.binders.DirectStdInBinder;
 
 public class ProcessDirectStdInBinder {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();

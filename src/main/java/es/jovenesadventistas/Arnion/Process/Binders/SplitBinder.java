@@ -1,11 +1,11 @@
-package es.jovenesadventistas.Arnion.Process.Binders;
+package es.jovenesadventistas.arnion.process.binders;
 
 import java.util.concurrent.SubmissionPublisher;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import es.jovenesadventistas.Arnion.Process.Binders.Transfers.Transfer;
+import es.jovenesadventistas.arnion.process.binders.Transfers.Transfer;
 
 /**
  * This binder uses an Implementation of a Subscriber<T> and Publisher<S> of different types of deliverables.

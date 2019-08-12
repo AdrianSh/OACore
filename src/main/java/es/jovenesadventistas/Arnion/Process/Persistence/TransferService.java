@@ -1,4 +1,4 @@
-package es.jovenesadventistas.Arnion.Process.Persistence;
+package es.jovenesadventistas.arnion.process.persistence;
 
 import org.bson.Document;
 
@@ -8,7 +8,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
-import es.jovenesadventistas.Arnion.Process.Binders.Transfers.Transfer;
+
+import es.jovenesadventistas.arnion.process.binders.Transfers.Transfer;
 
 public class TransferService {
 	private static TransferService instance;

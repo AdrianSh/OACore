@@ -1,4 +1,4 @@
-package es.jovenesadventistas.Arnion.Process.Binders.Transfers;
+package es.jovenesadventistas.arnion.process.binders.Transfers;
 
 import java.io.InputStream;
 import java.time.Instant;

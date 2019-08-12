@@ -1,4 +1,4 @@
-package es.jovenesadventistas.Arnion.Process.Binders.Publishers;
+package es.jovenesadventistas.arnion.process.binders.Publishers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,7 +10,7 @@ import java.util.concurrent.Flow.Publisher;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 
-import es.jovenesadventistas.Arnion.Process.Binders.Transfers.StringTransfer;
+import es.jovenesadventistas.arnion.process.binders.Transfers.StringTransfer;
 
 public class SocketListenerPublisher implements Publisher<StringTransfer>, Subscription, Runnable {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();

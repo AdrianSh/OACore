@@ -16,7 +16,7 @@
     <children xmi:type="notation:ListCompartment" xmi:id="_z-k4UKJnEemlwLnqn7IqcA" visible="false" type="ANNOTATION_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_z-nUkKJnEemlwLnqn7IqcA" type="ANNOTATED_ATTRIBUTE_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_z-pJwKJnEemlwLnqn7IqcA" type="ANNOTATED_OPERATION_COMPARTMENT"/>
-    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
+    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
     <layoutConstraint xmi:type="notation:Bounds" xmi:id="_z-QIMaJnEemlwLnqn7IqcA" x="22507" y="25043"/>
   </children>
   <children xmi:type="umlnotation:UMLShape" xmi:id="_2prMoKJnEemlwLnqn7IqcA" fontName="Segoe UI" fontHeight="8" transparency="0" lineColor="14263149" lineWidth="1" showStereotype="Label">
@@ -29,7 +29,7 @@
     <children xmi:type="notation:ListCompartment" xmi:id="_2pto4aJnEemlwLnqn7IqcA" visible="false" type="ANNOTATION_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2puP8KJnEemlwLnqn7IqcA" type="ANNOTATED_ATTRIBUTE_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2puP8aJnEemlwLnqn7IqcA" type="ANNOTATED_OPERATION_COMPARTMENT"/>
-    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=StringTransfer%5Bjcu%5Ename=StringTransfer.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders.Transfers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
+    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=StringTransfer%5Bjcu%5Ename=StringTransfer.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders.Transfers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
     <layoutConstraint xmi:type="notation:Bounds" xmi:id="_2prMoaJnEemlwLnqn7IqcA" x="13314" y="11412"/>
   </children>
   <children xmi:type="umlnotation:UMLClassifierShape" xmi:id="_2pwsMKJnEemlwLnqn7IqcA" fontName="Segoe UI" fontHeight="8" transparency="0" lineColor="14263149" lineWidth="1" showStereotype="Label" useClassifierShape="true">
@@ -43,7 +43,7 @@
     <children xmi:type="notation:SemanticListCompartment" xmi:id="_2p0WkqJnEemlwLnqn7IqcA" type="AttributeCompartment"/>
     <children xmi:type="notation:SemanticListCompartment" xmi:id="_2p09oKJnEemlwLnqn7IqcA" type="OperationCompartment"/>
     <children xmi:type="notation:SemanticListCompartment" xmi:id="_2p2y0KJnEemlwLnqn7IqcA" visible="false" type="SignalCompartment"/>
-    <element xmi:type="uml:Interface" href="mmi:///#jsrctype%5Ename=Transfer%5Bjcu%5Ename=Transfer.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders.Transfers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Interface"/>
+    <element xmi:type="uml:Interface" href="mmi:///#jsrctype%5Ename=Transfer%5Bjcu%5Ename=Transfer.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders.Transfers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Interface"/>
     <layoutConstraint xmi:type="notation:Bounds" xmi:id="_2pxTQKJnEemlwLnqn7IqcA" x="16484" y="20288"/>
   </children>
   <children xmi:type="umlnotation:UMLShape" xmi:id="_2p3Z4KJnEemlwLnqn7IqcA" fontName="Segoe UI" fontHeight="8" transparency="0" lineColor="14263149" lineWidth="1" showStereotype="Label">
@@ -56,7 +56,7 @@
     <children xmi:type="notation:ListCompartment" xmi:id="_2p4oA6JnEemlwLnqn7IqcA" visible="false" type="ANNOTATION_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2p5PEKJnEemlwLnqn7IqcA" type="ANNOTATED_ATTRIBUTE_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2p5PEaJnEemlwLnqn7IqcA" type="ANNOTATED_OPERATION_COMPARTMENT"/>
-    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=ConcurrentLinkedQueuePublisher%5Bjcu%5Ename=ConcurrentLinkedQueuePublisher.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders.Publishers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
+    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=ConcurrentLinkedQueuePublisher%5Bjcu%5Ename=ConcurrentLinkedQueuePublisher.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders.Publishers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
     <layoutConstraint xmi:type="notation:Bounds" xmi:id="_2p3Z4aJnEemlwLnqn7IqcA" x="14582" y="27262"/>
   </children>
   <children xmi:type="umlnotation:UMLShape" xmi:id="_2p52IKJnEemlwLnqn7IqcA" fontName="Segoe UI" fontHeight="8" transparency="0" lineColor="14263149" lineWidth="1" showStereotype="Label">
@@ -69,7 +69,7 @@
     <children xmi:type="notation:ListCompartment" xmi:id="_2p7rUqJnEemlwLnqn7IqcA" visible="false" type="ANNOTATION_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2p8SYKJnEemlwLnqn7IqcA" type="ANNOTATED_ATTRIBUTE_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2p85cKJnEemlwLnqn7IqcA" type="ANNOTATED_OPERATION_COMPARTMENT"/>
-    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=IntegerTransfer%5Bjcu%5Ename=IntegerTransfer.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders.Transfers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
+    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=IntegerTransfer%5Bjcu%5Ename=IntegerTransfer.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders.Transfers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
     <layoutConstraint xmi:type="notation:Bounds" xmi:id="_2p52IaJnEemlwLnqn7IqcA" x="19020" y="11095"/>
   </children>
   <children xmi:type="umlnotation:UMLShape" xmi:id="_2p85caJnEemlwLnqn7IqcA" fontName="Segoe UI" fontHeight="8" transparency="0" lineColor="14263149" lineWidth="1" showStereotype="Label">
@@ -82,7 +82,7 @@
     <children xmi:type="notation:ListCompartment" xmi:id="_2p-Hk6JnEemlwLnqn7IqcA" visible="false" type="ANNOTATION_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2p-uoKJnEemlwLnqn7IqcA" type="ANNOTATED_ATTRIBUTE_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2p-uoaJnEemlwLnqn7IqcA" type="ANNOTATED_OPERATION_COMPARTMENT"/>
-    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=ProcessExecutor%5Bjcu%5Ename=ProcessExecutor.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.ProcessExecutor%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
+    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=ProcessExecutor%5Bjcu%5Ename=ProcessExecutor.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process_executor%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
     <layoutConstraint xmi:type="notation:Bounds" xmi:id="_2p85cqJnEemlwLnqn7IqcA" x="8242" y="26628"/>
   </children>
   <children xmi:type="umlnotation:UMLShape" xmi:id="_2p_VsKJnEemlwLnqn7IqcA" fontName="Segoe UI" fontHeight="8" transparency="0" lineColor="14263149" lineWidth="1" showStereotype="Label">
@@ -95,7 +95,7 @@
     <children xmi:type="notation:ListCompartment" xmi:id="_2p_8w6JnEemlwLnqn7IqcA" visible="false" type="ANNOTATION_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2qAj0KJnEemlwLnqn7IqcA" type="ANNOTATED_ATTRIBUTE_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2qAj0aJnEemlwLnqn7IqcA" type="ANNOTATED_OPERATION_COMPARTMENT"/>
-    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=ExitCodeBinder%5Bjcu%5Ename=ExitCodeBinder.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
+    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=ExitCodeBinder%5Bjcu%5Ename=ExitCodeBinder.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
     <layoutConstraint xmi:type="notation:Bounds" xmi:id="_2p_VsaJnEemlwLnqn7IqcA" x="5706" y="1585"/>
   </children>
   <children xmi:type="umlnotation:UMLShape" xmi:id="_2qAj0qJnEemlwLnqn7IqcA" fontName="Segoe UI" fontHeight="8" transparency="0" lineColor="14263149" lineWidth="1" showStereotype="Label">
@@ -108,7 +108,7 @@
     <children xmi:type="notation:ListCompartment" xmi:id="_2qBx8aJnEemlwLnqn7IqcA" visible="false" type="ANNOTATION_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2qBx8qJnEemlwLnqn7IqcA" type="ANNOTATED_ATTRIBUTE_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2qBx86JnEemlwLnqn7IqcA" type="ANNOTATED_OPERATION_COMPARTMENT"/>
-    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=ConcurrentLinkedQueueSubscriber%5Bjcu%5Ename=ConcurrentLinkedQueueSubscriber.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders.Subscribers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
+    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=ConcurrentLinkedQueueSubscriber%5Bjcu%5Ename=ConcurrentLinkedQueueSubscriber.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders.Subscribers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
     <layoutConstraint xmi:type="notation:Bounds" xmi:id="_2qAj06JnEemlwLnqn7IqcA" y="25043"/>
   </children>
   <children xmi:type="umlnotation:UMLShape" xmi:id="_2qCZAKJnEemlwLnqn7IqcA" fontName="Segoe UI" fontHeight="8" transparency="0" lineColor="14263149" lineWidth="1" showStereotype="Label">
@@ -121,7 +121,7 @@
     <children xmi:type="notation:ListCompartment" xmi:id="_2qDnIaJnEemlwLnqn7IqcA" visible="false" type="ANNOTATION_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2qEOMKJnEemlwLnqn7IqcA" type="ANNOTATED_ATTRIBUTE_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2qEOMaJnEemlwLnqn7IqcA" type="ANNOTATED_OPERATION_COMPARTMENT"/>
-    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=ExitCode%5Bjcu%5Ename=ExitCode.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Definitions%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
+    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=ExitCode%5Bjcu%5Ename=ExitCode.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.definitions%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
     <layoutConstraint xmi:type="notation:Bounds" xmi:id="_2qCZAaJnEemlwLnqn7IqcA" x="24409" y="7291"/>
   </children>
   <children xmi:type="umlnotation:UMLClassifierShape" xmi:id="_2qEOMqJnEemlwLnqn7IqcA" fontName="Segoe UI" fontHeight="8" transparency="0" lineColor="14263149" lineWidth="1" showStereotype="Label" useClassifierShape="true">
@@ -135,7 +135,7 @@
     <children xmi:type="notation:SemanticListCompartment" xmi:id="_2qGDYKJnEemlwLnqn7IqcA" type="AttributeCompartment"/>
     <children xmi:type="notation:SemanticListCompartment" xmi:id="_2qGDYaJnEemlwLnqn7IqcA" type="OperationCompartment"/>
     <children xmi:type="notation:SemanticListCompartment" xmi:id="_2qGDYqJnEemlwLnqn7IqcA" visible="false" type="SignalCompartment"/>
-    <element xmi:type="uml:Interface" href="mmi:///#jsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Interface"/>
+    <element xmi:type="uml:Interface" href="mmi:///#jsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Interface"/>
     <layoutConstraint xmi:type="notation:Bounds" xmi:id="_2qEOM6JnEemlwLnqn7IqcA" x="317" y="18703"/>
   </children>
   <children xmi:type="umlnotation:UMLShape" xmi:id="_2qGqcKJnEemlwLnqn7IqcA" fontName="Segoe UI" fontHeight="8" transparency="0" lineColor="14263149" lineWidth="1" showStereotype="Label">
@@ -148,7 +148,7 @@
     <children xmi:type="notation:ListCompartment" xmi:id="_2qH4kqJnEemlwLnqn7IqcA" visible="false" type="ANNOTATION_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2qIfoKJnEemlwLnqn7IqcA" type="ANNOTATED_ATTRIBUTE_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2qIfoaJnEemlwLnqn7IqcA" type="ANNOTATED_OPERATION_COMPARTMENT"/>
-    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=SplitBinder%5Bjcu%5Ename=SplitBinder.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
+    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=SplitBinder%5Bjcu%5Ename=SplitBinder.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
     <layoutConstraint xmi:type="notation:Bounds" xmi:id="_2qGqcaJnEemlwLnqn7IqcA" x="1902" y="9193"/>
   </children>
   <children xmi:type="umlnotation:UMLShape" xmi:id="_2qJGsKJnEemlwLnqn7IqcA" fontName="Segoe UI" fontHeight="8" transparency="0" lineColor="14263149" lineWidth="1" showStereotype="Label">
@@ -161,7 +161,7 @@
     <children xmi:type="notation:ListCompartment" xmi:id="_2qKU0aJnEemlwLnqn7IqcA" visible="false" type="ANNOTATION_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2qKU0qJnEemlwLnqn7IqcA" type="ANNOTATED_ATTRIBUTE_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2qK74KJnEemlwLnqn7IqcA" type="ANNOTATED_OPERATION_COMPARTMENT"/>
-    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=FileBinder%5Bjcu%5Ename=FileBinder.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
+    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=FileBinder%5Bjcu%5Ename=FileBinder.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
     <layoutConstraint xmi:type="notation:Bounds" xmi:id="_2qJGsaJnEemlwLnqn7IqcA"/>
   </children>
   <children xmi:type="umlnotation:UMLShape" xmi:id="_2qK74aJnEemlwLnqn7IqcA" fontName="Segoe UI" fontHeight="8" transparency="0" lineColor="14263149" lineWidth="1" showStereotype="Label">
@@ -174,7 +174,7 @@
     <children xmi:type="notation:ListCompartment" xmi:id="_2qMKAqJnEemlwLnqn7IqcA" visible="false" type="ANNOTATION_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2qMxEKJnEemlwLnqn7IqcA" type="ANNOTATED_ATTRIBUTE_COMPARTMENT"/>
     <children xmi:type="notation:ListCompartment" xmi:id="_2qMxEaJnEemlwLnqn7IqcA" type="ANNOTATED_OPERATION_COMPARTMENT"/>
-    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=ProcessExecutionDetails%5Bjcu%5Ename=ProcessExecutionDetails.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
+    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=ProcessExecutionDetails%5Bjcu%5Ename=ProcessExecutionDetails.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process_executor.ProcessExecution%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
     <layoutConstraint xmi:type="notation:Bounds" xmi:id="_2qK74qJnEemlwLnqn7IqcA" x="30432" y="7291"/>
   </children>
   <children xmi:type="umlnotation:UMLShape" xmi:id="_76nh0KJnEemlwLnqn7IqcA" fontName="Segoe UI" fontHeight="8" transparency="0" lineColor="14263149" lineWidth="1" showStereotype="Label">
@@ -197,7 +197,7 @@
       <children xmi:type="notation:BasicDecorationNode" xmi:id="_29SFI6JnEemlwLnqn7IqcA" type="Name"/>
       <layoutConstraint xmi:type="notation:Bounds" xmi:id="_29SFIaJnEemlwLnqn7IqcA" y="-186"/>
     </children>
-    <element xmi:type="uml:InterfaceRealization" href="mmi:///#jimpl%5Bjsrctype%5Ename=StringTransfer%5Bjcu%5Ename=StringTransfer.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders.Transfers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D%5Bjsrctype%5Ename=Transfer%5Bjcu%5Ename=Transfer.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders.Transfers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.InterfaceRealization"/>
+    <element xmi:type="uml:InterfaceRealization" href="mmi:///#jimpl%5Bjsrctype%5Ename=StringTransfer%5Bjcu%5Ename=StringTransfer.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders.Transfers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D%5Bjsrctype%5Ename=Transfer%5Bjcu%5Ename=Transfer.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders.Transfers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.InterfaceRealization"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_29Po4aJnEemlwLnqn7IqcA" points="[16, 102, -2330, -6157]$[16, 3212, -2330, -3047]$[2397, 3212, 51, -3047]$[2397, 6259, 51, 0]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3JofEKJnEemlwLnqn7IqcA" id="(0.5000242692742158,0.962818696883852)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3JptMKJnEemlwLnqn7IqcA" id="(0.3334532253747323,-1.8153586861735093E-15)"/>
@@ -208,7 +208,7 @@
       <children xmi:type="notation:BasicDecorationNode" xmi:id="_29TTQ6JnEemlwLnqn7IqcA" type="Name"/>
       <layoutConstraint xmi:type="notation:Bounds" xmi:id="_29TTQaJnEemlwLnqn7IqcA" y="-186"/>
     </children>
-    <element xmi:type="uml:InterfaceRealization" href="mmi:///#jimpl%5Bjsrctype%5Ename=IntegerTransfer%5Bjcu%5Ename=IntegerTransfer.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders.Transfers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D%5Bjsrctype%5Ename=Transfer%5Bjcu%5Ename=Transfer.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders.Transfers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.InterfaceRealization"/>
+    <element xmi:type="uml:InterfaceRealization" href="mmi:///#jimpl%5Bjsrctype%5Ename=IntegerTransfer%5Bjcu%5Ename=IntegerTransfer.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders.Transfers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D%5Bjsrctype%5Ename=Transfer%5Bjcu%5Ename=Transfer.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders.Transfers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.InterfaceRealization"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_29SsMaJnEemlwLnqn7IqcA" points="[40, 102, 2457, -5578]$[40, 2716, 2457, -2964]$[-2364, 2716, 53, -2964]$[-2364, 5680, 53, 0]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3JsJcKJnEemlwLnqn7IqcA" id="(0.5000232263513513,0.96987087517934)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3JswgKJnEemlwLnqn7IqcA" id="(0.6667865587080657,-1.8153586861735093E-15)"/>
@@ -219,7 +219,7 @@
       <children xmi:type="notation:BasicDecorationNode" xmi:id="_29UhY6JnEemlwLnqn7IqcA" type="Name"/>
       <layoutConstraint xmi:type="notation:Bounds" xmi:id="_29UhYaJnEemlwLnqn7IqcA" y="-186"/>
     </children>
-    <element xmi:type="uml:Generalization" href="mmi:///#jgen%5Bjsrctype%5Ename=ExitCodeBinder%5Bjcu%5Ename=ExitCodeBinder.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D%5Bjsrctype%5Ename=SplitBinder%5Bjcu%5Ename=SplitBinder.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Generalization"/>
+    <element xmi:type="uml:Generalization" href="mmi:///#jgen%5Bjsrctype%5Ename=ExitCodeBinder%5Bjcu%5Ename=ExitCodeBinder.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D%5Bjsrctype%5Ename=SplitBinder%5Bjcu%5Ename=SplitBinder.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Generalization"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_29T6UaJnEemlwLnqn7IqcA" points="[39, 103, 6628, -4612]$[39, 2836, 6628, -1879]$[-6548, 2836, 41, -1879]$[-6548, 3125, 41, -1590]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3JulsKJnEemlwLnqn7IqcA" id="(0.5,0.9734848484848483)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3JvMwKJnEemlwLnqn7IqcA" id="(0.5127125951474786,0.0)"/>
@@ -230,7 +230,7 @@
       <children xmi:type="notation:BasicDecorationNode" xmi:id="_29VvgaJnEemlwLnqn7IqcA" type="Name"/>
       <layoutConstraint xmi:type="notation:Bounds" xmi:id="_29VIc6JnEemlwLnqn7IqcA" y="-186"/>
     </children>
-    <element xmi:type="uml:InterfaceRealization" href="mmi:///#jimpl%5Bjsrctype%5Ename=SplitBinder%5Bjcu%5Ename=SplitBinder.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D%5Bjsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.InterfaceRealization"/>
+    <element xmi:type="uml:InterfaceRealization" href="mmi:///#jimpl%5Bjsrctype%5Ename=SplitBinder%5Bjcu%5Ename=SplitBinder.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D%5Bjsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.InterfaceRealization"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_29VIcaJnEemlwLnqn7IqcA" points="[41, 91, 770, -3863]$[41, 1546, 770, -2408]$[-675, 1546, 54, -2408]$[-675, 3133, 54, -821]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3JxB8KJnEemlwLnqn7IqcA" id="(0.5127125951474786,0.8602053140096618)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3JxpAKJnEemlwLnqn7IqcA" id="(0.6834229677093245,0.0)"/>
@@ -242,7 +242,7 @@
       <children xmi:type="notation:BasicDecorationNode" xmi:id="_29W9oKJnEemlwLnqn7IqcA" type="Name"/>
       <layoutConstraint xmi:type="notation:Bounds" xmi:id="_29WWkaJnEemlwLnqn7IqcA" y="-186"/>
     </children>
-    <element xmi:type="uml:Usage" href="mmi:///#jdep%5Bjsrctype%5Ename=FileBinder%5Bjcu%5Ename=FileBinder.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D%5Bjsrctype%5Ename=StringTransfer%5Bjcu%5Ename=StringTransfer.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders.Transfers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Usage"/>
+    <element xmi:type="uml:Usage" href="mmi:///#jdep%5Bjsrctype%5Ename=FileBinder%5Bjcu%5Ename=FileBinder.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D%5Bjsrctype%5Ename=StringTransfer%5Bjcu%5Ename=StringTransfer.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders.Transfers%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Usage"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_29Vvg6JnEemlwLnqn7IqcA" points="[53, 104, -12768, -4531]$[53, 738, -12768, -3897]$[12860, 738, 39, -3897]$[12860, 4635, 39, 0]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3JzeMKJnEemlwLnqn7IqcA" id="(0.6666666666666665,0.9852091843921678)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3J0FQKJnEemlwLnqn7IqcA" id="(0.5000242692742158,-6.441180607456999E-16)"/>
@@ -253,7 +253,7 @@
       <children xmi:type="notation:BasicDecorationNode" xmi:id="_29YLwKJnEemlwLnqn7IqcA" type="Name"/>
       <layoutConstraint xmi:type="notation:Bounds" xmi:id="_29XksaJnEemlwLnqn7IqcA" y="-186"/>
     </children>
-    <element xmi:type="uml:InterfaceRealization" href="mmi:///#jimpl%5Bjsrctype%5Ename=FileBinder%5Bjcu%5Ename=FileBinder.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D%5Bjsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.Arnion.Process.Binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.InterfaceRealization"/>
+    <element xmi:type="uml:InterfaceRealization" href="mmi:///#jimpl%5Bjsrctype%5Ename=FileBinder%5Bjcu%5Ename=FileBinder.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D%5Bjsrctype%5Ename=Binder%5Bjcu%5Ename=Binder.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process.binders%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.InterfaceRealization"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_29W9o6JnEemlwLnqn7IqcA" points="[27, 104, -1055, -12603]$[27, 10299, -1055, -2408]$[1109, 10299, 27, -2408]$[1109, 11886, 27, -821]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3J1TYKJnEemlwLnqn7IqcA" id="(0.3333333333333335,0.9852091843921678)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3J16cKJnEemlwLnqn7IqcA" id="(0.3417166872323976,0.0)"/>

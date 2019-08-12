@@ -1,4 +1,4 @@
-package es.jovenesadventistas.Arnion.Process;
+package es.jovenesadventistas.arnion.process;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,11 +6,11 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import es.jovenesadventistas.Arnion.Process.Binders.RunnableBinder;
-import es.jovenesadventistas.Arnion.Process.Binders.StdOutBinder;
-import es.jovenesadventistas.Arnion.Process.Binders.Publishers.SocketListenerPublisher;
-import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecutor;
-import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process_executor.ProcessExecutor;
+import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process.binders.RunnableBinder;
+import es.jovenesadventistas.arnion.process.binders.StdOutBinder;
+import es.jovenesadventistas.arnion.process.binders.Publishers.SocketListenerPublisher;
 
 public class ProcessSocketListenerBinder {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();

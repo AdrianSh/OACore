@@ -1,4 +1,4 @@
-package es.jovenesadventistas.Arnion.Process.Binders;
+package es.jovenesadventistas.arnion.process.binders;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,8 +12,8 @@ import java.util.function.Function;
 import java.util.concurrent.Future;
 import java.util.concurrent.SubmissionPublisher;
 
-import es.jovenesadventistas.Arnion.Process.Binders.Transfers.StreamTransfer;
-import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process.binders.Transfers.StreamTransfer;
 
 public class DirectStdInBinder extends SubmissionPublisher<StreamTransfer> implements Binder, Subscriber<StreamTransfer> {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();

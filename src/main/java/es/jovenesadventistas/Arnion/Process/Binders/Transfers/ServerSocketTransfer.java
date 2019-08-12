@@ -1,4 +1,4 @@
-package es.jovenesadventistas.Arnion.Process.Binders.Transfers;
+package es.jovenesadventistas.arnion.process.binders.Transfers;
 
 import java.net.ServerSocket;
 import java.time.Instant;

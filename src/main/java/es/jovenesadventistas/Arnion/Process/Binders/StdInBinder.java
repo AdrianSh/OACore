@@ -1,4 +1,4 @@
-package es.jovenesadventistas.Arnion.Process.Binders;
+package es.jovenesadventistas.arnion.process.binders;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -8,8 +8,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.function.Function;
 
-import es.jovenesadventistas.Arnion.Process.Binders.Transfers.StringTransfer;
-import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process.binders.Transfers.StringTransfer;
 
 public class StdInBinder implements Binder {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();

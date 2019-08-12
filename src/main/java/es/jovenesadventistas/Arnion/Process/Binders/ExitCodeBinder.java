@@ -1,4 +1,4 @@
-package es.jovenesadventistas.Arnion.Process.Binders;
+package es.jovenesadventistas.arnion.process.binders;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
@@ -6,10 +6,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Function;
 
-import es.jovenesadventistas.Arnion.Process.Binders.Publishers.ConcurrentLinkedQueuePublisher;
-import es.jovenesadventistas.Arnion.Process.Binders.Subscribers.ConcurrentLinkedQueueSubscriber;
-import es.jovenesadventistas.Arnion.Process.Binders.Transfers.IntegerTransfer;
-import es.jovenesadventistas.Arnion.ProcessExecutor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process.binders.Publishers.ConcurrentLinkedQueuePublisher;
+import es.jovenesadventistas.arnion.process.binders.Subscribers.ConcurrentLinkedQueueSubscriber;
+import es.jovenesadventistas.arnion.process.binders.Transfers.IntegerTransfer;
 
 public class ExitCodeBinder extends SplitBinder<IntegerTransfer, IntegerTransfer> {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();

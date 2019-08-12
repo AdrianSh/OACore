@@ -1,11 +1,11 @@
-package es.jovenesadventistas.Arnion.Process.Binders.Publishers;
+package es.jovenesadventistas.arnion.process.binders.Publishers;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 
-import es.jovenesadventistas.Arnion.Process.Binders.Transfers.Transfer;
+import es.jovenesadventistas.arnion.process.binders.Transfers.Transfer;
 
 public class ConcurrentLinkedQueuePublisher<T extends Transfer> extends SubmissionPublisher<T> implements Subscription {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
