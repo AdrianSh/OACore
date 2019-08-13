@@ -1,4 +1,4 @@
-package es.jovenesadventistas.arnion.process;
+package es.jovenesadventistas.arnionT.process;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +8,7 @@ import java.util.concurrent.Executors;
 
 import es.jovenesadventistas.arnion.process_executor.ProcessExecutor;
 import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process.AProcess;
 import es.jovenesadventistas.arnion.process.binders.RunnableBinder;
 import es.jovenesadventistas.arnion.process.binders.StdOutBinder;
 import es.jovenesadventistas.arnion.process.binders.Publishers.SocketListenerPublisher;
