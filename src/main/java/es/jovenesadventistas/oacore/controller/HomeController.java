@@ -40,46 +40,21 @@ public class HomeController {
 		String formattedDate = dateFormat.format(new Date());
 
 		model.addAttribute("serverTime", formattedDate);
-
-		/*
-		 * // Articles
-		 
-		model.addAttribute("categorias",
-				entityManager.createNamedQuery("allTagsOrderByDate").setMaxResults(10000).getResultList());
-		model.addAttribute("rightArticulos",
-				entityManager.createNamedQuery("topArticles").setMaxResults(10).getResultList());
-		model.addAttribute("tags", entityManager.createNamedQuery("allTags").getResultList());
-		*/
-
 	}
 
-	@RequestMapping(value = { "/", "/home", "/index", "/login" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/", "/home", "/index", "/login", "/admin/login" }, method = RequestMethod.GET)
 	public String homePage(Locale locale, Model model, @RequestParam(required = false) String error) {
-		// model.addAttribute("actividades", entityManager.createNamedQuery("allActividad").getResultList());
-		// model.addAttribute("lastarticulos", entityManager.createNamedQuery("allArticulosOrderByDate").setMaxResults(10000).getResultList());
-
 		UserDetails uds = UserController.getInstance().getPrincipal();
 		if (uds != null) {
 			model.addAttribute("user", uds.getUser());
 		}
 
 		if (error != null)
-			model.addAttribute("loginError", "Usuario/Contraseña incorrectos.");
+			model.addAttribute("error", "Username or password doesn't match.");
 
-		return "articulos/articulos";
-	}
-
-	@RequestMapping(value = "/noregistro", method = RequestMethod.GET)
-	public String noRegistro(Locale locale, Model model) {
-		model.addAttribute("mMensaje", "Debes estar registrado.");
-		return "noregistro";
-	}
-
-	@RequestMapping(value = "/inicio_sesion", method = RequestMethod.GET)
-	public String login(Locale locale, Model model) {
 		return "login";
 	}
-
+	
 	/**
 	 * A not-very-dynamic view that shows an "about us".
 	 */

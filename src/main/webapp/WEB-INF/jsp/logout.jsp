@@ -16,7 +16,7 @@
 	<form action="/logout" method="post">
 	    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>	
 		<fieldset>
-		<button type="submit" class="btn">Salir</button>
+		<button type="submit" class="btn btn-primary btn-block btn-lg">Salir</button>
 		</fieldset>
 	</form>
 	</sec:authorize>

@@ -96,14 +96,22 @@ public class UserController {
 		return UserController.instance;
 	}
 
-	@RequestMapping(value = { "/registro", "/usuario/crear" }, method = RequestMethod.GET)
-	public String registro(Locale locale, Model model) {
-		return !ping() ? "registro" : "redirect:home";
+	@RequestMapping(value = "/settings", method = RequestMethod.GET)
+	@Transactional
+	public String ajustes(Locale locale, Model model) {
+		String returnn = "redirect:home";
+		if (ping()) {
+			User u = this.getPrincipal().getUser();
+			model.addAttribute("user", u);
+			model.addAttribute("email", Encode.forHtmlContent(u.getEmail()));
+			returnn = "settings";
+		}
+		return returnn;
 	}
 	
 	@ExceptionHandler(SizeLimitExceededException.class)
     public String sizeLimitExceededException(SizeLimitExceededException exc) {
-        return "redirect:/perfil";
+        return "redirect:/profile";
     }
 	
 	@ExceptionHandler(MultipartException.class)
@@ -111,22 +119,22 @@ public class UserController {
 	public ResponseEntity<?> handleMultipartException(MultipartException ex) {
 	    return ResponseEntity.badRequest().build();
 	}
-
-	@RequestMapping(value = "/ajustes", method = RequestMethod.POST)
+	
+	@RequestMapping(value = "/settings", method = RequestMethod.POST)
 	@Transactional
 	public String handleFileAjustes(@RequestParam("avatar") MultipartFile avatar, @RequestParam("email") String email,
 			@RequestParam("pass") String newPassword, @RequestParam("oldpass") String oldPassword, Model model) {
 
-		String returnn = "redirect:/perfil";
+		String returnn = "redirect:/";
 
 		UserDetails uds = this.getPrincipal();
 		User u = uds.getUser();
 		ObjectId id = u.getId();
 
 		if(!passwordEncoder.matches(oldPassword, uds.getPassword())) {
-			model.addAttribute("error", "Esa no es tu antigua contraseña.");
+			model.addAttribute("error", "It is not your current password.");
 			model.addAttribute("user", u);
-			return "ajustes";
+			return "settings";
 		}
 			
 		if (!avatar.isEmpty()) {
@@ -152,61 +160,57 @@ public class UserController {
 
 		if (!newPassword.isEmpty()) {
 			if(newPassword == null || newPassword.length() < 4)
-				model.addAttribute("error", "La contraseña debe tener al menos 4 caracteres");
+				model.addAttribute("error", "Password should contains at least 4 characters");
 			else
 				u.setPassword(passwordEncoder.encode(newPassword));
 		}
 		model.addAttribute("user", u);
-		// entityManager.persist(u);
+		userRepository.save(u);
 
 		this.reloadPrincipal();
 		return returnn;
 	}
 	
-	/**
-	 * Crear un usuario
-	 */
-	@RequestMapping(value = { "/registro", "/usuario/crear" }, params = { "login", "pass", "nombre", "apellido",
-			"email", "passConf", "pregunta", "respuesta" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/register", "/user/create" }, params = { "firstname", "surname", "username", "email",
+			"securityQuestion", "securityAnswer", "password", "passwordConfirmation" }, method = RequestMethod.POST)
 	@Transactional
-	public String crearUsuario(@RequestParam("login") String login, @RequestParam("passConf") String passConf,
-			@RequestParam("pass") String pass, @RequestParam("nombre") String nombre,
-			@RequestParam("apellido") String apellido, @RequestParam("email") String email,
-			@RequestParam("pregunta") String pregunta, Model model, @RequestParam("respuesta") String respuesta,
+	public String crearUsuario(@RequestParam("username") String username, @RequestParam("passwordConfirmation") String passwordConfirmation,
+			@RequestParam("password") String password, @RequestParam("firstname") String firstname,
+			@RequestParam("surname") String surname, @RequestParam("email") String email,
+			@RequestParam("securityQuestion") String securityQuestion, Model model, @RequestParam("securityAnswer") String securityAnswer,
 			HttpServletRequest request, HttpServletResponse response, HttpSession session, Locale locale) {
 		String returnn = "redirect:/";
 		try {
 			/* User u1 = (User) entityManager.createNamedQuery("userByLogin")
 					.setParameter("loginParam", Encode.forHtmlContent(login)).getSingleResult(); */
 			
-			User u1 = userRepository.findByUsername(Encode.forHtmlContent(login));
+			User u1 = userRepository.findByUsername(Encode.forHtmlContent(username));
 			model.addAttribute("error",
-					"Ese nombre de usuario ya existe '" + Encode.forHtmlContent(u1.getLogin()) + "'");
-			returnn = "registro";
+					"Username already exists: '" + Encode.forHtmlContent(u1.getLogin()) + "'");
+			returnn = "login";
 		} catch (NullPointerException e) {
-			returnn = "registro";
-			if (!pass.equals(passConf)) {
-				logger.info("Contraseñas fallidas: {}, {}", pass, passConf);
-				model.addAttribute("error", "Las contraseñas no coinciden, verifique todos los datos.");
-				returnn = "registro";
+			returnn = "login";
+			if (!password.equals(passwordConfirmation)) {
+				logger.info("Password match fail: {}, {}", password, passwordConfirmation);
+				model.addAttribute("error", "Passwords do not match, verify all data.");
+				returnn = "login";
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			}
-			if (login == null || login.length() < 4 || pass == null || pass.length() < 4 || nombre == null
-					|| apellido == null || email == null) {
+			if (username == null || username.length() < 4 || password == null || password.length() < 4 || firstname == null
+					|| surname == null || email == null) {
 				model.addAttribute("error",
-						"Verifique todos los campos y recuerde que el usuario y la contraseña deben tener al menos 4 caracteres.");
-				returnn = "registro";
+						"Verify all fields and remember that the username and password must have at least 4 characters.");
+				returnn = "login";
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			} else {				
-				User user = User.createUser(login, passwordEncoder.encode(pass), "user", nombre, apellido, email,
-						pregunta, respuesta);
+				User user = User.createUser(username, passwordEncoder.encode(password), "user", firstname, surname, email,
+						securityQuestion, securityAnswer);
 				
 				userRepository.save(user);
-				// entityManager.persist(user);
 				
 				logger.info("User registered {} with password hash {}", user.getLogin(), user.getPassword());
 				
-				model.addAttribute("alert", "Te has registrado correctamente, ¿A que esperas? ¡Logeate!");
+				model.addAttribute("alert", "You have successfully registered, what are you waiting for? Log in!");
 				// sets the anti-csrf token
 				getTokenForSession(session);
 			}
@@ -214,7 +218,7 @@ public class UserController {
 		return returnn;
 	}
 
-	@RequestMapping(value = "/perfil", method = RequestMethod.GET)
+	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	@Transactional
 	public String perfil(Locale locale, Model model) {
 		String returnn = "redirect:home";
@@ -222,7 +226,7 @@ public class UserController {
 			User u = this.getPrincipal().getUser();
 			model.addAttribute("user", u);
 
-			returnn = "perfil";
+			returnn = "profile";
 		}
 
 		return returnn;
@@ -230,10 +234,9 @@ public class UserController {
 
 	@ResponseBody
 	@RequestMapping(value = "/user/{id}/photo", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
-	public byte[] userPhoto(@PathVariable("id") long id) throws IOException {
+	public byte[] userPhoto(@PathVariable("id") ObjectId id) throws IOException {
 		try {
-			String st = Long.toString(id);
-			File f = localData.getFile("user", st);
+			File f = localData.getFile("user", id.toString());
 			InputStream in = null;
 			if (f.exists()) {
 				in = new BufferedInputStream(new FileInputStream(f));
@@ -243,42 +246,9 @@ public class UserController {
 
 			return IOUtils.toByteArray(in);
 		} catch (IOException e) {
-			logger.warn("Error cargando " + id, e);
+			logger.warn("Error loading ..." + id, e);
 			throw e;
-		}
-	}
-
-	@RequestMapping(value = "/ajustes", method = RequestMethod.GET)
-	@Transactional
-	public String ajustes(Locale locale, Model model) {
-		String returnn = "redirect:home";
-		if (ping()) {
-			User u = this.getPrincipal().getUser();
-			model.addAttribute("user", u);
-			model.addAttribute("email", Encode.forHtmlContent(u.getEmail()));
-			returnn = "ajustes";
-		}
-		return returnn;
-	}
-
-	@RequestMapping(value = { "/user/{id}", "/perfil/{id}" }, method = RequestMethod.GET)
-	@Transactional
-	public String userPerfil(@PathVariable("id") ObjectId id, HttpServletResponse response, Model model, Locale locale) {
-		String returnn = "redirect:/";
-		User us = userRepository.findById(id); // .find(User.class, id);
-		if (us == null) {
-			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			logger.error("No such user: {}", id);
-		} else {
-			model.addAttribute("userp", us);
-			
-			if (ping()) {
-				User u = this.getPrincipal().getUser();	
-				model.addAttribute("user", u);
-			}
-			returnn = "userperfil";
-		}
-		return returnn;
+		} 
 	}
 
 	/**
@@ -321,39 +291,40 @@ public class UserController {
 	/**
 	 * Olvidar contraseña.
 	 */
-	@RequestMapping(value = { "/olvidopass", "/mail/nuevo/", "/forgot", "/olvide" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/forgot", "/forgotpassword" }, method = RequestMethod.GET)
 	@Transactional
 	public String olvidoPassWebb(Locale locale, Model model, HttpSession session) {
-		return "user/olvidopass";
+		return "user/forgot";
 	}
 
-	@RequestMapping(value = "/recuperarpass", method = RequestMethod.POST)
+	@RequestMapping(value = "/recover", method = RequestMethod.POST)
 	@Transactional
-	public String regenerarpass(@RequestParam("email") String email, @RequestParam("alias") String alias,
-			@RequestParam("respuesta") String respuesta, Locale locale, Model model, HttpSession session) {
-		String returnn = "user/enviarpass";
+	public String regenerarpass(@RequestParam("email") String email, @RequestParam("username") String username,
+			@RequestParam("securityAnswer") String securityAnswer, Locale locale, Model model, HttpSession session) {
+		String returnn = "user/recover";
 		try {
-			User user = userRepository.findByEmail(Encode.forHtmlContent(email)); // (User) getSingleResultOrNull(entityManager.createNamedQuery("userByEmail").setParameter("emailParam", Encode.forHtmlContent(email)));
+			User user = userRepository.findByUsername(Encode.forHtmlContent(username));
 
 			if (user == null) {
-				model.addAttribute("error", "Alguno de los datos ingresados no coincide.");
-				returnn = "user/olvidopass";
+				model.addAttribute("error", "Some of the data entered does not match.");
+				returnn = "user/forgot";
 			} else {
-				if (user.getLogin().equals(Encode.forHtmlContent(alias))
-						&& user.getRespuestaDeSeguridad().equals(Encode.forHtmlContent(respuesta))) {
-					logger.debug("Nueva contraseña asignada.");
+				if (user.getEmail().equals(Encode.forHtmlContent(email))
+						&& user.getRespuestaDeSeguridad().equals(Encode.forHtmlContent(securityAnswer))) {
+					logger.debug("New password assigned.");
 					String random = Encode.forHtmlContent(generarStringPass());
 					model.addAttribute("newPass", random);
 					user.setPassword(passwordEncoder.encode(random));
+					userRepository.save(user);
 				} else {
-					model.addAttribute("error", "Alguno de los datos ingresados no coincide.");
-					logger.info(user.getLogin() + "!=" + Encode.forHtmlContent(alias) + "  + "
-							+ user.getRespuestaDeSeguridad() + "!= " + Encode.forHtmlContent(respuesta));
+					model.addAttribute("error", "Some of the data entered does not match.");
+					logger.info(user.getLogin() + "!=" + Encode.forHtmlContent(username) + "  + "
+							+ user.getRespuestaDeSeguridad() + "!= " + Encode.forHtmlContent(securityAnswer));
 				}
 			}
 		} catch (NullPointerException e) {
-			logger.debug("Algun error:", e);
-			returnn = "redirect:/noregistro/";
+			logger.debug("Some error while recovering password:", e);
+			returnn = "redirect:/";
 		}
 		return returnn;
 	}
