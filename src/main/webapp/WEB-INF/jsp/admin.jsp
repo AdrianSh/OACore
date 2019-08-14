@@ -24,7 +24,8 @@
 	<link href="${s}/css/main.css" rel="stylesheet">
 </head>
 <script src="${s}/js/pixi.min.js"></script>
-<body>
+<body style="overflow: hidden;">
+
 
 
 
@@ -33,4 +34,6 @@
 <script src="${s}/js/popper.min.js"></script>
 <script src="${s}/bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
 
+<script type="text/javascript" src="http://localhost:3000/js/viewport.js"></script>
+<script type="text/javascript" src="http://localhost:3000/js/intersects.min.js"></script>
 <script type="text/javascript" src="http://localhost:3000/js/main.js"></script>
