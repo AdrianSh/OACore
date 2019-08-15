@@ -7,7 +7,7 @@ if (!PIXI.utils.isWebGLSupported()) {
 PIXI.utils.sayHello(type);
 
 const app = new PIXI.Application({
-    width: window.innerWidth, 
+    width: window.innerWidth,
     height: window.innerHeight,
     autoDensity: true,
     backgroundColor: 0xcccccc,
@@ -16,23 +16,18 @@ const app = new PIXI.Application({
 
 document.body.appendChild(app.view);
 
-
-// create viewport
-const viewport = new Viewport.Viewport({
+const viewport = new Viewport.Viewport({ // create viewport
     screenWidth: window.innerWidth,
     screenHeight: window.innerHeight,
     worldWidth: 1000,
     worldHeight: 1000,
-
     interaction: app.renderer.plugins.interaction // the interaction module is important for wheel to work properly when renderer.view is placed or scaled
 })
 
-// add the viewport to the stage
-app.stage.addChild(viewport)
+app.stage.addChild(viewport) // add the viewport to the stage
 
-// activate plugins
-viewport
-    .drag({mouseButtons: 'middle-right'})
+viewport // activate plugins
+    .drag({ mouseButtons: 'middle-right' })
     .pinch()
     .wheel()
     .decelerate();
@@ -40,7 +35,6 @@ viewport
 
 let mainContainer = new PIXI.Container();
 viewport.addChild(mainContainer);
-
 
 
 const programTexture = PIXI.Texture.from(`${siteUrl}/img/assets/program.png`); // create a texture from an image path
@@ -57,98 +51,136 @@ const basicTextstyle = new PIXI.TextStyle({
 
 
 
+class Program extends PIXI.Sprite {
+    constructor(x, y, commandLine) {
+        super(programTexture);
+        this.interactive = true; // this will allow it to respond to mouse and touch events
+        this.buttonMode = true; // this button mode will mean the hand cursor appears when you roll over the program with your mouse
+        this.anchor.set(0.5); // center the program's anchor point
+        // this.scale.set(3); // make it a bit bigger, so it's easier to grab
 
-for (let i = 0; i < 10; i++) {
-    createProgram(
-        Math.floor(Math.random() * app.screen.width),
-        Math.floor(Math.random() * app.screen.height),
-    );
-}
+        this.x = x;
+        this.y = y;
+        this.binders = {input: [], output: []};
 
-function createProgram(x, y, commandLine = 'C:/Privado/TFG/Arnion/target/classes/static/img/assets') {
-    const program = new PIXI.Sprite(programTexture);
-    program.interactive = true; // this will allow it to respond to mouse and touch events
-    program.buttonMode = true; // this button mode will mean the hand cursor appears when you roll over the program with your mouse
-    program.anchor.set(0.5); // center the program's anchor point
-    // program.scale.set(3); // make it a bit bigger, so it's easier to grab
+        // Setup events for mouse + touch using the pointer events
+        this.on('pointerdown', this.onDragStart)
+            .on('pointerup', this.onDragEnd)
+            .on('pointerupoutside', this.onDragEnd)
+            .on('pointermove', this.onDragMove)
+        /*
+            .on('mousedown', onDragStart)
+            .on('mouseup', onDragEnd)
+            .on('mouseupoutside', onDragEnd)
+            .on('mousemove', onDragMove)
+            .on('touchstart', onDragStart)
+            .on('touchend', onDragEnd)
+            .on('touchendoutside', onDragEnd)
+            .on('touchmove', onDragMove)
+        */
 
-    // setup events for mouse + touch using the pointer events
-    program
-        .on('pointerdown', onDragStart)
-        .on('pointerup', onDragEnd)
-        .on('pointerupoutside', onDragEnd)
-        .on('pointermove', onDragMove);
-
-    // For mouse-only events
-    // .on('mousedown', onDragStart)
-    // .on('mouseup', onDragEnd)
-    // .on('mouseupoutside', onDragEnd)
-    // .on('mousemove', onDragMove);
-
-    // For touch-only events
-    // .on('touchstart', onDragStart)
-    // .on('touchend', onDragEnd)
-    // .on('touchendoutside', onDragEnd)
-    // .on('touchmove', onDragMove);
-
-    // move the sprite to its designated position
-    program.x = x;
-    program.y = y;
-
-    let text = new PIXI.Text(commandLine.length > 45 ? '...' + commandLine.substr(commandLine.length - 42, 42) : commandLine, basicTextstyle);
-    text.x = - 250/2 + 5 ; // corner top left + 5 width
-    text.y = - 156/2 + 5; // corner top left + 5 height
-    program.addChild(text);
-
-    mainContainer.addChild(program);
-}
-
-function onDragStart(event) {
-    // store a reference to the data
-    // the reason for this is because of multitouch
-    // we want to track the movement of this particular touch
-    this.data = event.data;
-    this.alpha = 0.5;
-    this.dragging = true;
-}
-
-function onDragEnd() {
-    this.alpha = 1;
-    this.dragging = false;
-    // set the interaction data to null
-    this.data = null;
-}
-
-function onDragMove() {
-    if (this.dragging) {
-        const newPosition = this.data.getLocalPosition(this.parent);
-        this.x = newPosition.x;
-        this.y = newPosition.y;
-
-        let collision = Intersects.boxBox();
-
-
-
-        boxLine(xb, yb, wb, hb, x1, y1, x2, y2)
-Box-line collision.
-
-Param	Meaning
-xb	top-left corner of box
-yb	top-left corner of box
-wb	width of box
-hb	height of box
-x1	first point of line
-y1	first point of line
-x2	second point of line
-y2	second point of line
-
-
-/*
-LO QUE PUEDO HACER ES ALMACENAR LA LISTA DE TODOS LOS SPRITES 
-y a lo que voy moviendo uno, mirar los de la posicion mas cercana y entonces fijarme en ellos para comprobar la colision.
-
-
-(Una matriz de posiciones (array) en la que almacene los indices de los objetos que se encuentran ocupando esa posicion.... ¿Es más rapido?)
-*/
+       let commandLineText = new PIXI.Text(commandLine.length > 45 ? '...' + commandLine.substr(commandLine.length - 42, 42) : commandLine, basicTextstyle);
+       commandLineText.x = - 250 / 2 + 5; // corner top left + 5 width
+       commandLineText.y = - 156 / 2 + 5; // corner top left + 5 height
+       this.addChild(commandLineText);
     }
+
+    addInputBinder(binder){
+        this.binders.input.push(binder);
+    }
+
+    addOutputBinder(binder){
+        this.binders.output.push(binder);
+    }
+
+    onDragStart(event) {
+        // store a reference to the data
+        // the reason for this is because of multitouch
+        // we want to track the movement of this particular touch
+        this.draggingObjectData = event.data;
+        this.alpha = 0.5;
+        this.dragging = true;
+    
+        console.log(`Dragging... this and event data:`);
+        console.log(this);
+        console.log('------------------------');
+        console.log(event.data);
+    }
+    
+    onDragEnd() {
+        this.alpha = 1;
+        this.dragging = false;
+        // set the interaction data to null
+        this.draggingObjectData = null;
+    }
+    
+    onDragMove() {
+        if (this.dragging) {
+            const newPosition = this.draggingObjectData.getLocalPosition(this.parent);
+            this.x = newPosition.x;
+            this.y = newPosition.y;
+    
+            if(this.binders.input.length > 0)
+                this.binders.input.forEach(b => b.updateDest(this.x, this.y));
+            if(this.binders.output.length > 0)
+                this.binders.output.forEach(b => b.updateOrig(this.x, this.y));
+
+            let collision = Intersects.boxBox();
+    
+            console.log(`Moving to: ${JSON.stringify(newPosition)} from: (${this.x}, ${this.y})`);
+            // en THIS TENEMOS EL OBJETO,   en position tenemos la posicion, luego width y height para calcular colisiones
+        }
+    }
+}
+
+class Line extends PIXI.Graphics {
+    constructor(points, lineSize, lineColor) {
+        super();
+        this.lineWidth = lineSize || 5;
+        this.lineColor = lineColor || "0x000000";
+        this.points = points;
+        this.lineStyle(this.lineWidth, this.lineColor)
+        this.moveTo(points[0], points[1]);
+        this.lineTo(points[2], points[3]);
+    }
+    
+    updatePoints(p) {
+        this.points = p.map((val, index) => val || this.points[index]);
+        this.clear();
+        this.lineStyle(this.lineWidth, this.lineColor);
+        this.moveTo(this.points[0], this.points[1]);
+        this.lineTo(this.points[2], this.points[3]);
+    }
+
+    updateDest(x, y){
+        this.clear();
+        this.lineStyle(this.lineWidth, this.lineColor);
+        this.moveTo(this.points[0], this.points[1]);
+        this.points[2] = x; this.points[3] = y;
+        this.lineTo(this.points[2], this.points[3]);
+    }
+
+    updateOrig(x, y){
+        this.clear();
+        this.lineStyle(this.lineWidth, this.lineColor);
+        this.points[0] = x; this.points[1] = y;
+        this.moveTo(this.points[0], this.points[1]);
+        this.lineTo(this.points[2], this.points[3]);
+    }
+}
+
+let lastProgram = {};
+for (let i = 0; i < 10; i++) {
+    let x = Math.floor(Math.random() * app.screen.width), y = Math.floor(Math.random() * app.screen.height);
+    let program = new Program(x, y, 'C:/Privado/TFG/Arnion/target/classes/static/img/assets');
+    if(i > 1){
+        let line = new Line([lastProgram.x, lastProgram.y, x, y]);
+        mainContainer.addChild(line);
+        program.addInputBinder(line);
+        lastProgram.p.addOutputBinder(line);
+    }
+    lastProgram = { p : program, x : x, y: y};
+    
+    mainContainer.addChild(program);
+
 }
