@@ -10,7 +10,7 @@ const app = new PIXI.Application({
     width: window.innerWidth,
     height: window.innerHeight,
     autoDensity: true,
-    backgroundColor: 0xcccccc,
+    backgroundColor: 0xF2F2F2,
     resizeTo: window
 });
 
@@ -61,6 +61,9 @@ class Program extends PIXI.Sprite {
 
         this.x = x;
         this.y = y;
+        this.width = 250;
+        this.height = 156;
+
         this.binders = {input: [], output: []};
 
         // Setup events for mouse + touch using the pointer events
@@ -80,9 +83,13 @@ class Program extends PIXI.Sprite {
         */
 
        let commandLineText = new PIXI.Text(commandLine.length > 45 ? '...' + commandLine.substr(commandLine.length - 42, 42) : commandLine, basicTextstyle);
-       commandLineText.x = - 250 / 2 + 5; // corner top left + 5 width
-       commandLineText.y = - 156 / 2 + 5; // corner top left + 5 height
+       commandLineText.x = - this.width * this.anchor._x + 5; // corner top left + 5 width
+       commandLineText.y = - this.height * this.anchor._y + 5; // corner top left + 5 height
        this.addChild(commandLineText);
+    }
+
+    upperCornerCoords(){
+        return [ this.x - 250/2, this.y - 156/2];
     }
 
     addInputBinder(binder){
@@ -119,11 +126,13 @@ class Program extends PIXI.Sprite {
             const newPosition = this.draggingObjectData.getLocalPosition(this.parent);
             this.x = newPosition.x;
             this.y = newPosition.y;
-    
+
             if(this.binders.input.length > 0)
-                this.binders.input.forEach(b => b.updateDest(this.x, this.y));
+                this.binders.input.forEach(b => b.updatePoints());
             if(this.binders.output.length > 0)
-                this.binders.output.forEach(b => b.updateOrig(this.x, this.y));
+                this.binders.output.forEach(b => b.updatePoints());
+
+            
 
             let collision = Intersects.boxBox();
     
@@ -134,14 +143,22 @@ class Program extends PIXI.Sprite {
 }
 
 class Line extends PIXI.Graphics {
-    constructor(points, lineSize, lineColor) {
+    constructor(points = [], lineSize = 1, lineColor = "0xc3c3c3") {
         super();
-        this.lineWidth = lineSize || 5;
-        this.lineColor = lineColor || "0x000000";
+        this.lineWidth = lineSize;
+        this.lineColor = lineColor;
         this.points = points;
-        this.lineStyle(this.lineWidth, this.lineColor)
-        this.moveTo(points[0], points[1]);
-        this.lineTo(points[2], points[3]);
+
+        // Draw the arrow and add it as a child of the Line
+        
+        /*
+        ctx.moveTo(75,50);
+        ctx.lineTo(100,75);
+        ctx.lineTo(100,25);
+        ctx.closePath();
+        ctx.fill();
+        */
+        
     }
     
     updatePoints(p) {
@@ -169,15 +186,69 @@ class Line extends PIXI.Graphics {
     }
 }
 
+class Binder extends Line {
+    constructor(firstProgram, secondProgram) {
+        super();
+        this.origProgram = firstProgram;
+        this.destProgram = secondProgram;
+    }
+    
+    _bestPos(p1, p2){
+        let r = { x: p2.x, y: p2.y};
+        if(p1.x < p2.x){ // left
+            r.x = p2.x - p2.width * p2.anchor._x + 4;
+            if(p1.y < p2.y){ // up 
+                r.y = p2.y - p2.height * p2.anchor._y + 4;
+            } else if(p1.y > p2.y) { // down
+                r.y = p2.y + p2.height * p2.anchor._y - 4;
+            } // else center
+        } else if(p1.x > p2.x) { // right
+            r.x = p2.x + p2.width * p2.anchor._x - 4;
+            if(p1.y < p2.y){ // up 
+                r.y = p2.y - p2.height * p2.anchor._y + 4;
+            } else if(p1.y > p2.y) { // down
+                r.y = p2.y + p2.height * p2.anchor._y - 4;
+            } // else center
+        } else { // center
+            if(p1.y < p2.y){ // up 
+                p2.y = p2.y - p2.height * p2.anchor._y + 4;
+            } else if(p1.y > p2.y) { // down
+                p2.y = p2.y + p2.height * p2.anchor._y - 4;
+            } // else center
+        }
+        return r;
+    }
+
+    updatePoints(){
+        let pDest = this._bestPos(this.origProgram, this.destProgram);
+        let pOrig = this._bestPos(this.destProgram, this.origProgram);
+        super.updatePoints([pOrig.x, pOrig.y, pDest.x, pDest.y]);
+        return this;
+    }
+
+    updateDest(){
+        let p = this._bestPos(this.origProgram, this.destProgram);
+        super.updateDest(p.x, p.y);
+        return this;
+    }
+
+    updateOrig(){
+        let p = this._bestPos(this.destProgram, this.origProgram);
+        super.updateOrig(p.x, p.y);
+        return this;
+    }
+}
+
 let lastProgram = {};
 for (let i = 0; i < 10; i++) {
     let x = Math.floor(Math.random() * app.screen.width), y = Math.floor(Math.random() * app.screen.height);
     let program = new Program(x, y, 'C:/Privado/TFG/Arnion/target/classes/static/img/assets');
-    if(i > 1){
-        let line = new Line([lastProgram.x, lastProgram.y, x, y]);
-        mainContainer.addChild(line);
-        program.addInputBinder(line);
-        lastProgram.p.addOutputBinder(line);
+    if(i > 0){
+        let b = new Binder(lastProgram.p, program);
+        mainContainer.addChild(b);
+        program.addInputBinder(b);
+        lastProgram.p.addOutputBinder(b);
+        b.updateDest().updateOrig();
     }
     lastProgram = { p : program, x : x, y: y};
     
