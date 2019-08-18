@@ -148,17 +148,6 @@ class Line extends PIXI.Graphics {
         this.lineWidth = lineSize;
         this.lineColor = lineColor;
         this.points = points;
-
-        // Draw the arrow and add it as a child of the Line
-        
-        /*
-        ctx.moveTo(75,50);
-        ctx.lineTo(100,75);
-        ctx.lineTo(100,25);
-        ctx.closePath();
-        ctx.fill();
-        */
-        
     }
     
     updatePoints(p) {
@@ -186,42 +175,85 @@ class Line extends PIXI.Graphics {
     }
 }
 
-class Binder extends Line {
-    constructor(firstProgram, secondProgram) {
+class Triangle extends PIXI.Graphics {
+    constructor(color = 0x709FE9, length = 10){
         super();
+        this.color = color;
+        this.length = length;
+    }
+
+    updatePoints(cX, cY) {
+        this.clear();
+        let x = cX - this.length / 2, y = cY - this.length;
+        this.beginFill(this.color, 1);
+        this.lineStyle(0, this.color);
+        this.moveTo(x,y);
+        this.lineTo(x + this.length, y + this.length);
+        this.lineTo(x, y + 2 * this.length);
+        this.closePath();
+        this.endFill();
+    }
+}
+
+class Arrow extends Line {
+    constructor(lineColor = 0xc3c3c3, lineSize = 1){
+        super();
+        this.triangleContainer = new PIXI.Container();
+        this.triangle = new Triangle(lineColor, lineSize + 4);
+        this.triangleContainer.addChild(this.triangle);
+        this.addChild(this.triangleContainer);
+    }
+
+    updatePoints(p) {
+        super.updatePoints(p);
+        this.triangleContainer.position.set(p[2], p[3]);
+        this.triangleContainer.pivot.set(p[2], p[3]);
+        this.triangle.updatePoints(p[2], p[3]);
+        this.triangleContainer.rotation = Math.atan2(p[1] - p[3], p[0] - p[2]) + Math.PI;
+    }
+}
+
+class Binder extends Arrow {
+    constructor(firstProgram, secondProgram, lineColor = 0xc3c3c3, lineSize = 2) {
+        super(lineColor, lineSize);
         this.origProgram = firstProgram;
         this.destProgram = secondProgram;
+        this.updatePoints();
     }
     
-    _bestPos(p1, p2){
-        let r = { x: p2.x, y: p2.y};
-        if(p1.x < p2.x){ // left
-            r.x = p2.x - p2.width * p2.anchor._x + 4;
-            if(p1.y < p2.y){ // up 
-                r.y = p2.y - p2.height * p2.anchor._y + 4;
-            } else if(p1.y > p2.y) { // down
-                r.y = p2.y + p2.height * p2.anchor._y - 4;
+    _bestPos(p1, p2, margin = 0, cornerMargin = 0){
+        let r = { x: p2.x, y: p2.y}, padding = [p2.width * p2.anchor._x, p2.height * p2.anchor._y];
+        if(p1.x < p2.x - padding[0]){ // left
+            r.x = p2.x - padding[0] + margin;
+            if(p1.y < p2.y - padding[1]){ // up 
+                r.x += cornerMargin;
+                r.y = p2.y - padding[1] + margin + cornerMargin;
+            } else if(p1.y > p2.y + padding[1]) { // down
+                r.x += cornerMargin;
+                r.y = p2.y + padding[1] - margin - cornerMargin;
             } // else center
-        } else if(p1.x > p2.x) { // right
-            r.x = p2.x + p2.width * p2.anchor._x - 4;
-            if(p1.y < p2.y){ // up 
-                r.y = p2.y - p2.height * p2.anchor._y + 4;
-            } else if(p1.y > p2.y) { // down
-                r.y = p2.y + p2.height * p2.anchor._y - 4;
+        } else if(p1.x > p2.x + padding[0]) { // right
+            r.x = p2.x + padding[0] - margin;
+            if(p1.y < p2.y - padding[1]){ // up
+                r.x -= cornerMargin;
+                r.y = p2.y - padding[1] + margin + cornerMargin;
+            } else if(p1.y > p2.y + padding[1]) { // down
+                r.x -= cornerMargin;
+                r.y = p2.y + padding[1] - margin - cornerMargin;
             } // else center
         } else { // center
-            if(p1.y < p2.y){ // up 
-                p2.y = p2.y - p2.height * p2.anchor._y + 4;
-            } else if(p1.y > p2.y) { // down
-                p2.y = p2.y + p2.height * p2.anchor._y - 4;
+            if(p1.y < p2.y - padding[1]){ // up 
+                r.y = p2.y - padding[1] + margin;
+            } else if(p1.y > p2.y + padding[1]) { // down
+                r.y = p2.y + padding[1] - margin;
             } // else center
         }
         return r;
     }
 
     updatePoints(){
-        let pDest = this._bestPos(this.origProgram, this.destProgram);
-        let pOrig = this._bestPos(this.destProgram, this.origProgram);
+        let pDest = this._bestPos(this.origProgram, this.destProgram, - this.triangle.length/2, 2 + this.triangle.length/2);
+        let pOrig = this._bestPos(this.destProgram, this.origProgram, 0, 4);
         super.updatePoints([pOrig.x, pOrig.y, pDest.x, pDest.y]);
         return this;
     }
@@ -248,7 +280,7 @@ for (let i = 0; i < 10; i++) {
         mainContainer.addChild(b);
         program.addInputBinder(b);
         lastProgram.p.addOutputBinder(b);
-        b.updateDest().updateOrig();
+        // b.updateDest().updateOrig();
     }
     lastProgram = { p : program, x : x, y: y};
     
