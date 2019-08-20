@@ -23,17 +23,11 @@
 	<link href="${s}/bootstrap-4.3.1-dist/css/bootstrap.min.css" rel="stylesheet">
 	<link href="${s}/css/main.css" rel="stylesheet">
 </head>
-<script src="${s}/js/pixi.min.js"></script>
 <body style="overflow: hidden;">
-
-
-
 
 
 <script src="${s}/js/jquery-3.4.1.min.js"></script>
 <script src="${s}/js/popper.min.js"></script>
 <script src="${s}/bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
 
-<script type="text/javascript" src="http://localhost:3000/js/viewport.js"></script>
-<script type="text/javascript" src="http://localhost:3000/js/intersects.min.js"></script>
-<script type="text/javascript" src="http://localhost:3000/js/main.js"></script>
+<script type="text/javascript" src="${s}/dist/app.bundle.js"></script>
