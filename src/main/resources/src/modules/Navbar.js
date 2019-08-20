@@ -32,10 +32,6 @@ class Navbar {
         this.nav.hide();
         return this.nav;
     }
-
-    getNav(){
-        return this.nav;
-    }
 }
 
 const navbar = new Navbar();

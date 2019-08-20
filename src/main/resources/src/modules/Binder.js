@@ -3,9 +3,22 @@ import { Arrow } from './Arrow.js'
 export class Binder extends Arrow {
     constructor(firstProgram, secondProgram, lineColor = 0xc3c3c3, lineSize = 2) {
         super(lineColor, lineSize);
+        this.interactive = true;
+        this.buttonMode = true;
         this.origProgram = firstProgram;
         this.destProgram = secondProgram;
         this.updatePoints();
+        this.on('pointerdown', this.onDragStart);
+    }
+
+    destroy(){
+        this.origProgram.binders.output.splice(this.origProgram.binders.output.indexOf(this));
+        this.destProgram.binders.input.splice(this.origProgram.binders.input.indexOf(this));
+        super.destroy();
+    }
+
+    onDragStart(){
+        console.log('dragging binder');
     }
 
     _bestPos(p1, p2, margin = 0, cornerMargin = 0) {

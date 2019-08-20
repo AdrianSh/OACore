@@ -61,6 +61,14 @@ class Program extends PIXI.Sprite {
         this.moving = false;
     }
 
+    destroy(){
+        this.binders.input.forEach(b => { b.destroy() })
+        this.binders.output.forEach(b => { b.destroy() })
+        navbar.program = navbar.lastProgram = undefined;
+        navbar.nav.hide();
+        super.destroy();
+    }
+
     upperCornerCoords() {
         return [this.x - 250 / 2, this.y - 156 / 2];
     }

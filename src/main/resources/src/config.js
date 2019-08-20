@@ -1,5 +1,6 @@
 import { Binder } from './modules/Binder';
 import { Program } from './modules/Program';
+import { binderProperties } from './modules/BinderProperties';
 import { mainContainer } from './index';
 
 const menu = [
@@ -9,6 +10,8 @@ const menu = [
                 if (this.lastProgram == this.program)
                     console.warn(`You should bind two different programs...`);
                 else {
+                    binderProperties.show();
+
                     let b = new Binder(this.lastProgram, this.program);
                     mainContainer.addChild(b);
                     this.program.addInputBinder(b);
@@ -19,7 +22,17 @@ const menu = [
         }
     },
     {
-        button: ['X', 'btn-danger'], action: function(){
+        button: ['Properties', 'btn-info'], action: function(){
+            
+        }
+    },
+    {
+        button: ['Remove', 'btn-danger'], action: function(){
+            this.program.destroy();
+        }
+    },
+    {
+        button: ['X', 'btn-light'], action: function(){
             this.nav.hide();
         }
     }
