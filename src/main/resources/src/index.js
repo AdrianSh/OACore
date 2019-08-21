@@ -58,4 +58,4 @@ for (let i = 0; i < 10; i++) {
   mainContainer.addChild(program);
 }
 
-export { mainContainer }
+export { mainContainer, app }

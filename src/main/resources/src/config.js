@@ -1,7 +1,8 @@
+import * as PIXI from 'pixi.js'
 import { Binder } from './modules/Binder';
 import { Program } from './modules/Program';
 import { binderProperties } from './modules/BinderProperties';
-import { mainContainer } from './index';
+import { mainContainer, app } from './index';
 
 const menu = [
     {
@@ -28,7 +29,8 @@ const menu = [
     },
     {
         button: ['Remove', 'btn-danger'], action: function(){
-            this.program.destroy();
+            if(this.program != undefined) this.program.destroy();
+            if(this.binder != undefined) this.binder.destroy();
         }
     },
     {

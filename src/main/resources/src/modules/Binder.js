@@ -1,14 +1,18 @@
-import { Arrow } from './Arrow.js'
+import * as PIXI from 'pixi.js';
+import { Arrow } from './Arrow.js';
+import { navbar } from './Navbar';
 
 export class Binder extends Arrow {
     constructor(firstProgram, secondProgram, lineColor = 0xc3c3c3, lineSize = 2) {
         super(lineColor, lineSize);
-        this.interactive = true;
-        this.buttonMode = true;
         this.origProgram = firstProgram;
         this.destProgram = secondProgram;
-        this.updatePoints();
+        this.hitArea = new PIXI.Polygon(new PIXI.Point(), new PIXI.Point(), new PIXI.Point(), new PIXI.Point());
+        this.interactive = true;
+        this.buttonMode = true;
         this.on('pointerdown', this.onDragStart);
+
+        this.updatePoints();
     }
 
     destroy(){
@@ -17,8 +21,15 @@ export class Binder extends Arrow {
         super.destroy();
     }
 
-    onDragStart(){
-        console.log('dragging binder');
+    _showNavbar(x, y){
+        navbar.nav.css({ top: y, left: x, position: 'absolute' });
+        navbar.nav.show();
+        navbar.program = undefined;
+        navbar.binder = this;
+    }
+
+    onDragStart(e){
+        this._showNavbar(e.data.global.x, e.data.global.y);
     }
 
     _bestPos(p1, p2, margin = 0, cornerMargin = 0) {
@@ -55,6 +66,8 @@ export class Binder extends Arrow {
         let pDest = this._bestPos(this.origProgram, this.destProgram, - this.triangle.length / 2, 2 + this.triangle.length / 2);
         let pOrig = this._bestPos(this.destProgram, this.origProgram, 0, 4);
         super.updatePoints([pOrig.x, pOrig.y, pDest.x, pDest.y]);
+        this.hitArea.points = [pOrig.x - this.lineWidth, pOrig.y - this.lineWidth, pOrig.x + this.lineWidth, pOrig.y + this.lineWidth, 
+            pDest.x - this.lineWidth, pDest.y - this.lineWidth, pDest.x + this.lineWidth, pDest.y + this.lineWidth];
         return this;
     }
 

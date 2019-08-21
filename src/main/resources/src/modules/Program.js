@@ -88,12 +88,11 @@ class Program extends PIXI.Sprite {
         this.draggingObjectData = event.data;
         this.alpha = 0.5;
         this.dragging = true;
-        this._showNavbar();
+        this._showNavbar(event.data.global.x, event.data.global.y);
     }
 
-    _showNavbar(){
-        let gPos = this.getGlobalPosition();
-        navbar.nav.css({ top: gPos.y, left: gPos.x, position: 'absolute' });
+    _showNavbar(x, y){
+        navbar.nav.css({ top: y, left: x, position: 'absolute' });
         navbar.nav.show();
         navbar.program = this;
     }
@@ -105,7 +104,7 @@ class Program extends PIXI.Sprite {
         this.draggingObjectData = null;
     }
 
-    onDragMove() {
+    onDragMove(e) {
         if (this.dragging) {
             const newPosition = this.draggingObjectData.getLocalPosition(this.parent);
             this.x = newPosition.x;
@@ -116,7 +115,7 @@ class Program extends PIXI.Sprite {
             if (this.binders.output.length > 0)
                 this.binders.output.forEach(b => b.updatePoints());
 
-            this._showNavbar();
+            this._showNavbar(e.data.global.x, e.data.global.y);
 
             let collision = boxBox();
 
