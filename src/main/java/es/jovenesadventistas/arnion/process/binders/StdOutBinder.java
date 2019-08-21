@@ -2,6 +2,7 @@ package es.jovenesadventistas.arnion.process.binders;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Flow.Subscriber;
@@ -154,5 +155,17 @@ public class StdOutBinder implements Binder, Subscriber<StringTransfer> {
 	@Override
 	public String toString() {
 		return "StdOutBinder [procExecDetails=" + procExecDetails + ", futureReady=" + futureReady + ", out=" + out + ", subscription=" + subscription + "]";
+	}
+
+	@Override
+	public String getForm() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Binder parseForm(HashMap<String, String> data) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

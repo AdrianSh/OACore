@@ -1,5 +1,6 @@
 package es.jovenesadventistas.arnion.process.binders;
 
+import java.util.HashMap;
 import java.util.function.Function;
 
 public class RunnableBinder implements Binder {
@@ -48,6 +49,18 @@ public class RunnableBinder implements Binder {
 	@Override
 	public String toString() {
 		return "RunnableBinder [runnable=" + runnable + "]";
+	}
+
+	@Override
+	public String getForm() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Binder parseForm(HashMap<String, String> data) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

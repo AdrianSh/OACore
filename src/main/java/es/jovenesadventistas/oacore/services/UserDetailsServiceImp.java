@@ -30,7 +30,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
 	        logger.warn("loadUserByUsername('" + username + "'): " + (u!= null ? u.getLogin() : ""));
 	        return new es.jovenesadventistas.oacore.UserDetails(u);
 	    } catch (Exception e) {
-    		logger.info("No such user: " + username);
+    		logger.info("No such user: " + username, e);
     		throw new UsernameNotFoundException(username, e);
     	}
     }

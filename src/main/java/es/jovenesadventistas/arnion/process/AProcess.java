@@ -9,19 +9,28 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+
 /**
  * @author Adrian E. Sanchez Hurtado
  * @param <S>
  * @param <T>
  *
  */
+
 public class AProcess {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
+	
+	@Id
+	private ObjectId id = new ObjectId();
+	
 	private ArrayList<String> command;
 	private File workingDirectory;
 	private Map<String, String> modifiedEnvironment;
 	private boolean inheritIO;
 	private ProcessBuilder pBuilder;
+	private ObjectId userId;
 
 	public AProcess(String... strings) {
 		this.command = new ArrayList<String>(Arrays.asList(strings));
@@ -86,6 +95,30 @@ public class AProcess {
 
 	public void setInheritIO(boolean inheritIO) {
 		this.inheritIO = inheritIO;
+	}
+
+	public ObjectId getUserId() {
+		return userId;
+	}
+
+	public void setUserId(ObjectId userId) {
+		this.userId = userId;
+	}
+
+	public ObjectId getId() {
+		return id;
+	}
+
+	public void setId(ObjectId id) {
+		this.id = id;
+	}
+
+	public ProcessBuilder getpBuilder() {
+		return pBuilder;
+	}
+
+	public void setpBuilder(ProcessBuilder pBuilder) {
+		this.pBuilder = pBuilder;
 	}
 
 	@Override

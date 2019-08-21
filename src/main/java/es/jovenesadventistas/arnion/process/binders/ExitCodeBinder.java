@@ -1,6 +1,7 @@
 package es.jovenesadventistas.arnion.process.binders;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -82,5 +83,17 @@ public class ExitCodeBinder extends SplitBinder<IntegerTransfer, IntegerTransfer
 	public String toString() {
 		return "ExitCodeBinder [procExecDetails=" + procExecDetails + ", futureReady=" + futureReady + ", onFinishFunc="
 				+ onFinishFunc + "]";
+	}
+
+	@Override
+	public String getForm() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Binder parseForm(HashMap<String, String> data) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

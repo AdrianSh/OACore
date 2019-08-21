@@ -39,7 +39,4 @@
 	</footer>
 </container>
 
-<script src="${s}/js/jquery-3.4.1.min.js"></script>
-<script src="${s}/js/popper.min.js"></script>
-<script src="${s}/bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="${s}/js/main.js"></script>
+<script src="${s}/main.bundle.js"></script>

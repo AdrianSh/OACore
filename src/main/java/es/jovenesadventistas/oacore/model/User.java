@@ -5,6 +5,8 @@ import org.owasp.encoder.Encode;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 
+import es.jovenesadventistas.arnion.workflow.Workflow;
+
 public class User {
 	@Id
 	private ObjectId id = new ObjectId();
@@ -22,6 +24,8 @@ public class User {
 	private String profileBackground = "http://lorempixel.com/100/100/people/10/";
 	private String securityQuestion;
 	private String securityAnswer;
+	
+	private Workflow mainWorkflow;
 
 	// @DBRef  // It will be eager loaded private List<Actividad> activities;
 
@@ -172,6 +176,46 @@ public class User {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public Workflow getMainWorkflow() {
+		return mainWorkflow;
+	}
+
+	public void setMainWorkflow(Workflow mainWorkflow) {
+		this.mainWorkflow = mainWorkflow;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getSurname() {
+		return surname;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+
+	public String getSecurityQuestion() {
+		return securityQuestion;
+	}
+
+	public void setSecurityQuestion(String securityQuestion) {
+		this.securityQuestion = securityQuestion;
+	}
+
+	public String getSecurityAnswer() {
+		return securityAnswer;
+	}
+
+	public void setSecurityAnswer(String securityAnswer) {
+		this.securityAnswer = securityAnswer;
 	}
 
 	@Override

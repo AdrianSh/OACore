@@ -3,6 +3,7 @@ package es.jovenesadventistas.arnion.process.binders;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Flow.Subscriber;
@@ -135,6 +136,21 @@ public class DirectStdInBinder extends SubmissionPublisher<StreamTransfer> imple
 	public String toString() {
 		return "DirectStdInBinder [procExecDetails=" + procExecDetails + ", futureReady=" + futureReady + ", ready="
 				+ ready + ", join=" + join + ", subscription=" + subscription + "]";
+	}
+
+	@Override
+	public String getForm() {
+		String form = "{"
+				.concat("'DirectStdInBinder(ProcessExecutionDetails procExecDetails)' : \"")
+				.concat("<>")
+				.concat("\"")
+				.concat("}");
+		return null;
+	}
+
+	@Override
+	public Binder parseForm(HashMap<String, String> data) {
+		return null;
 	}
 
 	

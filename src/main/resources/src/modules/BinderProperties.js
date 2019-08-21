@@ -1,19 +1,20 @@
 import $ from "jquery";
-import {menu} from '../config'
+import { menu } from '../config'
+import { serverHost } from '../serverConfig';
 
 class BinderProperties {
-    constructor(){
+    constructor() {
         this.id = 'binderProperties';
         this.buildHtmlElement();
         this.modal.modal('handleUpdate');
     }
 
-    show(){
+    show() {
         this.modal.modal('show');
-        
+
     }
 
-    buildHtmlElement(){
+    buildHtmlElement() {
         this.modal = $(`
         <div class="modal fade" id="${this.id}" tabindex="-1" role="dialog" aria-labelledby="${this.id}CenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
@@ -38,8 +39,7 @@ class BinderProperties {
                         <form class="mt-3">
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Binder type</label>
-                                <select class="form-control">
-                                    <option>RunnableBinder</option>
+                                <select class="form-control" id="binderTypeSelector">
                                 </select>
                                 <small id="emailHelp" class="form-text text-muted">Defines the link between the programs</small>
                             </div>
@@ -68,14 +68,42 @@ class BinderProperties {
             </div>
         </div>`);
 
-        let form = this.modal.find(`form.form-inline`);
+        let binderTypeSelector = this.modal.find(`#binderTypeSelector`);
+        this.getFromServer(data => {
+            data.forEach(bName => {
+                binderTypeSelector.append($(`<option value="${bName}">${bName}</option>`)[0]);
+            });
+        }, 'binders');
+
+        binderTypeSelector.on('change', e => {
+            e.preventDefault();
+            this.getFromServer(data => {
+                console.log(data);
+            }, 'binders', { binder: e.target.value} );
+        })
+
 
         document.body.appendChild(this.modal[0]);
 
         return this.modal;
     }
+
+    getFromServer(cb, url = 'binders', data = undefined) {
+        $.ajax({
+            url: `${serverHost}/${url}`,
+            data: data,
+        }).then(cb);
+    }
+
+    postToServer(data, url = 'binders', cb = function(msg){}) {
+        $.ajax({
+            method: 'POST',
+            url: `${serverHost}/${url}`,
+            data: data
+        }).done(cb);
+    }
 }
 
 const binderProperties = new BinderProperties();
 // Object.freeze(binderProperties);
-export {binderProperties};
+export { binderProperties };

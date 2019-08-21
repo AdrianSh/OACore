@@ -3,6 +3,7 @@ package es.jovenesadventistas.arnion.process.binders;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.SubmissionPublisher;
@@ -108,5 +109,17 @@ public class StdInBinder implements Binder {
 		return "StdInBinder [procExecDetails=" + procExecDetails + ", futureReady=" + futureReady + ", stdInPublisher="
 				+ stdInPublisher + ", stdInErrorPublisher=" + stdInErrorPublisher + ", in=" + in + ", inError="
 				+ inError + "]";
+	}
+
+	@Override
+	public String getForm() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Binder parseForm(HashMap<String, String> data) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

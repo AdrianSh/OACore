@@ -1,8 +1,8 @@
 import * as PIXI from 'pixi.js'
 import { Binder } from './modules/Binder';
 import { Program } from './modules/Program';
-import { binderProperties } from './modules/BinderProperties';
 import { mainContainer, app } from './index';
+import { binderProperties } from './modules/BinderProperties';
 
 const menu = [
     {
