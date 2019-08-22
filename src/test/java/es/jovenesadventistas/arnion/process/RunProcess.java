@@ -22,11 +22,11 @@ public class RunProcess {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger(RunProcess.class);
 	
 	@Test
-	void test() {
+	void test() throws Exception {
 		new RunProcess();
 	}
 	
-	public RunProcess() {
+	public RunProcess() throws Exception {
 
 		try {
 			ProcessExecutor pExecutor = ProcessExecutor.getInstance();

@@ -20,11 +20,11 @@ public class ProcessDirectStdInBinder {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
 
 	@Test
-	void test() {
+	void test() throws Exception {
 		new ProcessDirectStdInBinder();		
 	}
 	
-	public ProcessDirectStdInBinder() {
+	public ProcessDirectStdInBinder() throws Exception {
 
 		try {
 			ProcessExecutor pExecutor = ProcessExecutor.getInstance();

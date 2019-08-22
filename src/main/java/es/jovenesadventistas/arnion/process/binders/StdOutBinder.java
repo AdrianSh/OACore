@@ -2,21 +2,27 @@ package es.jovenesadventistas.arnion.process.binders;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
-import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+
+import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
+import es.jovenesadventistas.arnion.process.binders.Subscribers.ASubscriber;
 import es.jovenesadventistas.arnion.process.binders.Transfers.StringTransfer;
 import es.jovenesadventistas.arnion.process.persistence.TransferStore;
+import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
 
-public class StdOutBinder implements Binder, Subscriber<StringTransfer> {
+public class StdOutBinder implements Binder, ASubscriber<StringTransfer> {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
 
+	@Id
+	private ObjectId id = new ObjectId();
+	
 	private TransferStore<StringTransfer> transfStore;
 	private ProcessExecutionDetails procExecDetails;
 	private CompletableFuture<Boolean> futureReady;
@@ -25,7 +31,7 @@ public class StdOutBinder implements Binder, Subscriber<StringTransfer> {
 	private OutputStream out;
 	// private InputStream in;
 	private Function<Void, Void> onFinishFunc;
-	private Subscription subscription;
+	private APublisher subscription;
 
 	public StdOutBinder(ProcessExecutionDetails procExecDetails) {
 		this.procExecDetails = procExecDetails;
@@ -99,8 +105,12 @@ public class StdOutBinder implements Binder, Subscriber<StringTransfer> {
 
 	@Override
 	public void onSubscribe(Subscription subscription) {
-		this.subscription = subscription;
-		this.futureReady.complete(true);
+		if(subscription instanceof APublisher) {
+			this.subscription = (APublisher) subscription;
+			this.futureReady.complete(true);
+		} else {
+			logger.error("Cannot onSubscribe using an unknown subscription. It should implements APublisher.");
+		}
 	}
 
 	@Override
@@ -158,14 +168,75 @@ public class StdOutBinder implements Binder, Subscriber<StringTransfer> {
 	}
 
 	@Override
-	public String getForm() {
-		// TODO Auto-generated method stub
-		return null;
+	public ObjectId getId() {
+		return this.id;
 	}
 
-	@Override
-	public Binder parseForm(HashMap<String, String> data) {
-		// TODO Auto-generated method stub
-		return null;
+	public TransferStore<StringTransfer> getTransfStore() {
+		return transfStore;
+	}
+
+	public void setTransfStore(TransferStore<StringTransfer> transfStore) {
+		this.transfStore = transfStore;
+	}
+
+	public ProcessExecutionDetails getProcExecDetails() {
+		return procExecDetails;
+	}
+
+	public void setProcExecDetails(ProcessExecutionDetails procExecDetails) {
+		this.procExecDetails = procExecDetails;
+	}
+
+	public CompletableFuture<Boolean> getFutureReady() {
+		return futureReady;
+	}
+
+	public void setFutureReady(CompletableFuture<Boolean> futureReady) {
+		this.futureReady = futureReady;
+	}
+
+	public AtomicBoolean getTransferingStore() {
+		return transferingStore;
+	}
+
+	public void setTransferingStore(AtomicBoolean transferingStore) {
+		this.transferingStore = transferingStore;
+	}
+
+	public CompletableFuture<Boolean> getTransferingStoreFlag() {
+		return transferingStoreFlag;
+	}
+
+	public void setTransferingStoreFlag(CompletableFuture<Boolean> transferingStoreFlag) {
+		this.transferingStoreFlag = transferingStoreFlag;
+	}
+
+	public OutputStream getOut() {
+		return out;
+	}
+
+	public void setOut(OutputStream out) {
+		this.out = out;
+	}
+
+	public Function<Void, Void> getOnFinishFunc() {
+		return onFinishFunc;
+	}
+
+	public void setOnFinishFunc(Function<Void, Void> onFinishFunc) {
+		this.onFinishFunc = onFinishFunc;
+	}
+
+	public APublisher getSubscription() {
+		return subscription;
+	}
+
+	public void setSubscription(APublisher subscription) {
+		this.subscription = subscription;
+	}
+
+	public void setId(ObjectId id) {
+		this.id = id;
 	}
 }

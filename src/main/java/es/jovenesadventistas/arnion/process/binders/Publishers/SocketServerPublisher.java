@@ -6,22 +6,26 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.SubmissionPublisher;
-import java.util.concurrent.Flow.Subscriber;
-import java.util.concurrent.Flow.Subscription;
 
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+
+import es.jovenesadventistas.arnion.process.binders.Subscribers.ASubscriber;
 import es.jovenesadventistas.arnion.process.binders.Transfers.SocketTransfer;
 
-public class SocketServerPublisher<T extends SocketTransfer> extends SubmissionPublisher<T> implements Subscription {
+public class SocketServerPublisher<T extends SocketTransfer> extends SubmissionPublisher<T> implements APublisher {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
-	private ConcurrentHashMap<Subscriber<? super T>, Socket> subscribers;
+	private ConcurrentHashMap<ASubscriber<? super T>, Socket> subscribers;
 	private ServerSocket ss;
+	@Id
+	private ObjectId id = new ObjectId();
 
 	public SocketServerPublisher(ServerSocket ss) {
-		this.subscribers = new ConcurrentHashMap<Subscriber<? super T>, Socket>();
+		this.subscribers = new ConcurrentHashMap<ASubscriber<? super T>, Socket>();
 		this.ss = ss;
 	}
 
-	public void subscribe(Subscriber<? super T> subscriber) {
+	public void subscribe(ASubscriber<? super T> subscriber) {
 		try {
 			subscriber.onSubscribe(this);
 			this.subscribers.put(subscriber, this.ss.accept());
@@ -71,5 +75,26 @@ public class SocketServerPublisher<T extends SocketTransfer> extends SubmissionP
 	@Override
 	public void cancel() {
 		logger.debug("Cancel request.");
+	}
+
+	public ConcurrentHashMap<ASubscriber<? super T>, Socket> getSubscribersMap() {
+		return subscribers;
+	}
+
+	public void setSubscribers(ConcurrentHashMap<ASubscriber<? super T>, Socket> subscribers) {
+		this.subscribers = subscribers;
+	}
+
+	public ServerSocket getSs() {
+		return ss;
+	}
+
+	public void setSs(ServerSocket ss) {
+		this.ss = ss;
+	}
+
+	@Override
+	public ObjectId getId() {
+		return this.id;
 	}
 }

@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * @author Adrian E. Sanchez Hurtado
@@ -18,7 +19,7 @@ import org.springframework.data.annotation.Id;
  * @param <T>
  *
  */
-
+@Document
 public class AProcess {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
 	
@@ -113,11 +114,11 @@ public class AProcess {
 		this.id = id;
 	}
 
-	public ProcessBuilder getpBuilder() {
+	public ProcessBuilder getPBuilder() {
 		return pBuilder;
 	}
 
-	public void setpBuilder(ProcessBuilder pBuilder) {
+	public void setPBuilder(ProcessBuilder pBuilder) {
 		this.pBuilder = pBuilder;
 	}
 

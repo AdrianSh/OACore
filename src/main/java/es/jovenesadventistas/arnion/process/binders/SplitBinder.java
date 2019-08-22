@@ -5,29 +5,38 @@ import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
+import es.jovenesadventistas.arnion.process.binders.Subscribers.ASubscriber;
 import es.jovenesadventistas.arnion.process.binders.Transfers.Transfer;
 
 /**
- * This binder uses an Implementation of a Subscriber<T> and Publisher<S> of different types of deliverables.
+ * This binder uses an Implementation of a Subscriber<T> and Publisher<S> of
+ * different types of deliverables.
+ * 
  * @author Adrian E. Sanchez Hurtado
  *
  */
 public abstract class SplitBinder<T extends Transfer, S extends Transfer> implements ReactiveStreamBinder<T, S> {
-	protected Subscriber<T> subscriber;
+	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
+	protected ASubscriber<T> subscriber;
 	protected SubmissionPublisher<S> publisher;
 	protected AtomicBoolean ready;
 	protected AtomicBoolean join;
-	
-	public SplitBinder(Subscriber<T> inputSubscriber, SubmissionPublisher<S> outputPublisher) {
+
+	public SplitBinder(ASubscriber<T> inputSubscriber, SubmissionPublisher<S> outputPublisher) {
 		this.subscriber = inputSubscriber;
 		this.publisher = outputPublisher;
 		this.ready = new AtomicBoolean(false);
 		this.join = new AtomicBoolean(false);
 	}
-	
+
 	@Override
 	public void onSubscribe(Subscription subscription) {
-		this.subscriber.onSubscribe(subscription);
+		if (subscription instanceof APublisher)
+			this.subscriber.onSubscribe(subscription);
+		else {
+			logger.error("Cannot subscribe using an unknown subscription. It should implements APublisher.");
+		}
 	}
 
 	/**
@@ -53,12 +62,12 @@ public abstract class SplitBinder<T extends Transfer, S extends Transfer> implem
 		this.join.set(true);
 		this.publisher.subscribe(subscriber);
 	}
-	
+
 	@Override
 	public void submit(S i) {
 		this.publisher.submit(i);
 	}
-	
+
 	@Override
 	public void close() {
 		this.publisher.close();
@@ -77,5 +86,44 @@ public abstract class SplitBinder<T extends Transfer, S extends Transfer> implem
 	@Override
 	public boolean joined() {
 		return this.join.get();
+	}
+
+	public ASubscriber<T> getSubscriber() {
+		return subscriber;
+	}
+
+	public void setSubscriber(ASubscriber<T> subscriber) {
+		this.subscriber = subscriber;
+	}
+
+	public SubmissionPublisher<S> getPublisher() {
+		return publisher;
+	}
+
+	public APublisher getAPublisher() throws Exception {
+		if (this.publisher instanceof APublisher)
+			return (APublisher) publisher;
+		else
+			throw new Exception("It is not an instance of APublisher.");
+	}
+
+	public void setPublisher(SubmissionPublisher<S> publisher) {
+		this.publisher = publisher;
+	}
+
+	public AtomicBoolean getReady() {
+		return ready;
+	}
+
+	public void setReady(AtomicBoolean ready) {
+		this.ready = ready;
+	}
+
+	public AtomicBoolean getJoin() {
+		return join;
+	}
+
+	public void setJoin(AtomicBoolean join) {
+		this.join = join;
 	}
 }

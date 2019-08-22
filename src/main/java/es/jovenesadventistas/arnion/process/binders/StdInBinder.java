@@ -3,18 +3,22 @@ package es.jovenesadventistas.arnion.process.binders;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.function.Function;
 
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+
 import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
 import es.jovenesadventistas.arnion.process.binders.Transfers.StringTransfer;
 
 public class StdInBinder implements Binder {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
-
+	@Id
+	private ObjectId id = new ObjectId();
 	private ProcessExecutionDetails procExecDetails;
 	private CompletableFuture<Boolean> futureReady;
 	private SubmissionPublisher<StringTransfer> stdInPublisher, stdInErrorPublisher;
@@ -112,14 +116,81 @@ public class StdInBinder implements Binder {
 	}
 
 	@Override
-	public String getForm() {
-		// TODO Auto-generated method stub
-		return null;
+	public ObjectId getId() {
+		return this.id;
 	}
 
-	@Override
-	public Binder parseForm(HashMap<String, String> data) {
-		// TODO Auto-generated method stub
-		return null;
+	public ProcessExecutionDetails getProcExecDetails() {
+		return procExecDetails;
+	}
+
+	public void setProcExecDetails(ProcessExecutionDetails procExecDetails) {
+		this.procExecDetails = procExecDetails;
+	}
+
+	public CompletableFuture<Boolean> getFutureReady() {
+		return futureReady;
+	}
+
+	public void setFutureReady(CompletableFuture<Boolean> futureReady) {
+		this.futureReady = futureReady;
+	}
+
+	public SubmissionPublisher<StringTransfer> getStdInPublisher() {
+		return stdInPublisher;
+	}
+
+	public void setStdInPublisher(SubmissionPublisher<StringTransfer> stdInPublisher) {
+		this.stdInPublisher = stdInPublisher;
+	}
+	
+	public APublisher getStdInAPublisher() throws Exception {
+		if (this.stdInPublisher instanceof APublisher)
+			return (APublisher) this.stdInPublisher;
+		else
+			throw new Exception("It is not an instance of APublisher.");
+	}
+	
+	public APublisher getStdInErrorAPublisher() throws Exception {
+		if (this.stdInErrorPublisher instanceof APublisher)
+			return (APublisher) this.stdInErrorPublisher;
+		else
+			throw new Exception("It is not an instance of APublisher.");
+	}
+
+	public SubmissionPublisher<StringTransfer> getStdInErrorPublisher() {
+		return stdInErrorPublisher;
+	}
+
+	public void setStdInErrorPublisher(SubmissionPublisher<StringTransfer> stdInErrorPublisher) {
+		this.stdInErrorPublisher = stdInErrorPublisher;
+	}
+
+	public InputStream getIn() {
+		return in;
+	}
+
+	public void setIn(InputStream in) {
+		this.in = in;
+	}
+
+	public InputStream getInError() {
+		return inError;
+	}
+
+	public void setInError(InputStream inError) {
+		this.inError = inError;
+	}
+
+	public Function<Void, Void> getOnFinishFunc() {
+		return onFinishFunc;
+	}
+
+	public void setOnFinishFunc(Function<Void, Void> onFinishFunc) {
+		this.onFinishFunc = onFinishFunc;
+	}
+
+	public void setId(ObjectId id) {
+		this.id = id;
 	}
 }

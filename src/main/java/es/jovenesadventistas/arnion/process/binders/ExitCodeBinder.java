@@ -1,11 +1,13 @@
 package es.jovenesadventistas.arnion.process.binders;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Function;
+
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 
 import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
 import es.jovenesadventistas.arnion.process.binders.Publishers.ConcurrentLinkedQueuePublisher;
@@ -14,7 +16,8 @@ import es.jovenesadventistas.arnion.process.binders.Transfers.IntegerTransfer;
 
 public class ExitCodeBinder extends SplitBinder<IntegerTransfer, IntegerTransfer> {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
-
+	@Id
+	private ObjectId id = new ObjectId();
 	private ProcessExecutionDetails procExecDetails;
 	private CompletableFuture<Boolean> futureReady;
 	private Function<Void, Void> onFinishFunc;
@@ -79,6 +82,30 @@ public class ExitCodeBinder extends SplitBinder<IntegerTransfer, IntegerTransfer
 		this.onFinishFunc = f;
 	}
 
+	public ProcessExecutionDetails getProcExecDetails() {
+		return procExecDetails;
+	}
+
+	public void setProcExecDetails(ProcessExecutionDetails procExecDetails) {
+		this.procExecDetails = procExecDetails;
+	}
+
+	public CompletableFuture<Boolean> getFutureReady() {
+		return futureReady;
+	}
+
+	public void setFutureReady(CompletableFuture<Boolean> futureReady) {
+		this.futureReady = futureReady;
+	}
+
+	public Function<Void, Void> getOnFinishFunc() {
+		return onFinishFunc;
+	}
+
+	public void setOnFinishFunc(Function<Void, Void> onFinishFunc) {
+		this.onFinishFunc = onFinishFunc;
+	}
+
 	@Override
 	public String toString() {
 		return "ExitCodeBinder [procExecDetails=" + procExecDetails + ", futureReady=" + futureReady + ", onFinishFunc="
@@ -86,14 +113,7 @@ public class ExitCodeBinder extends SplitBinder<IntegerTransfer, IntegerTransfer
 	}
 
 	@Override
-	public String getForm() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Binder parseForm(HashMap<String, String> data) {
-		// TODO Auto-generated method stub
-		return null;
+	public ObjectId getId() {
+		return this.id;
 	}
 }

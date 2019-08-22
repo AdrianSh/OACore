@@ -18,7 +18,9 @@ public class ProcessExecutionDetails {
 	private CompletableFuture<Process> systemProcess;
 	private Binder binder;
 
-	public ProcessExecutionDetails(AProcess processDef) {
+	public ProcessExecutionDetails(AProcess processDef) throws Exception {
+		if(processDef == null)
+			throw new Exception("Process definition should not be null, please check its origin.");
 		this.process = processDef;
 		this.systemProcess = new CompletableFuture<Process>();
 		this.executed = new AtomicBoolean(false);

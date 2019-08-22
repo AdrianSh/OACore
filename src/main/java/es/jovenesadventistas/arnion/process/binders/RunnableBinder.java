@@ -1,10 +1,14 @@
 package es.jovenesadventistas.arnion.process.binders;
 
-import java.util.HashMap;
 import java.util.function.Function;
 
-public class RunnableBinder implements Binder {
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 
+public class RunnableBinder implements Binder {
+	@Id
+	private ObjectId id = new ObjectId();
+	
 	private Runnable runnable;
 	private Function<Void, Void> onFinishFunc;
 
@@ -52,15 +56,15 @@ public class RunnableBinder implements Binder {
 	}
 
 	@Override
-	public String getForm() {
-		// TODO Auto-generated method stub
-		return null;
+	public ObjectId getId() {
+		return this.id;
 	}
 
-	@Override
-	public Binder parseForm(HashMap<String, String> data) {
-		// TODO Auto-generated method stub
-		return null;
+	public Runnable getRunnable() {
+		return runnable;
 	}
 
+	public void setRunnable(Runnable runnable) {
+		this.runnable = runnable;
+	}
 }

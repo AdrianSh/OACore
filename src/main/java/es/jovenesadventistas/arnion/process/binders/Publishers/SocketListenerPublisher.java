@@ -8,20 +8,25 @@ import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Flow.Publisher;
 import java.util.concurrent.Flow.Subscriber;
-import java.util.concurrent.Flow.Subscription;
 
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+
+import es.jovenesadventistas.arnion.process.binders.Subscribers.ASubscriber;
 import es.jovenesadventistas.arnion.process.binders.Transfers.StringTransfer;
 
-public class SocketListenerPublisher implements Publisher<StringTransfer>, Subscription, Runnable {
+public class SocketListenerPublisher implements Publisher<StringTransfer>, APublisher, Runnable {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
-	private ConcurrentLinkedQueue<Subscriber<? super StringTransfer>> subscribers;
+	private ConcurrentLinkedQueue<ASubscriber<? super StringTransfer>> subscribers;
 	private Socket socket;
 	private InputStream in;
+	@Id
+	private ObjectId id = new ObjectId();
 	
 	public SocketListenerPublisher(Socket socket) throws IOException {
 		this.socket = socket;
 		this.in = socket.getInputStream();
-		this.subscribers = new ConcurrentLinkedQueue<Subscriber<? super StringTransfer>>();
+		this.subscribers = new ConcurrentLinkedQueue<ASubscriber<? super StringTransfer>>();
 	}
 	
 	public Socket getSocket() {
@@ -72,11 +77,20 @@ public class SocketListenerPublisher implements Publisher<StringTransfer>, Subsc
 	@Override
 	public void subscribe(Subscriber<? super StringTransfer> subscriber) {
 		subscriber.onSubscribe(this);
-		this.subscribers.add(subscriber);
+		if(subscriber instanceof ASubscriber) {
+			this.subscribers.add((ASubscriber<? super StringTransfer>) subscriber);
+		} else {
+			logger.error("Cannot subscribe using an unknown subscriber type.");
+		}
 	}
 
 	@Override
 	public String toString() {
 		return "SocketListenerPublisher [socket=" + socket + ", in=" + in + "]";
+	}
+
+	@Override
+	public ObjectId getId() {
+		return this.id;
 	}
 }

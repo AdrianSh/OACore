@@ -5,15 +5,19 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+
+import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
 import es.jovenesadventistas.arnion.process.binders.Transfers.Transfer;
 
-public class SocketSubscriber<T extends Transfer> implements Subscriber<T> {
+public class SocketSubscriber<T extends Transfer> implements ASubscriber<T> {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
-
-	private Subscription subscription;
+	@Id
+	private ObjectId id = new ObjectId();
+	private APublisher subscription;
 	private ConcurrentLinkedQueue<T> data;
 	private boolean subscribed;
 	private boolean complete;
@@ -31,9 +35,13 @@ public class SocketSubscriber<T extends Transfer> implements Subscriber<T> {
 
 	@Override
 	public void onSubscribe(Subscription subscription) {
-		this.subscription = subscription;
-		this.subscribed = true;
-		// this.subscription.request(1);
+		if(subscription instanceof APublisher) {
+			this.subscription = (APublisher) subscription;
+			this.subscribed = true;
+			// this.subscription.request(1);
+		} else {
+			logger.error("Cannot onSubscribe using an unknown subscription. It should implements APublisher.");
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -68,6 +76,18 @@ public class SocketSubscriber<T extends Transfer> implements Subscriber<T> {
 		return this.data;
 	}
 	
+	public Socket getS() {
+		return s;
+	}
+
+	public void setS(Socket s) {
+		this.s = s;
+	}
+
+	public void setData(ConcurrentLinkedQueue<T> data) {
+		this.data = data;
+	}
+
 	public boolean isSubscribed() {
 		return this.subscribed;
 	}
@@ -91,5 +111,10 @@ public class SocketSubscriber<T extends Transfer> implements Subscriber<T> {
 			logger.error("An error ocurred when closing BufferedReader and Socket.", e);
 		}
 		logger.debug("No more data from the subscription: {}", this.subscription);
+	}
+
+	@Override
+	public ObjectId getId() {
+		return this.id;
 	}
 }

@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import es.jovenesadventistas.oacore.Messages;
 import es.jovenesadventistas.oacore.UserDetails;
-import es.jovenesadventistas.oacore.model.Actividad;
-import es.jovenesadventistas.oacore.model.User;
 
 @Controller
 public class HomeController {
@@ -79,8 +77,8 @@ public class HomeController {
 		if (!UserController.isAdmin()) {
 			returnn = "redirect:/admin/login";
 		} else {
-			User u = UserController.getInstance().getPrincipal().getUser();
-			Actividad atv = Actividad.createActividad("Admin loaded.", u, new Date());
+			// User u = UserController.getInstance().getPrincipal().getUser();
+			// Actividad atv = Actividad.createActividad("Admin loaded.", u, new Date());
 			
 			// u.addActividad(actvs, atv);
 			// model.addAttribute("mensajes", entityManager.createNamedQuery("allMensajesByUser").setParameter("userParam", u).getResultList());

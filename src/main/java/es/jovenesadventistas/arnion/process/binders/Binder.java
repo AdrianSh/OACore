@@ -1,11 +1,16 @@
 package es.jovenesadventistas.arnion.process.binders;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Function;
 
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+
+@Document
 public interface Binder extends Runnable {
 	public boolean ready();
 
@@ -53,17 +58,5 @@ public interface Binder extends Runnable {
 		return r;
 	}
 	
-	/**
-	 * A HTML form for the modal in order to request the required parametters for its parsing.
-	 * @return
-	 */
-	public String getForm();
-	/**
-	 * Please see: getForm
-	 * 
-	 * Parse and retrieve and instance of this binder using the given parameters
-	 * @param data Parameters for the constructor
-	 * @return
-	 */
-	public Binder parseForm(HashMap<String, String> data);
+	public ObjectId getId();
 }

@@ -2,15 +2,19 @@ package es.jovenesadventistas.arnion.process.binders.Subscribers;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+
+import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
 import es.jovenesadventistas.arnion.process.binders.Transfers.Transfer;
 
-public class ConcurrentLinkedQueueSubscriber<T extends Transfer> implements Subscriber<T> {
+public class ConcurrentLinkedQueueSubscriber<T extends Transfer> implements ASubscriber<T> {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
-
-	private Subscription subscription;
+	@Id
+	private ObjectId id = new ObjectId();
+	private APublisher subscription;
 	private ConcurrentLinkedQueue<T> data;
 	private boolean subscribed;
 	private boolean complete;
@@ -22,9 +26,13 @@ public class ConcurrentLinkedQueueSubscriber<T extends Transfer> implements Subs
 
 	@Override
 	public void onSubscribe(Subscription subscription) {
-		this.subscription = subscription;
-		this.subscribed = true;
-		// this.subscription.request(1);
+		if (subscription instanceof APublisher) {
+			this.subscription = (APublisher) subscription;
+			this.subscribed = true;
+			// this.subscription.request(1);
+		} else {
+			logger.error("Cannot onSubscribe using an unknown subscription. It should implements APublisher.");
+		}
 	}
 
 	@Override
@@ -49,13 +57,37 @@ public class ConcurrentLinkedQueueSubscriber<T extends Transfer> implements Subs
 	public T getData() {
 		return this.data.poll();
 	}
-	
+
 	public ConcurrentLinkedQueue<T> getAllData() {
 		return this.data;
 	}
-	
+
 	public boolean isSubscribed() {
 		return this.subscribed;
+	}
+
+	public APublisher getSubscription() {
+		return subscription;
+	}
+
+	public void setSubscription(APublisher subscription) {
+		this.subscription = subscription;
+	}
+
+	public boolean isComplete() {
+		return complete;
+	}
+
+	public void setComplete(boolean complete) {
+		this.complete = complete;
+	}
+
+	public void setData(ConcurrentLinkedQueue<T> data) {
+		this.data = data;
+	}
+
+	public void setSubscribed(boolean subscribed) {
+		this.subscribed = subscribed;
 	}
 
 	@Override
@@ -70,5 +102,10 @@ public class ConcurrentLinkedQueueSubscriber<T extends Transfer> implements Subs
 		this.subscribed = false;
 		this.complete = true;
 		logger.debug("No more data from the subscription: {}", this.subscription);
+	}
+
+	@Override
+	public ObjectId getId() {
+		return this.id;
 	}
 }

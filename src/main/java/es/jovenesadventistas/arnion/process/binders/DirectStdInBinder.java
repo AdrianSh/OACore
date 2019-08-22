@@ -3,27 +3,33 @@ package es.jovenesadventistas.arnion.process.binders;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
+
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+
 import java.util.concurrent.Future;
 import java.util.concurrent.SubmissionPublisher;
 
 import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
+import es.jovenesadventistas.arnion.process.binders.Subscribers.ASubscriber;
 import es.jovenesadventistas.arnion.process.binders.Transfers.StreamTransfer;
 
-public class DirectStdInBinder extends SubmissionPublisher<StreamTransfer> implements Binder, Subscriber<StreamTransfer> {
+public class DirectStdInBinder extends SubmissionPublisher<StreamTransfer> implements Binder, ASubscriber<StreamTransfer> {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
-	
+	@Id
+	private ObjectId id = new ObjectId();
 	private ProcessExecutionDetails procExecDetails;
 	private CompletableFuture<Boolean> futureReady;
 	private AtomicBoolean ready;
 	private AtomicBoolean join;
-	private Subscription subscription;
+	private APublisher subscription;
 	private Function<Void, Void> onFinishFunc;
 
 	public DirectStdInBinder(ProcessExecutionDetails procExecDetails) {
@@ -92,7 +98,11 @@ public class DirectStdInBinder extends SubmissionPublisher<StreamTransfer> imple
 
 	@Override
 	public void onSubscribe(Subscription subscription) {
-		this.subscription = subscription;
+		if(subscription instanceof APublisher)
+			this.subscription = (APublisher) subscription;
+		else {
+			logger.error("Cannot subscribe using an unknown subscription. It should implements APublisher.");
+		}
 	}
 
 	@Override
@@ -132,6 +142,54 @@ public class DirectStdInBinder extends SubmissionPublisher<StreamTransfer> imple
 		this.onFinishFunc = f;
 	}
 
+	public ProcessExecutionDetails getProcExecDetails() {
+		return procExecDetails;
+	}
+
+	public void setProcExecDetails(ProcessExecutionDetails procExecDetails) {
+		this.procExecDetails = procExecDetails;
+	}
+
+	public CompletableFuture<Boolean> getFutureReady() {
+		return futureReady;
+	}
+
+	public void setFutureReady(CompletableFuture<Boolean> futureReady) {
+		this.futureReady = futureReady;
+	}
+
+	public AtomicBoolean getReady() {
+		return ready;
+	}
+
+	public void setReady(AtomicBoolean ready) {
+		this.ready = ready;
+	}
+
+	public AtomicBoolean getJoin() {
+		return join;
+	}
+
+	public void setJoin(AtomicBoolean join) {
+		this.join = join;
+	}
+
+	public APublisher getSubscription() {
+		return subscription;
+	}
+
+	public void setSubscription(APublisher subscription) {
+		this.subscription = subscription;
+	}
+
+	public Function<Void, Void> getOnFinishFunc() {
+		return onFinishFunc;
+	}
+
+	public void setOnFinishFunc(Function<Void, Void> onFinishFunc) {
+		this.onFinishFunc = onFinishFunc;
+	}
+
 	@Override
 	public String toString() {
 		return "DirectStdInBinder [procExecDetails=" + procExecDetails + ", futureReady=" + futureReady + ", ready="
@@ -139,19 +197,7 @@ public class DirectStdInBinder extends SubmissionPublisher<StreamTransfer> imple
 	}
 
 	@Override
-	public String getForm() {
-		String form = "{"
-				.concat("'DirectStdInBinder(ProcessExecutionDetails procExecDetails)' : \"")
-				.concat("<>")
-				.concat("\"")
-				.concat("}");
-		return null;
+	public ObjectId getId() {
+		return this.id;
 	}
-
-	@Override
-	public Binder parseForm(HashMap<String, String> data) {
-		return null;
-	}
-
-	
 }

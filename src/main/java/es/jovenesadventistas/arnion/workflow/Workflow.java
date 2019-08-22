@@ -1,47 +1,44 @@
 package es.jovenesadventistas.arnion.workflow;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import es.jovenesadventistas.arnion.process.AProcess;
 import es.jovenesadventistas.arnion.process.binders.Binder;
 import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
-import es.jovenesadventistas.oacore.model.User;
 
+@Document
 public class Workflow {
 	@Id
 	private ObjectId id = new ObjectId();
-	
-	protected List<ObjectId> processIds;
-	
-	/*
-	@DBRef
+
+	protected List<AProcess> process;
 	protected List<ProcessExecutionDetails> processExecutionDetails;
-	
-	@DBRef
 	protected List<ExecutorService> executorServices;
-	
-	@DBRef
 	protected List<Binder> binders;
-	*/
 
 	private ObjectId userId;
-	
+
 	public Workflow(ObjectId userId) {
-		this.processIds = new ArrayList<ObjectId>();
-		/*
-		this.processExecutionDetails = new ArrayList<ProcessExecutionDetails>(); 
+		this.process = new ArrayList<AProcess>();
+		this.processExecutionDetails = new ArrayList<ProcessExecutionDetails>();
 		this.executorServices = new ArrayList<ExecutorService>();
 		this.binders = new ArrayList<Binder>();
-		*/
 		this.setUserId(userId);
+	}
+
+	public Workflow(ObjectId userId, List<AProcess> process, List<ProcessExecutionDetails> processExecutionDetails,
+			List<ExecutorService> executorServices, List<Binder> binders) {
+		this.userId = userId;
+		this.process = process;
+		this.processExecutionDetails = processExecutionDetails;
+		this.executorServices = executorServices;
+		this.binders = binders;
 	}
 
 	public ObjectId getUserId() {
@@ -59,17 +56,42 @@ public class Workflow {
 	public void setId(ObjectId id) {
 		this.id = id;
 	}
-	
-	public List<ObjectId> getProcessIds() {
-		return processIds;
+
+	public List<AProcess> getProcess() {
+		return process;
 	}
 
-	public void setProcessIds(List<ObjectId> processIds) {
-		this.processIds = processIds;
+	public void setProcess(List<AProcess> process) {
+		this.process = process;
 	}
 	
-	public void addProcessId(ObjectId pId) {
-		this.processIds.add(pId);
+	public void addProcess(AProcess process) {
+		if(this.process == null) this.process = new ArrayList<AProcess>();
+		this.process.add(process);
+	}
+
+	public List<ProcessExecutionDetails> getProcessExecutionDetails() {
+		return processExecutionDetails;
+	}
+
+	public void setProcessExecutionDetails(List<ProcessExecutionDetails> processExecutionDetails) {
+		this.processExecutionDetails = processExecutionDetails;
+	}
+
+	public List<ExecutorService> getExecutorServices() {
+		return executorServices;
+	}
+
+	public void setExecutorServices(List<ExecutorService> executorServices) {
+		this.executorServices = executorServices;
+	}
+
+	public List<Binder> getBinders() {
+		return binders;
+	}
+
+	public void setBinders(List<Binder> binders) {
+		this.binders = binders;
 	}
 
 	@Override
@@ -80,5 +102,5 @@ public class Workflow {
 		}
 		return false;
 	}
-	
+
 }

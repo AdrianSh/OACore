@@ -17,7 +17,7 @@ public class ProcessSocketListenerBinder {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
 
 	//public ProcessSocketListenerBinder() {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		try {
 			ProcessExecutor pExecutor = ProcessExecutor.getInstance();
 			ExecutorService executorService = Executors.newSingleThreadExecutor();

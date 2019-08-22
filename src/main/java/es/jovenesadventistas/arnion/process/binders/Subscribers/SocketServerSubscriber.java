@@ -5,15 +5,20 @@ import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+
+import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
 import es.jovenesadventistas.arnion.process.binders.Transfers.Transfer;
 
-public class SocketServerSubscriber<T extends Transfer> implements Subscriber<T> {
+public class SocketServerSubscriber<T extends Transfer> implements ASubscriber<T> {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
 
-	private Subscription subscription;
+	@Id
+	private ObjectId id = new ObjectId();
+	private APublisher subscription;
 	private ServerSocket ss;
 	private Socket s;	
 	private ConcurrentLinkedQueue<T> data;
@@ -30,9 +35,13 @@ public class SocketServerSubscriber<T extends Transfer> implements Subscriber<T>
 
 	@Override
 	public void onSubscribe(Subscription subscription) {
-		this.subscription = subscription;
-		this.subscribed = true;
-		// this.subscription.request(1);
+		if(subscription instanceof APublisher) {
+			this.subscription = (APublisher) subscription;
+			this.subscribed = true;
+			// this.subscription.request(1);
+		} else {
+			logger.error("Cannot onSubscribe using an unknown subscription. It should implements APublisher.");
+		}
 	}
 
 	@Override
@@ -99,5 +108,58 @@ public class SocketServerSubscriber<T extends Transfer> implements Subscriber<T>
 		}
 		
 		logger.debug("No more data from the subscription: {}", this.subscription);
+	}
+
+	public APublisher getSubscription() {
+		return subscription;
+	}
+
+	public void setSubscription(APublisher subscription) {
+		this.subscription = subscription;
+	}
+
+	public ServerSocket getSs() {
+		return ss;
+	}
+
+	public void setSs(ServerSocket ss) {
+		this.ss = ss;
+	}
+
+	public Socket getS() {
+		return s;
+	}
+
+	public void setS(Socket s) {
+		this.s = s;
+	}
+
+	public Long getNumRequest() {
+		return numRequest;
+	}
+
+	public void setNumRequest(Long numRequest) {
+		this.numRequest = numRequest;
+	}
+
+	public Long getNumReceived() {
+		return numReceived;
+	}
+
+	public void setNumReceived(Long numReceived) {
+		this.numReceived = numReceived;
+	}
+
+	public void setData(ConcurrentLinkedQueue<T> data) {
+		this.data = data;
+	}
+
+	public void setSubscribed(boolean subscribed) {
+		this.subscribed = subscribed;
+	}
+
+	@Override
+	public ObjectId getId() {
+		return this.id;
 	}
 }

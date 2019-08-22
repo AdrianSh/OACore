@@ -24,7 +24,7 @@ public class ProcessStdInBinder {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
 	
 	// public ProcessStdInBinder() {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 
 		try {
 			
