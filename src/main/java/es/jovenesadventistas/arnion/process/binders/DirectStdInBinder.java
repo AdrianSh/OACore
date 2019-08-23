@@ -200,4 +200,10 @@ public class DirectStdInBinder extends SubmissionPublisher<StreamTransfer> imple
 	public ObjectId getId() {
 		return this.id;
 	}
+
+	@Override
+	public void setId(ObjectId id) {
+		if(id != null)
+			this.id = id;		
+	}
 }

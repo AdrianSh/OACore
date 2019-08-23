@@ -116,4 +116,10 @@ public class ExitCodeBinder extends SplitBinder<IntegerTransfer, IntegerTransfer
 	public ObjectId getId() {
 		return this.id;
 	}
+
+	@Override
+	public void setId(ObjectId id) {
+		if (id != null)
+			this.id = id;
+	}
 }

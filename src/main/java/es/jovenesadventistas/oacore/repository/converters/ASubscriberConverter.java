@@ -26,6 +26,7 @@ public class ASubscriberConverter {
 	public static class ASubscriberWriteConverter implements Converter<ASubscriber<?>, Document> {
 		public Document convert(ASubscriber<?> source) {
 			Document document = new Document();
+			document.put("_id", source.getId());
 			String subscriberType = source.getClass().getName();
 			TypeVariable<?>[] subscriberTypeParameters = source.getClass().getTypeParameters();
 			document.put("subscriberType", subscriberType);
@@ -104,6 +105,7 @@ public class ASubscriberConverter {
 			default:
 				throw new IllegalArgumentException("Unexpected value for subscriberType: " + subscriberType);
 			}
+			r.setId(source.getObjectId("_id"));
 			return r;
 		}
 	}

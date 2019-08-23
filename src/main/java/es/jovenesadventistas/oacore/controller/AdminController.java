@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,8 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException.NotFound;
-
 import es.jovenesadventistas.arnion.process.AProcess;
 import es.jovenesadventistas.arnion.process.binders.Binder;
 import es.jovenesadventistas.arnion.process.binders.ReactiveStreamBinder;
@@ -36,7 +33,6 @@ import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
 import es.jovenesadventistas.arnion.process.binders.Subscribers.ASubscriber;
 import es.jovenesadventistas.arnion.workflow.Workflow;
 import es.jovenesadventistas.oacore.Messages;
-import es.jovenesadventistas.oacore.UserDetails;
 import es.jovenesadventistas.oacore.model.User;
 import es.jovenesadventistas.oacore.repository.AProcessRepository;
 import es.jovenesadventistas.oacore.repository.APublisherRepository;
@@ -60,34 +56,45 @@ public class AdminController {
 
 	@Autowired
 	Messages messages;
-	
-	// Making repositories accesible to other non-spring classes by using this instance
-	private static AdminController instance; 
-	
+
+	// Making repositories accesible to other non-spring classes by using this
+	// instance
+	private static AdminController instance;
+
 	@Autowired
 	private WorkflowRepository workflowRepository;
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private AProcessRepository aProcessRepository;
 
 	@Autowired
 	private APublisherRepository aPublisherRepository;
-	
+
 	@Autowired
 	private ASubscriberRepository aSubscriberRepository;
-	
+
 	@Autowired
 	private BinderRepository binderRepository;
-	
-	
+
+	private BinderConverter.BinderReadConverter binderReadConverter = new BinderConverter.BinderReadConverter();
+	private BinderConverter.BinderWriteConverter binderWriteConverter = new BinderConverter.BinderWriteConverter();
+	private WorkflowConverter.WorkflowReadConverter workflowReadConverter = new WorkflowConverter.WorkflowReadConverter();
+	private WorkflowConverter.WorkflowWriteConverter workflowWriteConverter = new WorkflowConverter.WorkflowWriteConverter();
+	private AProcessConverter.AProcessReadConverter aProcessReadConverter = new AProcessConverter.AProcessReadConverter();
+	private AProcessConverter.AProcessWriteConverter aProcessWriteConverter = new AProcessConverter.AProcessWriteConverter();
+	private APublisherConverter.APublisherReadConverter aPublisherReadConverter = new APublisherConverter.APublisherReadConverter();
+	private APublisherConverter.APublisherWriteConverter aPublisherWriteConverter = new APublisherConverter.APublisherWriteConverter();
+	private ASubscriberConverter.ASubscriberReadConverter aSubscriberReadConverter = new ASubscriberConverter.ASubscriberReadConverter();
+	private ASubscriberConverter.ASubscriberWriteConverter aSubscriberWriteConverter = new ASubscriberConverter.ASubscriberWriteConverter();
+
 	@PostConstruct
 	public void initialize() {
-	   AdminController.instance = this;
+		AdminController.instance = this;
 	}
-	
+
 	@ModelAttribute
 	public void addAttributes(Model model, Locale locale, HttpServletRequest httpServletRequest) {
 		model.addAttribute("s", "/static");
@@ -111,7 +118,7 @@ public class AdminController {
 		}
 	}
 
-	private boolean isAdmin(HttpServletRequest request, HttpServletResponse response) {		
+	private boolean isAdmin(HttpServletRequest request, HttpServletResponse response) {
 		return true;
 		/*
 		 * DESCOMENTAR ESTO y SECURITY CONFIG!!! IDEA: Agregar a los logs de actividad
@@ -121,10 +128,10 @@ public class AdminController {
 		 */
 	}
 
-	@CrossOrigin(origins = "http://localhost:26712")
+	@CrossOrigin(origins = "http://localhost:31237")
 	@RequestMapping(value = { "/binders" }, method = RequestMethod.GET)
-	public Object getBinders(@RequestParam(name = "binder", required = false) String binder,
-			Locale locale, Model model, HttpServletResponse response, HttpServletRequest request) {
+	public Object getBinders(@RequestParam(name = "binder", required = false) String binder, Locale locale, Model model,
+			HttpServletResponse response, HttpServletRequest request) {
 		if (!this.isAdmin(request, response)) {
 			return null;
 		} else {
@@ -139,108 +146,259 @@ public class AdminController {
 					} else {
 						throw new IllegalAccessException("It is not a valid binder name: " + binder);
 					}
-				} catch (ClassNotFoundException | IllegalAccessException
-						| IllegalArgumentException | SecurityException e) { // | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
+				} catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException
+						| SecurityException e) { // | InstantiationException | InvocationTargetException |
+													// NoSuchMethodException e) {
 					logger.error("Could not get binder properties for " + binder, e);
 				}
 			}
 			return binders;
 		}
 	}
-	
-	@CrossOrigin(origins = "http://localhost:26712")
+
+	@CrossOrigin(origins = "http://localhost:31237")
 	@RequestMapping(value = { "/generic/{type}/{id}" }, method = RequestMethod.GET)
-	public Object readGeneric(@PathVariable("type") String type, @PathVariable("id") String id,
-			Locale locale, Model model, HttpServletResponse response, HttpServletRequest request) throws IOException {
+	public Object readGeneric(@PathVariable("type") String type, @PathVariable("id") String id, Locale locale,
+			Model model, HttpServletResponse response, HttpServletRequest request) throws IOException {
 		Object r = null;
 		if (this.isAdmin(request, response)) {
 			switch (type.toLowerCase()) {
 			case "binder":
-				r = binderRepository.findById(id);
+				Optional<Binder> b = binderRepository.findById(id);
+				if (b.isPresent())
+					r = this.binderWriteConverter.convert(b.get()).toJson();
 				break;
 			case "workflow":
-				r = workflowRepository.findById(id);
+				Optional<Workflow> w = workflowRepository.findById(id);
+				if (w.isPresent())
+					r = this.workflowWriteConverter.convert(w.get()).toJson();
 				break;
 			case "aprocess":
-				r = aProcessRepository.findById(id);
+				Optional<AProcess> aProc = aProcessRepository.findById(id);
+				if (aProc.isPresent())
+					r = this.aProcessWriteConverter.convert(aProc.get()).toJson();
 				break;
 			case "apublisher":
-				r = aPublisherRepository.findById(id);
+				Optional<APublisher> aPubl = aPublisherRepository.findById(id);
+				if (aPubl.isPresent())
+					r = this.aPublisherWriteConverter.convert(aPubl.get()).toJson();
 				break;
 			case "asubscriber":
-				r = aSubscriberRepository.findById(id);
+				Optional<ASubscriber<?>> aSubs = aSubscriberRepository.findById(id);
+				if (aSubs.isPresent())
+					r = this.aSubscriberWriteConverter.convert(aSubs.get()).toJson();
 				break;
 			default:
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+				response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 			}
 		}
-		
-		if(r == null || ((Optional<?>) r).isEmpty())
+
+		if (r == null || !(r instanceof String) && ((Optional<?>) r).isEmpty())
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		return r;
 	}
-	
-	@CrossOrigin(origins = "http://localhost:26712")
-	@RequestMapping(value = { "/generic/{type}" }, method = RequestMethod.POST)
-	public Object createGeneric(@PathVariable("type") String type, @PathVariable("data") String json,
-			Locale locale, Model model, HttpServletResponse response, HttpServletRequest request) {
-		Object r = null;
+
+	@CrossOrigin(origins = "http://localhost:31237")
+	@RequestMapping(value = { "/generic/{type}/{id}" }, method = RequestMethod.DELETE)
+	public ObjectId deleteGeneric(@PathVariable("type") String type, @PathVariable("id") String id, Locale locale,
+			Model model, HttpServletResponse response, HttpServletRequest request) throws IOException {
+		ObjectId r = null;
 		if (this.isAdmin(request, response)) {
 			switch (type.toLowerCase()) {
 			case "binder":
-				Binder b = new BinderConverter.BinderReadConverter().convert(Document.parse(json));
-				r = binderRepository.save(b);
+				Optional<Binder> b = binderRepository.findById(id);
+				if (b.isPresent()) {
+					r = b.get().getId();
+					binderRepository.delete(b.get());
+				}
 				break;
 			case "workflow":
-				Workflow w = new WorkflowConverter.WorkflowReadConverter().convert(Document.parse(json));
-				r = workflowRepository.save(w);
+				Optional<Workflow> w = workflowRepository.findById(id);
+				if (w.isPresent()) {
+					r = w.get().getId();
+					workflowRepository.delete(w.get());
+				}
 				break;
 			case "aprocess":
-				AProcess aProcess = new AProcessConverter.AProcessReadConverter().convert(Document.parse(json));
-				r = aProcessRepository.save(aProcess);
+				Optional<AProcess> aProc = aProcessRepository.findById(id);
+				if (aProc.isPresent()) {
+					r = aProc.get().getId();
+					aProcessRepository.delete(aProc.get());
+				}
 				break;
 			case "apublisher":
-				APublisher aPublisher = new APublisherConverter.APublisherReadConverter().convert(Document.parse(json));
-				r = aPublisherRepository.save(aPublisher);
+				Optional<APublisher> aPubl = aPublisherRepository.findById(id);
+				if (aPubl.isPresent()) {
+					r = aPubl.get().getId();
+					aPublisherRepository.delete(aPubl.get());
+				}
 				break;
 			case "asubscriber":
-				ASubscriber<?> aSubscriber = new ASubscriberConverter.ASubscriberReadConverter().convert(Document.parse(json));
-				r = aSubscriberRepository.save(aSubscriber);
+				Optional<ASubscriber<?>> aSubs = aSubscriberRepository.findById(id);
+				if (aSubs.isPresent()) {
+					r = aSubs.get().getId();
+					aSubscriberRepository.delete(aSubs.get());
+				}
 				break;
 			default:
-				throw new IllegalArgumentException("Unexpected type: " + type.toLowerCase());
+				response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 			}
+		}
+
+		if (r == null)
+			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+		return r;
+	}
+
+	@CrossOrigin(origins = "http://localhost:31237")
+	@RequestMapping(value = { "/generic/{type}" }, method = RequestMethod.PUT)
+	public Object updateGeneric(@PathVariable("type") String type, Locale locale, Model model,
+			HttpServletResponse response, HttpServletRequest request) throws IOException {
+		if (request.getContentType() != "application/json" || request.getContentLengthLong() < 1) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return null;
+		}
+
+		String json = new String(request.getInputStream().readAllBytes());
+		Object r = null;
+		Document d = Document.parse(json);
+		ObjectId id = d.getObjectId("_id");
+
+		if (id == null)
+			response.sendError(HttpServletResponse.SC_NO_CONTENT);
+		else if (this.isAdmin(request, response)) {
+			switch (type.toLowerCase()) {
+			case "binder":
+				if (binderRepository.findById(id) != null) {
+					Binder b = this.binderReadConverter.convert(d);
+					if (b != null)
+						r = binderRepository.save(b);
+
+				}
+				break;
+			case "workflow":
+				if (workflowRepository.findById(id) != null) {
+					Workflow w = this.workflowReadConverter.convert(d);
+					if (w != null)
+						r = workflowRepository.save(w);
+				}
+				break;
+			case "aprocess":
+				if (aProcessRepository.findById(id) != null) {
+					AProcess aProcess = this.aProcessReadConverter.convert(d);
+					if (aProcess != null)
+						r = aProcessRepository.save(aProcess);
+				}
+				break;
+			case "apublisher":
+				if (aPublisherRepository.findById(id) != null) {
+					APublisher aPublisher = this.aPublisherReadConverter.convert(d);
+					if (aPublisher != null)
+						r = aPublisherRepository.save(aPublisher);
+				}
+				break;
+			case "asubscriber":
+				if (aSubscriberRepository.findById(id) != null) {
+					ASubscriber<?> aSubscriber = this.aSubscriberReadConverter.convert(d);
+					if (aSubscriber != null)
+						r = aSubscriberRepository.save(aSubscriber);
+				}
+				break;
+			default:
+				response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			}
+			if (r == null)
+				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		}
 		return r;
 	}
-	
-	@CrossOrigin(origins = "http://localhost:26712")
-	@RequestMapping(value = { "/workflow" }, method = RequestMethod.GET)
-	public Object getWorkflow(@RequestParam(name = "id", required = false) String id,
-			Locale locale, Model model, HttpServletResponse response, HttpServletRequest request) {
-		if (!this.isAdmin(request, response)) {
+
+	/**
+	 * Request should always include:
+	 * 
+	 * X-CSRF-TOKEN: XXXXXXXX Origin: http://xxxxxx Content-Type: application/json
+	 * 
+	 */
+	@CrossOrigin(origins = "http://localhost:31237")
+	@RequestMapping(value = { "/generic/{type}" }, method = RequestMethod.POST)
+	public Object createGeneric(@PathVariable("type") String type, Locale locale, Model model,
+			HttpServletResponse response, HttpServletRequest request) throws IOException {
+		response.setContentType("application/json");
+		if (!request.getContentType().equals("application/json") || request.getContentLengthLong() < 1) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			return null;
-		} else {
-			UserDetails ud = UserController.getInstance().getPrincipal();
-			User u = ud != null ? ud.getUser() : null;
-			if(u == null)
-				return null;
-			
-			Workflow w = workflowRepository.findByUserId(u.getId());
-			if(w == null) {
-				w = new Workflow(u.getId());
-				// u.setMainWorkflow(w);
-				// userRepository.save(u);
-				
-				AProcess p = new AProcess("test", "-a");
-				p.setUserId(u.getId());
-				aProcessRepository.save(p);
-				
-				w.addProcess(p);
-				workflowRepository.save(w);
-			}
-			return w;
 		}
+
+		String json = new String(request.getInputStream().readAllBytes());
+
+		System.out.println(json);
+
+		Object r = null;
+		Document d = Document.parse(json);
+		ObjectId id = d.getObjectId("_id");
+
+		if (this.isAdmin(request, response)) {
+			switch (type.toLowerCase()) {
+			case "binder":
+				if (binderRepository.findById(id) == null) {
+					Binder b = this.binderReadConverter.convert(d);
+					if (b != null)
+						r = binderRepository.save(b);
+					else
+						response.sendError(HttpServletResponse.SC_NOT_FOUND);
+				} else {
+					response.sendError(HttpServletResponse.SC_CONFLICT);
+				}
+				break;
+			case "workflow":
+				if (workflowRepository.findById(id) == null) {
+					Workflow w = this.workflowReadConverter.convert(d);
+					if (w != null)
+						r = workflowRepository.save(w);
+					else
+						response.sendError(HttpServletResponse.SC_NOT_FOUND);
+				} else {
+					response.sendError(HttpServletResponse.SC_CONFLICT);
+				}
+				break;
+			case "aprocess":
+				if (aProcessRepository.findById(id) == null) {
+					AProcess aProcess = this.aProcessReadConverter.convert(d);
+					if (aProcess != null)
+						r = aProcessRepository.save(aProcess);
+					else
+						response.sendError(HttpServletResponse.SC_NOT_FOUND);
+				} else {
+					response.sendError(HttpServletResponse.SC_CONFLICT);
+				}
+				break;
+			case "apublisher":
+				if (aPublisherRepository.findById(id) == null) {
+					APublisher aPublisher = this.aPublisherReadConverter.convert(d);
+					if (aPublisher != null)
+						r = aPublisherRepository.save(aPublisher);
+					else
+						response.sendError(HttpServletResponse.SC_NOT_FOUND);
+				} else {
+					response.sendError(HttpServletResponse.SC_CONFLICT);
+				}
+				break;
+			case "asubscriber":
+				if (aSubscriberRepository.findById(id) == null) {
+					ASubscriber<?> aSubscriber = this.aSubscriberReadConverter.convert(d);
+					if (aSubscriber != null)
+						r = aSubscriberRepository.save(aSubscriber);
+					else
+						response.sendError(HttpServletResponse.SC_NOT_FOUND);
+				} else {
+					response.sendError(HttpServletResponse.SC_CONFLICT);
+				}
+				break;
+			default:
+				response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			}
+		}
+		return r;
 	}
 
 	public static AdminController getInstance() {

@@ -97,4 +97,10 @@ public class SocketServerPublisher<T extends SocketTransfer> extends SubmissionP
 	public ObjectId getId() {
 		return this.id;
 	}
+	
+	@Override
+	public void setId(ObjectId id) {
+		if (id != null)
+			this.id = id;		
+	}
 }

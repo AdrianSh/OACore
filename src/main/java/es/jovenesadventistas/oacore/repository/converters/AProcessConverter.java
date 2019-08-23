@@ -20,7 +20,6 @@ public class AProcessConverter {
 		
 		public Document convert(AProcess source) {
 			Document document = new Document();
-			
 			document.put("_id", source.getId());
 			String command = "";
 			for (String c : source.getCommand()) {

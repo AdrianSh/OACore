@@ -59,4 +59,6 @@ public interface Binder extends Runnable {
 	}
 	
 	public ObjectId getId();
+	
+	public void setId(ObjectId id);
 }

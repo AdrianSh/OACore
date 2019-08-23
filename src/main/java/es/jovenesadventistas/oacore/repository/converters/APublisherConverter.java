@@ -24,6 +24,7 @@ public class APublisherConverter {
 	public static class APublisherWriteConverter implements Converter<APublisher, Document> {		
 		public Document convert(APublisher source) {
 			Document document = new Document();
+			document.put("_id", source.getId());
 			String publisherType = source.getClass().getName();
 			TypeVariable<?>[] publisherTypeParameters = source.getClass().getTypeParameters();
 			document.put("publisherType", publisherType);
@@ -79,6 +80,7 @@ public class APublisherConverter {
 			default:
 				throw new IllegalArgumentException("Unexpected value for publisherType: " + publisherType);
 			}
+			r.setId(source.getObjectId("_id"));
 			return r;
 		}
 	}

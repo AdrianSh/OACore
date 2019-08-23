@@ -111,7 +111,8 @@ public class AProcess {
 	}
 
 	public void setId(ObjectId id) {
-		this.id = id;
+		if(id != null)
+			this.id = id;
 	}
 
 	public ProcessBuilder getPBuilder() {

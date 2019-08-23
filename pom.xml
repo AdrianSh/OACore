@@ -194,11 +194,17 @@
 		<!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver <dependency> 
 			<groupId>org.mongodb</groupId> <artifactId>mongo-java-driver</artifactId> 
 			<version>3.10.2</version> </dependency> -->
-			
+
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
 			<artifactId>json-path</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.allanditzel</groupId>
+			<artifactId>spring-security-csrf-token-filter</artifactId>
+			<version>1.1</version>
 		</dependency>
 
 	</dependencies>

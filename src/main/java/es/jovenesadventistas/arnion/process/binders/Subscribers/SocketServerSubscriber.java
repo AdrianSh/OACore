@@ -162,4 +162,10 @@ public class SocketServerSubscriber<T extends Transfer> implements ASubscriber<T
 	public ObjectId getId() {
 		return this.id;
 	}
+	
+	@Override
+	public void setId(ObjectId id) {
+		if (id != null)
+			this.id = id;		
+	}
 }

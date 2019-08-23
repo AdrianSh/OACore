@@ -8,4 +8,5 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public interface ASubscriber<T> extends Subscriber<T> {
 	public ObjectId getId();
+	public void setId(ObjectId id);
 }

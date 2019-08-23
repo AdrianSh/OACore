@@ -7,5 +7,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
 public interface APublisher extends Subscription {
-	public ObjectId getId(); 
+	public ObjectId getId();
+	public void setId(ObjectId id);
 }

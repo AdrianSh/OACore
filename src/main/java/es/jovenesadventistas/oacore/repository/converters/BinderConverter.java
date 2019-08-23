@@ -41,6 +41,7 @@ public class BinderConverter {
 			APublisherRepository aPublisherRepository = adminController.getaPublisherRepository();
 			BinderRepository binderRepository = adminController.getBinderRepository();
 			Document document = new Document();
+			document.put("_id", source.getId());
 			String binderType = source.getClass().getName();
 			document.put("binderType", binderType);
 			ASubscriber<?> sub = null;
@@ -204,6 +205,8 @@ public class BinderConverter {
 			} catch (Exception e) {
 				throw new IllegalArgumentException("Could not parse binder: " + binderType + " document: " + source.toJson(), e);
 			}
+			
+			r.setId(source.getObjectId("_id"));
 			return r;
 		}
 	}

@@ -93,4 +93,10 @@ public class SocketListenerPublisher implements Publisher<StringTransfer>, APubl
 	public ObjectId getId() {
 		return this.id;
 	}
+	
+	@Override
+	public void setId(ObjectId id) {
+		if (id != null)
+			this.id = id;		
+	}
 }

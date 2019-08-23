@@ -100,8 +100,8 @@ public class WorkflowConverter {
 					logger.error("Could not read Binder from MongoDB with ObjectID: " + bId);
 				}
 			}
-
-			return new Workflow(source.getObjectId("userId"), process, processExecutionDetails, executorServices,
+			
+			return new Workflow(source.getObjectId("_id"), source.getObjectId("userId"), process, processExecutionDetails, executorServices,
 					binders);
 		}
 	}

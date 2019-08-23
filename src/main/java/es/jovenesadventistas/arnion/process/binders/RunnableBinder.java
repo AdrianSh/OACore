@@ -59,6 +59,12 @@ public class RunnableBinder implements Binder {
 	public ObjectId getId() {
 		return this.id;
 	}
+	
+	@Override
+	public void setId(ObjectId id) {
+		if (id != null)
+			this.id = id;
+	}
 
 	public Runnable getRunnable() {
 		return runnable;

@@ -20,7 +20,8 @@ public class Actividad {
 	}
 	
 	public void setId(ObjectId id) {
-		this.id = id;
+		if (id != null)
+			this.id = id;
 	}
 	
 	public static Actividad createActividad(String estado, User user, Date createdAt) {

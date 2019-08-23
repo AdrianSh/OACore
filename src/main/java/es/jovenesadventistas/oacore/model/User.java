@@ -83,7 +83,8 @@ public class User {
 	}
 
 	public void setId(ObjectId id) {
-		this.id = id;
+		if (id != null)
+			this.id = id;
 	}
 
 	public String getLogin() {

@@ -237,6 +237,7 @@ public class StdOutBinder implements Binder, ASubscriber<StringTransfer> {
 	}
 
 	public void setId(ObjectId id) {
-		this.id = id;
+		if (id != null)
+			this.id = id;
 	}
 }

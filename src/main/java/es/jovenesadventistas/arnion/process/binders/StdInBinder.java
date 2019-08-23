@@ -191,6 +191,7 @@ public class StdInBinder implements Binder {
 	}
 
 	public void setId(ObjectId id) {
-		this.id = id;
+		if (id != null)
+			this.id = id;
 	}
 }

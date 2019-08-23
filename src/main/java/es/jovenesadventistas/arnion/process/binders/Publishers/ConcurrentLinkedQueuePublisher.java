@@ -52,5 +52,10 @@ public class ConcurrentLinkedQueuePublisher<T extends Transfer> extends Submissi
 	public ObjectId getId() {
 		return this.id;
 	}
-
+	
+	@Override
+	public void setId(ObjectId id) {
+		if (id != null)
+			this.id = id;		
+	}
 }
