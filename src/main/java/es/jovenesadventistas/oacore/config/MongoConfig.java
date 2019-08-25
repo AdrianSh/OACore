@@ -14,6 +14,9 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import com.mongodb.MongoClient;
 
 import es.jovenesadventistas.oacore.repository.converters.AProcessConverter;
+import es.jovenesadventistas.oacore.repository.converters.APublisherConverter;
+import es.jovenesadventistas.oacore.repository.converters.ASubscriberConverter;
+import es.jovenesadventistas.oacore.repository.converters.BinderConverter;
 import es.jovenesadventistas.oacore.repository.converters.WorkflowConverter;
 
 
@@ -44,7 +47,6 @@ public class MongoConfig extends AbstractMongoConfiguration {
         return "es.jovenesadventistas";
     }
     
-    // MappingMongoConverter 
     @Bean
     @Override
     public MongoCustomConversions customConversions() {
@@ -53,6 +55,12 @@ public class MongoConfig extends AbstractMongoConfiguration {
       converterList.add(new AProcessConverter.AProcessWriteConverter());
       converterList.add(new WorkflowConverter.WorkflowReadConverter());
       converterList.add(new WorkflowConverter.WorkflowWriteConverter());
+      converterList.add(new BinderConverter.BinderReadConverter());
+      converterList.add(new BinderConverter.BinderWriteConverter());
+      converterList.add(new APublisherConverter.APublisherReadConverter());
+      converterList.add(new APublisherConverter.APublisherWriteConverter());
+      converterList.add(new ASubscriberConverter.ASubscriberReadConverter());
+      converterList.add(new ASubscriberConverter.ASubscriberWriteConverter());
       return new MongoCustomConversions(converterList);
     }
 }

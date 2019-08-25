@@ -82,10 +82,6 @@ public class Workflow {
 		this.process.add(process);
 	}
 
-	public List<ProcessExecutionDetails> getProcessExecutionDetails() {
-		return processExecutionDetails;
-	}
-
 	public void setProcessExecutionDetails(List<ProcessExecutionDetails> processExecutionDetails) {
 		this.processExecutionDetails = processExecutionDetails;
 	}

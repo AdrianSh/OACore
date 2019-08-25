@@ -1,7 +1,6 @@
 package es.jovenesadventistas.oacore.repository.converters;
 
 import java.io.IOException;
-import java.lang.reflect.TypeVariable;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -28,9 +27,7 @@ public class ASubscriberConverter {
 			Document document = new Document();
 			document.put("_id", source.getId());
 			String subscriberType = source.getClass().getName();
-			TypeVariable<?>[] subscriberTypeParameters = source.getClass().getTypeParameters();
 			document.put("subscriberType", subscriberType);
-			document.put("subscriberTypeParameters", subscriberTypeParameters);
 			switch (subscriberType) {
 			case "es.jovenesadventistas.arnion.process.binders.Subscribers.ConcurrentLinkedQueueSubscriber":
 				// Subscriptions are realized when running.

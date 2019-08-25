@@ -49,79 +49,84 @@ public class BinderConverter {
 			AProcess proc = null;
 
 			try {
-			switch (binderType) {
-			case "es.jovenesadventistas.arnion.process.binders.DirectStdInBinder":
-				DirectStdInBinder directStdInBinder = (DirectStdInBinder) source;
-				document.put("processId", directStdInBinder.getProcExecDetails().getProcess().getId());
-				break;
-			case "es.jovenesadventistas.arnion.process.binders.ExitCodeBinder":
-				try {
-					ExitCodeBinder exitCodeBinder = (ExitCodeBinder) source;
-					proc = exitCodeBinder.getProcExecDetails().getProcess();
+				switch (binderType) {
+				case "es.jovenesadventistas.arnion.process.binders.DirectStdInBinder":
+					DirectStdInBinder directStdInBinder = (DirectStdInBinder) source;
+					document.put("processId", directStdInBinder.getProcExecDetails().getProcess().getId());
+					break;
+				case "es.jovenesadventistas.arnion.process.binders.ExitCodeBinder":
+					try {
+						ExitCodeBinder exitCodeBinder = (ExitCodeBinder) source;
+						proc = exitCodeBinder.getProcExecDetails().getProcess();
+						aProcessRepository.save(proc);
+						document.put("processId", proc.getId());
+						sub = exitCodeBinder.getSubscriber();
+						aSubscriberRepository.save(sub);
+						document.put("subscriberId", sub.getId());
+						pub = exitCodeBinder.getAPublisher();
+						document.put("publisherId", pub.getId());
+
+					} catch (Exception e) {
+						logger.error("Could not convert to document an ExitCodeBinder.", e);
+						throw new IllegalArgumentException(e);
+					}
+
+					break;
+				case "es.jovenesadventistas.arnion.process.binders.RunnableBinder":
+					RunnableBinder runnableBinder = (RunnableBinder) source;
+					Runnable runnable = runnableBinder.getRunnable();
+					document.put("runnableTypeName", runnable.getClass().getName());
+					if (runnable instanceof Binder) {
+						document.put("runnableType", "Binder");
+						binderRepository.save((Binder) runnable);
+						document.put("runnableId", ((Binder) runnable).getId());
+					} else if (runnable instanceof APublisher) {
+						document.put("runnableType", "APublisher");
+						aPublisherRepository.save((APublisher) runnable);
+						document.put("runnableId", ((APublisher) runnable).getId());
+					} else if (runnable instanceof ASubscriber<?>) {
+						document.put("runnableType", "ASubscriber");
+						aSubscriberRepository.save((ASubscriber<Transfer>) runnable);
+						document.put("runnableId", ((ASubscriber<Transfer>) runnable).getId());
+					} else {
+						throw new IllegalArgumentException(
+								"Runnable type cannot be saved: " + runnable.getClass().getName());
+					}
+					break;
+				case "es.jovenesadventistas.arnion.process.binders.StdInBinder":
+					try {
+						StdInBinder stdInBinder = (StdInBinder) source;
+						proc = stdInBinder.getProcExecDetails().getProcess();
+						aProcessRepository.save(proc);
+						document.put("processId", proc.getId());
+						pub = stdInBinder.getStdInAPublisher();
+						if (pub != null) {
+							aPublisherRepository.save(pub);
+							document.put("stdInPublisherId", pub.getId());
+						}
+						pub = stdInBinder.getStdInErrorAPublisher();
+						if (pub != null) {
+							aPublisherRepository.save(pub);
+							document.put("stdInErrorPublisherId", pub.getId());
+						}
+					} catch (Exception e) {
+						throw new IllegalArgumentException(
+								"An error ocurred: " + e.getMessage(), e);
+					}
+					break;
+				case "es.jovenesadventistas.arnion.process.binders.StdOutBinder":
+					StdOutBinder stdOutBinder = (StdOutBinder) source;
+					proc = stdOutBinder.getProcExecDetails().getProcess();
 					aProcessRepository.save(proc);
 					document.put("processId", proc.getId());
-					sub = exitCodeBinder.getSubscriber();
-					aSubscriberRepository.save(sub);
-					document.put("subscriberId", sub.getId());
-					pub = exitCodeBinder.getAPublisher();
-					document.put("publisherId", pub.getId());
+					break;
 
-				} catch (Exception e) {
-					logger.error("Could not convert to document an ExitCodeBinder.", e);
-					throw new IllegalArgumentException(e);
+				default:
+					throw new IllegalArgumentException("Unexpected value for binderType: " + binderType);
 				}
-
-				break;
-			case "es.jovenesadventistas.arnion.process.binders.RunnableBinder":
-				RunnableBinder runnableBinder = (RunnableBinder) source;
-				Runnable runnable = runnableBinder.getRunnable();
-				document.put("runnableTypeName", runnable.getClass().getName());
-				if (runnable instanceof Binder) {
-					document.put("runnableType", "Binder");
-					binderRepository.save((Binder) runnable);
-					document.put("runnableId", ((Binder) runnable).getId());
-				} else if (runnable instanceof APublisher) {
-					document.put("runnableType", "APublisher");
-					aPublisherRepository.save((APublisher) runnable);
-					document.put("runnableId", ((APublisher) runnable).getId());
-				} else if (runnable instanceof ASubscriber<?>) {
-					document.put("runnableType", "ASubscriber");
-					aSubscriberRepository.save((ASubscriber<Transfer>) runnable);
-					document.put("runnableId", ((ASubscriber<Transfer>) runnable).getId());
-				} else {
-					throw new IllegalArgumentException(
-							"Runnable type cannot be saved: " + runnable.getClass().getName());
-				}
-				break;
-			case "es.jovenesadventistas.arnion.process.binders.StdInBinder":
-				try {
-					StdInBinder stdInBinder = (StdInBinder) source;
-					proc = stdInBinder.getProcExecDetails().getProcess();
-					aProcessRepository.save(proc);
-					document.put("processId", proc.getId());
-					pub = stdInBinder.getStdInAPublisher();
-					aPublisherRepository.save(pub);
-					document.put("stdInPublisherId", pub.getId());
-					pub = stdInBinder.getStdInErrorAPublisher();
-					aPublisherRepository.save(pub);
-					document.put("stdInErrorPublisherId", pub.getId());
-				} catch (Exception e) {
-					throw new IllegalArgumentException(
-							"Publisher is not an APublisher instance: " + pub.getClass().getName(), e);
-				}
-				break;
-			case "es.jovenesadventistas.arnion.process.binders.StdOutBinder":
-				StdOutBinder stdOutBinder = (StdOutBinder) source;
-				proc = stdOutBinder.getProcExecDetails().getProcess();
-				aProcessRepository.save(proc);
-				document.put("processId", proc.getId());
-				break;
-
-			default:
-				throw new IllegalArgumentException("Unexpected value for binderType: " + binderType);
-			}
 			} catch (Exception e) {
-				throw new IllegalArgumentException("Could not convert to document: " + binderType + " Binder: " + source, e);
+				throw new IllegalArgumentException(
+						"Could not convert to document: " + binderType + " Binder: " + source, e);
 			}
 			return document;
 		}
@@ -203,9 +208,10 @@ public class BinderConverter {
 				}
 
 			} catch (Exception e) {
-				throw new IllegalArgumentException("Could not parse binder: " + binderType + " document: " + source.toJson(), e);
+				throw new IllegalArgumentException(
+						"Could not parse binder: " + binderType + " document: " + source.toJson(), e);
 			}
-			
+
 			r.setId(source.getObjectId("_id"));
 			return r;
 		}

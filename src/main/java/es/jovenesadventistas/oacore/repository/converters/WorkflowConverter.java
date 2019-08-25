@@ -80,6 +80,7 @@ public class WorkflowConverter {
 			if (executorServices != null) {
 				for (String executorServiceClassName : executorServiceClassNames) {
 					switch (executorServiceClassName) {
+					case "java.util.concurrent.Executors$FinalizableDelegatedExecutorService":
 					case "java.util.concurrent.Executors.FinalizableDelegatedExecutorService":
 						executorServices.add(Executors.newSingleThreadExecutor());
 						break;

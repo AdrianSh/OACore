@@ -1,10 +1,10 @@
 package es.jovenesadventistas.oacore.repository.converters;
 
 import java.io.IOException;
-import java.lang.reflect.TypeVariable;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+
 import org.bson.Document;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
@@ -23,12 +23,11 @@ public class APublisherConverter {
 	@WritingConverter
 	public static class APublisherWriteConverter implements Converter<APublisher, Document> {		
 		public Document convert(APublisher source) {
+			
 			Document document = new Document();
 			document.put("_id", source.getId());
 			String publisherType = source.getClass().getName();
-			TypeVariable<?>[] publisherTypeParameters = source.getClass().getTypeParameters();
 			document.put("publisherType", publisherType);
-			document.put("publisherTypeParameters", publisherTypeParameters);
 			switch (publisherType) {
 			case "es.jovenesadventistas.arnion.process.binders.Publishers.ConcurrentLinkedQueuePublisher":
 				// Subscriptions are made on execution time.
