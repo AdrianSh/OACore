@@ -1,6 +1,5 @@
 import $ from "jquery";
-import { menu } from '../config'
-import { serverHost } from '../serverConfig';
+import Server from './../Server'
 
 class BinderProperties {
     constructor() {
@@ -69,38 +68,23 @@ class BinderProperties {
         </div>`);
 
         let binderTypeSelector = this.modal.find(`#binderTypeSelector`);
-        this.getFromServer(data => {
+
+        Server.getFromServer(function (data, textStatus, jqXHR) {
             data.forEach(bName => {
                 binderTypeSelector.append($(`<option value="${bName}">${bName}</option>`)[0]);
             });
-        }, 'binders');
+        }, 'admin/binders');
 
         binderTypeSelector.on('change', e => {
             e.preventDefault();
-            this.getFromServer(data => {
-                console.log(data);
-            }, 'binders', { binder: e.target.value} );
+
+            console.log(` Binder type selected... ${e.target.value}`);
         })
 
 
         document.body.appendChild(this.modal[0]);
 
         return this.modal;
-    }
-
-    getFromServer(cb, url = 'binders', data = undefined) {
-        $.ajax({
-            url: `${serverHost}/${url}`,
-            data: data,
-        }).then(cb);
-    }
-
-    postToServer(data, url = 'binders', cb = function(msg){}) {
-        $.ajax({
-            method: 'POST',
-            url: `${serverHost}/${url}`,
-            data: data
-        }).done(cb);
     }
 }
 

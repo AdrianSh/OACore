@@ -4,9 +4,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/main.css';
 import * as PIXI from 'pixi.js'
 import { Viewport } from 'pixi-viewport'
-import { Program } from './modules/Program';
-import { Binder } from './modules/Binder';
-import { navbar } from './modules/Navbar';
+import { Program } from './modules/PIXI/Program';
+import { Binder } from './modules/PIXI/Binder';
+import { Navbar } from './modules/PIXI/Navbar';
+import tileset from './img/tileset.png';
+import { navbar } from './modules/html/Navbar';
+import { programProperties } from './modules/html/ProgramProperties';
+import { Server } from './modules/Server';
 
 let type = "WebGL"
 if (!PIXI.utils.isWebGLSupported()) {
@@ -24,6 +28,16 @@ const app = new PIXI.Application({
 });
 
 document.body.appendChild(app.view);
+
+function loadProgressHandler() {
+  console.log("loading");
+}
+
+const loader = PIXI.Loader.shared
+loader
+  .add("tileset", tileset)
+  .on("progress", loadProgressHandler)
+  .load(setup);
 
 const viewport = new Viewport({ // create viewport
   screenWidth: window.innerWidth,
@@ -52,10 +66,11 @@ const mainContainer = new PIXI.Container();
 viewport.addChild(mainContainer);
 
 
-for (let i = 0; i < 10; i++) {
-  let x = Math.floor(Math.random() * app.screen.width), y = Math.floor(Math.random() * app.screen.height);
-  let program = new Program(x, y, 'C:/Privado/TFG/Arnion/target/classes/static/img/assets');
-  mainContainer.addChild(program);
-}
+function setup() {
+  console.log("Setup");
 
+  app.stage.addChild(new Navbar());
+
+
+}
 export { mainContainer, app }

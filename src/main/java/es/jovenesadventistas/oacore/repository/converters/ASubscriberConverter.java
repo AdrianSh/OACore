@@ -1,9 +1,9 @@
 package es.jovenesadventistas.oacore.repository.converters;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.bson.Document;
@@ -46,7 +46,7 @@ public class ASubscriberConverter {
 				SocketSubscriber<Transfer> socketSubscriber = (SocketSubscriber<Transfer>) source;
 				document.put("data", socketSubscriber.getAllData());
 				document.put("socket_port", socketSubscriber.getS().getPort());
-				document.put("socket_host", socketSubscriber.getS().getInetAddress());
+				document.put("socket_host", socketSubscriber.getS().getInetAddress().getHostAddress());
 				break;
 			case "es.jovenesadventistas.arnion.process.binders.Subscribers.TransferStoreSubscriber":
 				break;
@@ -84,12 +84,12 @@ public class ASubscriberConverter {
 				break;
 			case "es.jovenesadventistas.arnion.process.binders.Subscribers.SocketSubscriber":
 				Integer sPort = source.getInteger("socket_port");
-				InetAddress sInetAddress = source.get("socket_host", InetAddress.class);
+				String sInetAddress = source.getString("socket_host");
 				try {
 					SocketSubscriber<Transfer> socketSubscriber = new SocketSubscriber<Transfer>(
 							new Socket(sInetAddress, sPort));
-					socketSubscriber
-							.setData((ConcurrentLinkedQueue<Transfer>) source.get("data", ConcurrentLinkedQueue.class));
+					socketSubscriber.setData(
+							new ConcurrentLinkedQueue<Transfer>(source.get("data", ArrayList.class)));
 					r = socketSubscriber;
 				} catch (IOException e) {
 					logger.error("Could not open socket with port: " + sPort + " and host: " + sInetAddress, e);

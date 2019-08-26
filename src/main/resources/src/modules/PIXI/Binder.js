@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 import { Arrow } from './Arrow.js';
-import { navbar } from './Navbar';
+import { navbar } from '../html/Navbar';
 
 export class Binder extends Arrow {
     constructor(firstProgram, secondProgram, lineColor = 0xc3c3c3, lineSize = 2) {

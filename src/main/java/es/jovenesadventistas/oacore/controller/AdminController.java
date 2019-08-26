@@ -139,7 +139,7 @@ public class AdminController {
 		 */
 	}
 
-	@CrossOrigin(origins = "http://localhost:12520")
+	@CrossOrigin(origins = "http://localhost:39429")
 	@RequestMapping(value = { "/binders" }, method = RequestMethod.GET)
 	public Object getBinders(@RequestParam(name = "binder", required = false) String binder, Locale locale, Model model,
 			HttpServletResponse response, HttpServletRequest request) {
@@ -167,7 +167,7 @@ public class AdminController {
 		}
 	}
 	
-	@CrossOrigin(origins = "http://localhost:12520")
+	@CrossOrigin(origins = "http://localhost:39429")
 	@RequestMapping(value = { "/test" }, method = RequestMethod.GET)
 	public Object test(@RequestParam(name = "binder", required = false) String binder, Locale locale, Model model,
 			HttpServletResponse response, HttpServletRequest request) throws Exception {
@@ -218,14 +218,14 @@ public class AdminController {
 			binderRepository.save(b2);
 			workflowRepository.save(w);
 			
-			ASubscriber<?> asub = new SocketSubscriber<StringTransfer>(new Socket("localhost", 27017));
+			ASubscriber<?> asub = new SocketSubscriber<StringTransfer>(new Socket("localhost", 21));
 			aSubscriberRepository.save(asub);
 			
 			return this.workflowWriteConverter.convert(w).toJson();
 		}
 	}
 	
-	@CrossOrigin(origins = "http://localhost:12520")
+	@CrossOrigin(origins = "http://localhost:39429")
 	@RequestMapping(value = { "/generic/{type}" }, method = RequestMethod.GET)
 	public Object readGenericByUserId(@PathVariable("type") String type, Locale locale,
 			Model model, HttpServletResponse response, HttpServletRequest request) throws IOException {
@@ -245,16 +245,16 @@ public class AdminController {
 					r = this.aProcessWriteConverter.convert(aProc.get(0)).toJson();
 				break;
 			default:
-				response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+				response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 			}
 		}
 
 		if (r == null || !(r instanceof String) && ((Optional<?>) r).isEmpty())
-			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		return r;
 	}
 	
-	@CrossOrigin(origins = "http://localhost:12520")
+	@CrossOrigin(origins = "http://localhost:39429")
 	@RequestMapping(value = { "/generic/{type}/{id}" }, method = RequestMethod.GET)
 	public Object readGeneric(@PathVariable("type") String type, @PathVariable("id") String id, Locale locale,
 			Model model, HttpServletResponse response, HttpServletRequest request) throws IOException {
@@ -296,7 +296,7 @@ public class AdminController {
 		return r;
 	}
 
-	@CrossOrigin(origins = "http://localhost:12520")
+	@CrossOrigin(origins = "http://localhost:39429")
 	@RequestMapping(value = { "/generic/{type}/{id}" }, method = RequestMethod.DELETE)
 	public ObjectId deleteGeneric(@PathVariable("type") String type, @PathVariable("id") String id, Locale locale,
 			Model model, HttpServletResponse response, HttpServletRequest request) throws IOException {
@@ -348,7 +348,7 @@ public class AdminController {
 		return r;
 	}
 
-	@CrossOrigin(origins = "http://localhost:12520")
+	@CrossOrigin(origins = "http://localhost:39429")
 	@RequestMapping(value = { "/generic/{type}" }, method = RequestMethod.PUT)
 	public Object updateGeneric(@PathVariable("type") String type, Locale locale, Model model,
 			HttpServletResponse response, HttpServletRequest request) throws IOException {
@@ -417,7 +417,7 @@ public class AdminController {
 	 * X-CSRF-TOKEN: XXXXXXXX Origin: http://xxxxxx Content-Type: application/json
 	 * 
 	 */
-	@CrossOrigin(origins = "http://localhost:12520")
+	@CrossOrigin(origins = "http://localhost:39429", exposedHeaders = {"Access-Control-Allow-Origin"})
 	@RequestMapping(value = { "/generic/{type}" }, method = RequestMethod.POST)
 	public Object createGeneric(@PathVariable("type") String type, Locale locale, Model model,
 			HttpServletResponse response, HttpServletRequest request) throws IOException {
@@ -437,9 +437,9 @@ public class AdminController {
 			case "binder":
 				if (binderRepository.findById(id) == null) {
 					Binder b = this.binderReadConverter.convert(d);
-					if (b != null)
+					if (b != null) {
 						r = binderRepository.save(b);
-					else
+					} else
 						response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				} else {
 					response.sendError(HttpServletResponse.SC_CONFLICT);
@@ -448,9 +448,10 @@ public class AdminController {
 			case "workflow":
 				if (workflowRepository.findById(id) == null) {
 					Workflow w = this.workflowReadConverter.convert(d);
-					if (w != null)
+					if (w != null) {
+						// w.setUserId();
 						r = workflowRepository.save(w);
-					else
+					} else
 						response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				} else {
 					response.sendError(HttpServletResponse.SC_CONFLICT);
@@ -459,9 +460,9 @@ public class AdminController {
 			case "aprocess":
 				if (aProcessRepository.findById(id) == null) {
 					AProcess aProcess = this.aProcessReadConverter.convert(d);
-					if (aProcess != null)
+					if (aProcess != null) {
 						r = aProcessRepository.save(aProcess);
-					else
+					} else
 						response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				} else {
 					response.sendError(HttpServletResponse.SC_CONFLICT);
@@ -470,9 +471,9 @@ public class AdminController {
 			case "apublisher":
 				if (aPublisherRepository.findById(id) == null) {
 					APublisher aPublisher = this.aPublisherReadConverter.convert(d);
-					if (aPublisher != null)
+					if (aPublisher != null) {
 						r = aPublisherRepository.save(aPublisher);
-					else
+					} else
 						response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				} else {
 					response.sendError(HttpServletResponse.SC_CONFLICT);
@@ -481,9 +482,9 @@ public class AdminController {
 			case "asubscriber":
 				if (aSubscriberRepository.findById(id) == null) {
 					ASubscriber<?> aSubscriber = this.aSubscriberReadConverter.convert(d);
-					if (aSubscriber != null)
+					if (aSubscriber != null) {
 						r = aSubscriberRepository.save(aSubscriber);
-					else
+					} else
 						response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				} else {
 					response.sendError(HttpServletResponse.SC_CONFLICT);

@@ -14,6 +14,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="">
 	<meta name="author" content="">
+	<meta name="csrf" content="${_csrf.token}"/>
+    <meta name="csrf_header" content="${_csrf.headerName}"/>
+
 	<!-- link rel="shortcut icon" type="image/png" href="${s}/img/news-icon.png"/ -->
 	<title><s:message code="shortSiteName" text="OACore"
 			htmlEscape="true" /> | <s:message

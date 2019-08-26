@@ -1,12 +1,6 @@
 import * as PIXI from 'pixi.js'
 import boxBox from 'intersects/box-box'
-import img from '../img/program.png';
-import { navbar } from './Navbar';
-
-console.log(img);
-
-const programTexture = PIXI.Texture.from(img); // create a texture from an image path
-programTexture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST; // Scale mode for pixelation
+import { navbar } from '../html/Navbar';
 
 const basicTextstyle = new PIXI.TextStyle({
     fontFamily: 'Arial',
@@ -24,6 +18,11 @@ const basicTextstyle = new PIXI.TextStyle({
 
 class Program extends PIXI.Sprite {
     constructor(x, y, commandLine) {
+
+        let programTexture = PIXI.Loader.shared.resources.tileset.texture.clone();
+        programTexture.frame = new PIXI.Rectangle(0, 0, 250, 156);
+        programTexture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST; // Scale mode for pixelation
+
         super(programTexture);
         this.interactive = true; // this will allow it to respond to mouse and touch events
         this.buttonMode = true; // this button mode will mean the hand cursor appears when you roll over the program with your mouse
@@ -61,7 +60,7 @@ class Program extends PIXI.Sprite {
         this.moving = false;
     }
 
-    destroy(){
+    destroy() {
         this.binders.input.forEach(b => { b.destroy() })
         this.binders.output.forEach(b => { b.destroy() })
         navbar.program = navbar.lastProgram = undefined;
@@ -81,6 +80,12 @@ class Program extends PIXI.Sprite {
         this.binders.output.push(binder);
     }
 
+    _showNavbar(x, y) {
+        navbar.nav.css({ top: y, left: x, position: 'absolute' });
+        navbar.nav.show();
+        navbar.program = this;
+    }
+
     onDragStart(event) {
         // store a reference to the data
         // the reason for this is because of multitouch
@@ -89,12 +94,6 @@ class Program extends PIXI.Sprite {
         this.alpha = 0.5;
         this.dragging = true;
         this._showNavbar(event.data.global.x, event.data.global.y);
-    }
-
-    _showNavbar(x, y){
-        navbar.nav.css({ top: y, left: x, position: 'absolute' });
-        navbar.nav.show();
-        navbar.program = this;
     }
 
     onDragEnd() {
@@ -106,21 +105,21 @@ class Program extends PIXI.Sprite {
 
     onDragMove(e) {
         if (this.dragging) {
-            const newPosition = this.draggingObjectData.getLocalPosition(this.parent);
-            this.x = newPosition.x;
-            this.y = newPosition.y;
+            try {
+                const newPosition = this.draggingObjectData.getLocalPosition(this.parent);
+                this.x = newPosition.x;
+                this.y = newPosition.y;
 
-            if (this.binders.input.length > 0)
-                this.binders.input.forEach(b => b.updatePoints());
-            if (this.binders.output.length > 0)
-                this.binders.output.forEach(b => b.updatePoints());
+                if (this.binders.input.length > 0)
+                    this.binders.input.forEach(b => b.updatePoints());
+                if (this.binders.output.length > 0)
+                    this.binders.output.forEach(b => b.updatePoints());
 
-            this._showNavbar(e.data.global.x, e.data.global.y);
-
-            let collision = boxBox();
-
-            // console.log(`Moving to: ${JSON.stringify(newPosition)} from: (${this.x}, ${this.y})`);
-            // en THIS TENEMOS EL OBJETO,   en position tenemos la posicion, luego width y height para calcular colisiones
+                this._showNavbar(e.data.global.x, e.data.global.y);
+            } catch (err) {
+                if(this.draggingObjectData == undefined || this.draggingObjectData == null)
+                    this.draggingObjectData = e.data;
+            }
         }
     }
 }

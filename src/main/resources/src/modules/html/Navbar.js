@@ -1,5 +1,5 @@
 import $ from "jquery";
-import {menu} from '../config'
+import {menu} from '../../menu'
 
 class Navbar {
     constructor(){
@@ -13,7 +13,7 @@ class Navbar {
     buildHtmlElement(){
         this.nav = $(`<div class="position-absolute">
         <nav class="navbar navbar-expand-lg">
-            <div class="collapse navbar-collapse" id="navbarText">
+            <div class="collapse navbar-collapse show" id="navbarText">
                 <form class="form-inline">
                 </form>
             </div>
