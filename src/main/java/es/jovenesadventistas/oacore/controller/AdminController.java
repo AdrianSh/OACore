@@ -7,8 +7,10 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,11 +35,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import es.jovenesadventistas.arnion.process.AProcess;
 import es.jovenesadventistas.arnion.process.binders.Binder;
+import es.jovenesadventistas.arnion.process.binders.DirectStdInBinder;
+import es.jovenesadventistas.arnion.process.binders.ExitCodeBinder;
 import es.jovenesadventistas.arnion.process.binders.ReactiveStreamBinder;
+import es.jovenesadventistas.arnion.process.binders.RunnableBinder;
 import es.jovenesadventistas.arnion.process.binders.StdInBinder;
 import es.jovenesadventistas.arnion.process.binders.StdOutBinder;
 import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
 import es.jovenesadventistas.arnion.process.binders.Publishers.ConcurrentLinkedQueuePublisher;
+import es.jovenesadventistas.arnion.process.binders.Publishers.SocketListenerPublisher;
 import es.jovenesadventistas.arnion.process.binders.Subscribers.ASubscriber;
 import es.jovenesadventistas.arnion.process.binders.Subscribers.SocketSubscriber;
 import es.jovenesadventistas.arnion.process.binders.Transfers.StringTransfer;
@@ -139,7 +145,7 @@ public class AdminController {
 		 */
 	}
 
-	@CrossOrigin(origins = "http://localhost:39429")
+	@CrossOrigin(origins = "http://localhost:15783")
 	@RequestMapping(value = { "/binders" }, method = RequestMethod.GET)
 	public Object getBinders(@RequestParam(name = "binder", required = false) String binder, Locale locale, Model model,
 			HttpServletResponse response, HttpServletRequest request) {
@@ -167,7 +173,7 @@ public class AdminController {
 		}
 	}
 	
-	@CrossOrigin(origins = "http://localhost:39429")
+	@CrossOrigin(origins = "http://localhost:15783")
 	@RequestMapping(value = { "/test" }, method = RequestMethod.GET)
 	public Object test(@RequestParam(name = "binder", required = false) String binder, Locale locale, Model model,
 			HttpServletResponse response, HttpServletRequest request) throws Exception {
@@ -189,6 +195,11 @@ public class AdminController {
 			AProcess p2 = new AProcess("C:\\\\Program Files\\\\nodejs\\\\node.exe", "index.js", "write", "output1.txt");
 			p2.setWorkingDirectory(new File("C:\\Privado\\TFG\\Arnion-Processes\\File\\"));
 
+			Map<String, String> modEnv = new HashMap<String, String>();
+			modEnv.put("test", "value");
+			modEnv.put("test2", "value2");
+			p1.setModifiedEnvironment(modEnv);
+			
 			aProcessRepository.save(p1);
 			aProcessRepository.save(p2);
 			
@@ -221,11 +232,17 @@ public class AdminController {
 			ASubscriber<?> asub = new SocketSubscriber<StringTransfer>(new Socket("localhost", 21));
 			aSubscriberRepository.save(asub);
 			
+			binderRepository.save(new DirectStdInBinder(null));
+			binderRepository.save(new ExitCodeBinder(null, null, null));
+			binderRepository.save(new RunnableBinder(new SocketListenerPublisher(new Socket("localhost", 21))));
+			binderRepository.save(new StdInBinder(null, pub1, pub1));
+			binderRepository.save(new StdOutBinder(null));
+			
 			return this.workflowWriteConverter.convert(w).toJson();
 		}
 	}
 	
-	@CrossOrigin(origins = "http://localhost:39429")
+	@CrossOrigin(origins = "http://localhost:15783")
 	@RequestMapping(value = { "/generic/{type}" }, method = RequestMethod.GET)
 	public Object readGenericByUserId(@PathVariable("type") String type, Locale locale,
 			Model model, HttpServletResponse response, HttpServletRequest request) throws IOException {
@@ -254,7 +271,7 @@ public class AdminController {
 		return r;
 	}
 	
-	@CrossOrigin(origins = "http://localhost:39429")
+	@CrossOrigin(origins = "http://localhost:15783")
 	@RequestMapping(value = { "/generic/{type}/{id}" }, method = RequestMethod.GET)
 	public Object readGeneric(@PathVariable("type") String type, @PathVariable("id") String id, Locale locale,
 			Model model, HttpServletResponse response, HttpServletRequest request) throws IOException {
@@ -296,7 +313,7 @@ public class AdminController {
 		return r;
 	}
 
-	@CrossOrigin(origins = "http://localhost:39429")
+	@CrossOrigin(origins = "http://localhost:15783")
 	@RequestMapping(value = { "/generic/{type}/{id}" }, method = RequestMethod.DELETE)
 	public ObjectId deleteGeneric(@PathVariable("type") String type, @PathVariable("id") String id, Locale locale,
 			Model model, HttpServletResponse response, HttpServletRequest request) throws IOException {
@@ -348,7 +365,7 @@ public class AdminController {
 		return r;
 	}
 
-	@CrossOrigin(origins = "http://localhost:39429")
+	@CrossOrigin(origins = "http://localhost:15783")
 	@RequestMapping(value = { "/generic/{type}" }, method = RequestMethod.PUT)
 	public Object updateGeneric(@PathVariable("type") String type, Locale locale, Model model,
 			HttpServletResponse response, HttpServletRequest request) throws IOException {
@@ -417,7 +434,7 @@ public class AdminController {
 	 * X-CSRF-TOKEN: XXXXXXXX Origin: http://xxxxxx Content-Type: application/json
 	 * 
 	 */
-	@CrossOrigin(origins = "http://localhost:39429", exposedHeaders = {"Access-Control-Allow-Origin"})
+	@CrossOrigin(origins = "http://localhost:15783")
 	@RequestMapping(value = { "/generic/{type}" }, method = RequestMethod.POST)
 	public Object createGeneric(@PathVariable("type") String type, Locale locale, Model model,
 			HttpServletResponse response, HttpServletRequest request) throws IOException {
@@ -438,7 +455,7 @@ public class AdminController {
 				if (binderRepository.findById(id) == null) {
 					Binder b = this.binderReadConverter.convert(d);
 					if (b != null) {
-						r = binderRepository.save(b);
+						r = this.binderWriteConverter.convert(binderRepository.save(b)).toJson();
 					} else
 						response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				} else {
@@ -450,7 +467,7 @@ public class AdminController {
 					Workflow w = this.workflowReadConverter.convert(d);
 					if (w != null) {
 						// w.setUserId();
-						r = workflowRepository.save(w);
+						r = this.workflowWriteConverter.convert(workflowRepository.save(w)).toJson();
 					} else
 						response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				} else {
@@ -461,7 +478,7 @@ public class AdminController {
 				if (aProcessRepository.findById(id) == null) {
 					AProcess aProcess = this.aProcessReadConverter.convert(d);
 					if (aProcess != null) {
-						r = aProcessRepository.save(aProcess);
+						r = this.aProcessWriteConverter.convert(aProcessRepository.save(aProcess)).toJson();
 					} else
 						response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				} else {
@@ -472,7 +489,7 @@ public class AdminController {
 				if (aPublisherRepository.findById(id) == null) {
 					APublisher aPublisher = this.aPublisherReadConverter.convert(d);
 					if (aPublisher != null) {
-						r = aPublisherRepository.save(aPublisher);
+						r = this.aPublisherWriteConverter.convert(aPublisherRepository.save(aPublisher)).toJson();
 					} else
 						response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				} else {
@@ -483,7 +500,7 @@ public class AdminController {
 				if (aSubscriberRepository.findById(id) == null) {
 					ASubscriber<?> aSubscriber = this.aSubscriberReadConverter.convert(d);
 					if (aSubscriber != null) {
-						r = aSubscriberRepository.save(aSubscriber);
+						r = this.aSubscriberWriteConverter.convert(aSubscriberRepository.save(aSubscriber)).toJson();
 					} else
 						response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				} else {

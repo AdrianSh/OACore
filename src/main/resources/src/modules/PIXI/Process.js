@@ -16,17 +16,19 @@ const basicTextstyle = new PIXI.TextStyle({
     dropShadowDistance: 1,
 });
 
-class Program extends PIXI.Sprite {
+class Process extends PIXI.Sprite {
     constructor(x, y, commandLine) {
 
-        let programTexture = PIXI.Loader.shared.resources.tileset.texture.clone();
-        programTexture.frame = new PIXI.Rectangle(0, 0, 250, 156);
-        programTexture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST; // Scale mode for pixelation
+        let processTexture = PIXI.Loader.shared.resources.tileset.texture.clone();
+        processTexture.frame = new PIXI.Rectangle(0, 0, 250, 156);
+        processTexture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST; // Scale mode for pixelation
 
-        super(programTexture);
+        super(processTexture);
+
+        this.processData = undefined;
         this.interactive = true; // this will allow it to respond to mouse and touch events
-        this.buttonMode = true; // this button mode will mean the hand cursor appears when you roll over the program with your mouse
-        this.anchor.set(0.5); // center the program's anchor point
+        this.buttonMode = true; // this button mode will mean the hand cursor appears when you roll over the process with your mouse
+        this.anchor.set(0.5); // center the process's anchor point
         // this.scale.set(3); // make it a bit bigger, so it's easier to grab
 
         this.x = x;
@@ -52,18 +54,22 @@ class Program extends PIXI.Sprite {
             .on('touchmove', onDragMove)
         */
 
-        let commandLineText = new PIXI.Text(commandLine.length > 45 ? '...' + commandLine.substr(commandLine.length - 42, 42) : commandLine, basicTextstyle);
-        commandLineText.x = - this.width * this.anchor._x + 5; // corner top left + 5 width
-        commandLineText.y = - this.height * this.anchor._y + 5; // corner top left + 5 height
-        this.addChild(commandLineText);
+        this.commandLineText = new PIXI.Text(commandLine.length > 45 ? '...' + commandLine.substr(commandLine.length - 42, 42) : commandLine, basicTextstyle);
+        this.commandLineText.x = - this.width * this.anchor._x + 5; // corner top left + 5 width
+        this.commandLineText.y = - this.height * this.anchor._y + 5; // corner top left + 5 height
+        this.addChild(this.commandLineText);
 
         this.moving = false;
+    }
+
+    updateCommandLineText(commandLine){
+        this.commandLineText.text = commandLine.length > 45 ? '...' + commandLine.substr(commandLine.length - 42, 42 - 1) : commandLine;
     }
 
     destroy() {
         this.binders.input.forEach(b => { b.destroy() })
         this.binders.output.forEach(b => { b.destroy() })
-        navbar.program = navbar.lastProgram = undefined;
+        navbar.process = navbar.lastProcess = undefined;
         navbar.nav.hide();
         super.destroy();
     }
@@ -83,7 +89,8 @@ class Program extends PIXI.Sprite {
     _showNavbar(x, y) {
         navbar.nav.css({ top: y, left: x, position: 'absolute' });
         navbar.nav.show();
-        navbar.program = this;
+        navbar.process = this;
+        navbar.binder = undefined;
     }
 
     onDragStart(event) {
@@ -124,4 +131,4 @@ class Program extends PIXI.Sprite {
     }
 }
 
-export { Program };
+export { Process };

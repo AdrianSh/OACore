@@ -3,29 +3,30 @@ import { Arrow } from './Arrow.js';
 import { navbar } from '../html/Navbar';
 
 export class Binder extends Arrow {
-    constructor(firstProgram, secondProgram, lineColor = 0xc3c3c3, lineSize = 2) {
+    constructor(firstProcess, secondProcess, lineColor = 0xc3c3c3, lineSize = 2) {
         super(lineColor, lineSize);
-        this.origProgram = firstProgram;
-        this.destProgram = secondProgram;
+        this.origProcess = firstProcess;
+        this.destProcess = secondProcess;
         this.hitArea = new PIXI.Polygon(new PIXI.Point(), new PIXI.Point(), new PIXI.Point(), new PIXI.Point());
         this.interactive = true;
         this.buttonMode = true;
+        this.binderData = undefined;
         this.on('pointerdown', this.onDragStart);
 
         this.updatePoints();
     }
 
     destroy(){
-        this.origProgram.binders.output.splice(this.origProgram.binders.output.indexOf(this));
-        this.destProgram.binders.input.splice(this.origProgram.binders.input.indexOf(this));
+        this.origProcess.binders.output.splice(this.origProcess.binders.output.indexOf(this));
+        this.destProcess.binders.input.splice(this.origProcess.binders.input.indexOf(this));
         super.destroy();
     }
 
     _showNavbar(x, y){
         navbar.nav.css({ top: y, left: x, position: 'absolute' });
-        navbar.nav.show();
-        navbar.program = undefined;
+        navbar.process = undefined;
         navbar.binder = this;
+        navbar.nav.show();
     }
 
     onDragStart(e){
@@ -63,8 +64,8 @@ export class Binder extends Arrow {
     }
 
     updatePoints() {
-        let pDest = this._bestPos(this.origProgram, this.destProgram, - this.triangle.length / 2, 2 + this.triangle.length / 2);
-        let pOrig = this._bestPos(this.destProgram, this.origProgram, 0, 4);
+        let pDest = this._bestPos(this.origProcess, this.destProcess, - this.triangle.length / 2, 2 + this.triangle.length / 2);
+        let pOrig = this._bestPos(this.destProcess, this.origProcess, 0, 4);
         super.updatePoints([pOrig.x, pOrig.y, pDest.x, pDest.y]);
         this.hitArea.points = [pOrig.x - this.lineWidth, pOrig.y - this.lineWidth, pOrig.x + this.lineWidth, pOrig.y + this.lineWidth, 
             pDest.x - this.lineWidth, pDest.y - this.lineWidth, pDest.x + this.lineWidth, pDest.y + this.lineWidth];
@@ -72,13 +73,13 @@ export class Binder extends Arrow {
     }
 
     updateDest() {
-        let p = this._bestPos(this.origProgram, this.destProgram);
+        let p = this._bestPos(this.origProcess, this.destProcess);
         super.updateDest(p.x, p.y);
         return this;
     }
 
     updateOrig() {
-        let p = this._bestPos(this.destProgram, this.origProgram);
+        let p = this._bestPos(this.destProcess, this.origProcess);
         super.updateOrig(p.x, p.y);
         return this;
     }

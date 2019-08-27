@@ -26,16 +26,18 @@ class Server {
         this.CSRFTokenHeader = $("meta[name='csrf_header']").attr("content");
     }
 
-    getFromServer(successCallBack, url = 'admin/generic/x', data = undefined, thenFun = function () { }) {
+    getFromServer(successCallBack = function (data, textStatus, jqXHR){}, url = 'admin/generic/x', data = undefined, thenFun = function () { }) {
         $.ajax({
             beforeSend: this.beforeSend.bind(this),
             url: `${serverHost}/${url}`,
             data: data,
-            success: successCallBack,
+            success: function (data, textStatus, jqXHR){ successCallBack(JSON.parse(data), textStatus, jqXHR) },
         }).then(thenFun);
     }
 
-    postToServer(data, url = 'admin/generic/x', successCallBack = function (data, textStatus, jqXHR){}, doneFun = function () { }) {
+    postToServer(data, url = 'admin/generic/x', successCallBack = function (data, textStatus, jqXHR){}, errorCallBack = function (jqXHR, textStatus, errorThrown){
+        console.error(errorThrown);
+    }, doneFun = function () { }) {
         $.ajax({
             beforeSend: this.beforeSend.bind(this),
             method: 'POST',
@@ -47,4 +49,8 @@ class Server {
 }
 
 const server = new Server();
+
+window.Server = server;
+
+
 export default server;

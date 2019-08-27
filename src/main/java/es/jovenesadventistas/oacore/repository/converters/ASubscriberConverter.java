@@ -11,6 +11,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
 
+import es.jovenesadventistas.arnion.process.binders.Binder;
 import es.jovenesadventistas.arnion.process.binders.Subscribers.ASubscriber;
 import es.jovenesadventistas.arnion.process.binders.Subscribers.ConcurrentLinkedQueueSubscriber;
 import es.jovenesadventistas.arnion.process.binders.Subscribers.SocketServerSubscriber;
@@ -50,6 +51,8 @@ public class ASubscriberConverter {
 				break;
 			case "es.jovenesadventistas.arnion.process.binders.Subscribers.TransferStoreSubscriber":
 				break;
+			case "es.jovenesadventistas.arnion.process.binders.ExitCodeBinder":
+				return new BinderConverter.BinderWriteConverter().convert((Binder) source);
 			default:
 				throw new IllegalArgumentException("Unexpected value for subscriberType: " + subscriberType);
 			}
@@ -99,6 +102,8 @@ public class ASubscriberConverter {
 				TransferStoreSubscriber<Transfer> transferStoreSubscriber = new TransferStoreSubscriber<Transfer>();
 				r = transferStoreSubscriber;
 				break;
+			case "es.jovenesadventistas.arnion.process.binders.ExitCodeBinder":
+				r = (ASubscriber<?>) new BinderConverter.BinderReadConverter().convert(source);
 			default:
 				throw new IllegalArgumentException("Unexpected value for subscriberType: " + subscriberType);
 			}

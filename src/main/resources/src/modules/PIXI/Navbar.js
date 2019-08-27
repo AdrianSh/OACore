@@ -1,8 +1,8 @@
 import * as PIXI from 'pixi.js'
 import Button from './Button'
-import { Program } from './Program'
+import { Process } from './Process'
 import { mainContainer, app } from '../../index'
-import { programProperties } from '../html/ProgramProperties';
+import { processProperties } from '../html/ProcessProperties';
 
 class Navbar extends PIXI.Sprite {
     constructor() {
@@ -16,11 +16,11 @@ class Navbar extends PIXI.Sprite {
         this.width = 50;
         this.height = window.innerHeight;
 
-        this.addProgramButton();
+        this.addProcessButton();
 
     }
 
-    addProgramButton() {
+    addProcessButton() {
         let textureButton = PIXI.Loader.shared.resources.tileset.texture.clone();
         textureButton.frame = new PIXI.Rectangle(0, 158, 39, 35);
         textureButton.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST; // Scale mode for pixelation
@@ -32,9 +32,9 @@ class Navbar extends PIXI.Sprite {
 
         let button = new Button(textureButton, textureButtonOver, textureButtonOver, 4, 3, 39, 34, () => {
             let mousePos = app.renderer.plugins.interaction.mouse.global;
-            let pro = new Program(mousePos.x, mousePos.y, '');
-            programProperties.program = pro;
-            programProperties.show();
+            let pro = new Process(mousePos.x, mousePos.y, '');
+            processProperties.process = pro;
+            processProperties.show();
             pro.dragging = true;
             mainContainer.addChild(pro);
         });

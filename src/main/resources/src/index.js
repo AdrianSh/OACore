@@ -4,12 +4,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/main.css';
 import * as PIXI from 'pixi.js'
 import { Viewport } from 'pixi-viewport'
-import { Program } from './modules/PIXI/Program';
+import { Process } from './modules/PIXI/Process';
 import { Binder } from './modules/PIXI/Binder';
 import { Navbar } from './modules/PIXI/Navbar';
 import tileset from './img/tileset.png';
 import { navbar } from './modules/html/Navbar';
-import { programProperties } from './modules/html/ProgramProperties';
+import { processProperties } from './modules/html/ProcessProperties';
 import { Server } from './modules/Server';
 
 let type = "WebGL"
@@ -71,6 +71,17 @@ function setup() {
 
   app.stage.addChild(new Navbar());
 
+  let p1 = new Process(500,100, "P1")
+  p1.processData = { "_id" : { "$oid" : "5d64ea860e075b0308154688" }, "command" : "null  ", "workingdirectory" : null, "modifiedEnvironment" : "null", "inheritIO" : false, "userId" : { "$oid" : "5d51a65023495b086cc04ec5" } };
+  let p2 = new Process(500,500, "P2")
+  p2.processData = { "_id" : { "$oid" : "5d64ea8a0e075b0308154689" }, "command" : "null  ", "workingdirectory" : null, "modifiedEnvironment" : "null", "inheritIO" : false, "userId" : { "$oid" : "5d51a65023495b086cc04ec5" } };
+  let b1 = new Binder(p1, p2);
+  b1.binderData = { "_id" : { "$oid" : "5d65053d0e075b03081546e5" }, "binderType" : "es.jovenesadventistas.arnion.process.binders.StdInBinder", "processId" : { "$oid" : "5d64ea8a0e075b0308154689" }, "stdInPublisherId" : { "$oid" : "5d65053d0e075b03081546e4" } };
+  p1.addInputBinder(b1);
+  p2.addOutputBinder(b1);
 
+  mainContainer.addChild(p1);
+  mainContainer.addChild(p2);
+  mainContainer.addChild(b1);
 }
 export { mainContainer, app }

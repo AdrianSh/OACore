@@ -103,6 +103,8 @@ public abstract class SplitBinder<T extends Transfer, S extends Transfer> implem
 	public APublisher getAPublisher() throws Exception {
 		if (this.publisher instanceof APublisher)
 			return (APublisher) publisher;
+		else if (this.publisher == null)
+			return null;
 		else
 			throw new Exception("It is not an instance of APublisher.");
 	}

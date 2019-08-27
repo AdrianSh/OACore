@@ -1,7 +1,6 @@
 package es.jovenesadventistas.oacore.repository.converters;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -35,7 +34,7 @@ public class APublisherConverter {
 			case "es.jovenesadventistas.arnion.process.binders.Publishers.SocketListenerPublisher":
 				SocketListenerPublisher socketListenerPublisher = (SocketListenerPublisher) source;
 				document.put("socket_port", socketListenerPublisher.getSocket().getPort());
-				document.put("socket_host", socketListenerPublisher.getSocket().getInetAddress());
+				document.put("socket_host", socketListenerPublisher.getSocket().getInetAddress().getHostAddress());
 				break;
 			case "es.jovenesadventistas.arnion.process.binders.Publishers.SocketServerPublisher":
 				@SuppressWarnings("unchecked")
@@ -61,7 +60,7 @@ public class APublisherConverter {
 			case "es.jovenesadventistas.arnion.process.binders.Publishers.SocketListenerPublisher":
 				SocketListenerPublisher socketListenerPublisher = null;
 				try {
-					socketListenerPublisher = new SocketListenerPublisher(new Socket(source.get("socket_host", InetAddress.class), source.getInteger("socket_port")));
+					socketListenerPublisher = new SocketListenerPublisher(new Socket(source.getString("socket_host"), source.getInteger("socket_port")));
 				} catch (IOException e) {
 					logger.error("Could not open the socket for the SocketListenerPublisher.", e);
 				}

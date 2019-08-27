@@ -1,37 +1,52 @@
 import * as PIXI from 'pixi.js'
 import { Binder } from './modules/PIXI/Binder';
-import { Program } from './modules/PIXI/Program';
+import { Process } from './modules/PIXI/Process';
 import { mainContainer, app } from './index';
 import { binderProperties } from './modules/html/BinderProperties';
-import { programProperties } from './modules/html/ProgramProperties';
+import { processProperties } from './modules/html/ProcessProperties';
 
 
 const menu = [
     {
         button: ['Bind', 'btn-primary'], action: function (e) {
-            if (this.lastProgram != undefined && this.lastProgram instanceof Program) {
-                if (this.lastProgram == this.program)
-                    console.warn(`You should bind two different programs...`);
-                else {
-                    binderProperties.show();
+            if (this.binder != undefined) { }
+            else {
+                if (this.lastProcess != undefined && this.lastProcess instanceof Process) {
+                    if (this.lastProcess == this.process)
+                        console.warn(`You should bind two different processes...`);
+                    else {
+                        binderProperties.process1 = this.lastProcess;
+                        binderProperties.process2 = this.process;
 
-                    let b = new Binder(this.lastProgram, this.program);
-                    mainContainer.addChild(b);
-                    this.program.addInputBinder(b);
-                    this.lastProgram.addOutputBinder(b);
+                        let b = new Binder(this.lastProcess, this.process);
+                        mainContainer.addChild(b);
+
+                        binderProperties.binder = b;
+                        binderProperties.show();
+                        this.process.addInputBinder(b);
+                        this.lastProcess.addOutputBinder(b);
+                    }
                 }
+                this.lastProcess = this.process;
             }
-            this.lastProgram = this.program;
         }
     },
     {
         button: ['Properties', 'btn-info'], action: function () {
-            programProperties.show();
+            if (this.process == undefined && this.binder != undefined) {
+                binderProperties.binder = this.binder;
+                binderProperties.process1 = this.binder.origProcess;
+                binderProperties.process2 = this.binder.destProcess;
+                binderProperties.show();
+            } else if (this.process != undefined) {
+                processProperties.process = this.process;
+                processProperties.show();
+            }
         }
     },
     {
         button: ['Remove', 'btn-danger'], action: function () {
-            if (this.program != undefined) this.program.destroy();
+            if (this.process != undefined) this.process.destroy();
             if (this.binder != undefined) this.binder.destroy();
         }
     },

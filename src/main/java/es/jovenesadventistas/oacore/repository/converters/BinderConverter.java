@@ -3,6 +3,7 @@ package es.jovenesadventistas.oacore.repository.converters;
 import java.util.concurrent.SubmissionPublisher;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
@@ -47,24 +48,36 @@ public class BinderConverter {
 			ASubscriber<?> sub = null;
 			APublisher pub = null;
 			AProcess proc = null;
+			ProcessExecutionDetails procExecDetls = null;
 
 			try {
 				switch (binderType) {
 				case "es.jovenesadventistas.arnion.process.binders.DirectStdInBinder":
 					DirectStdInBinder directStdInBinder = (DirectStdInBinder) source;
-					document.put("processId", directStdInBinder.getProcExecDetails().getProcess().getId());
+					procExecDetls = directStdInBinder.getProcExecDetails();
+					proc = procExecDetls != null ? procExecDetls.getProcess() : null;
+					document.put("processId", proc != null ? proc.getId() : null);
 					break;
 				case "es.jovenesadventistas.arnion.process.binders.ExitCodeBinder":
 					try {
 						ExitCodeBinder exitCodeBinder = (ExitCodeBinder) source;
-						proc = exitCodeBinder.getProcExecDetails().getProcess();
-						aProcessRepository.save(proc);
-						document.put("processId", proc.getId());
+						procExecDetls = exitCodeBinder.getProcExecDetails();
+						proc = procExecDetls != null ? procExecDetls.getProcess() : null;
+
+						if (proc != null) {
+							aProcessRepository.save(proc);
+							document.put("processId", proc.getId());
+						}
 						sub = exitCodeBinder.getSubscriber();
-						aSubscriberRepository.save(sub);
-						document.put("subscriberId", sub.getId());
+						if (sub != null) {
+							aSubscriberRepository.save(sub);
+							document.put("subscriberId", sub.getId());
+						}
 						pub = exitCodeBinder.getAPublisher();
-						document.put("publisherId", pub.getId());
+						if (pub != null) {
+							aPublisherRepository.save(pub);
+							document.put("publisherId", pub.getId());
+						}
 
 					} catch (Exception e) {
 						logger.error("Could not convert to document an ExitCodeBinder.", e);
@@ -89,16 +102,20 @@ public class BinderConverter {
 						aSubscriberRepository.save((ASubscriber<Transfer>) runnable);
 						document.put("runnableId", ((ASubscriber<Transfer>) runnable).getId());
 					} else {
-						throw new IllegalArgumentException(
-								"Runnable type cannot be saved: " + runnable.getClass().getName());
+						if (runnable != null)
+							throw new IllegalArgumentException(
+									"Runnable type cannot be saved: " + runnable.getClass().getName());
 					}
 					break;
 				case "es.jovenesadventistas.arnion.process.binders.StdInBinder":
 					try {
 						StdInBinder stdInBinder = (StdInBinder) source;
-						proc = stdInBinder.getProcExecDetails().getProcess();
-						aProcessRepository.save(proc);
-						document.put("processId", proc.getId());
+						procExecDetls = stdInBinder.getProcExecDetails();
+						proc = procExecDetls != null ? procExecDetls.getProcess() : null;
+						if (proc != null) {
+							aProcessRepository.save(proc);
+							document.put("processId", proc.getId());
+						}
 						pub = stdInBinder.getStdInAPublisher();
 						if (pub != null) {
 							aPublisherRepository.save(pub);
@@ -110,15 +127,17 @@ public class BinderConverter {
 							document.put("stdInErrorPublisherId", pub.getId());
 						}
 					} catch (Exception e) {
-						throw new IllegalArgumentException(
-								"An error ocurred: " + e.getMessage(), e);
+						throw new IllegalArgumentException("An error ocurred: " + e.getMessage(), e);
 					}
 					break;
 				case "es.jovenesadventistas.arnion.process.binders.StdOutBinder":
 					StdOutBinder stdOutBinder = (StdOutBinder) source;
-					proc = stdOutBinder.getProcExecDetails().getProcess();
-					aProcessRepository.save(proc);
-					document.put("processId", proc.getId());
+					procExecDetls = stdOutBinder.getProcExecDetails();
+					proc = procExecDetls != null ? procExecDetls.getProcess() : null;
+					if (proc != null) {
+						aProcessRepository.save(proc);
+						document.put("processId", proc.getId());
+					}
 					break;
 
 				default:
@@ -147,24 +166,32 @@ public class BinderConverter {
 			ASubscriber<?> sub = null;
 			APublisher pub = null, pub2 = null;
 			String binderType = source.getString("binderType");
+			ObjectId id = null;
 
 			try {
 				switch (binderType) {
 				case "es.jovenesadventistas.arnion.process.binders.DirectStdInBinder":
-					proc = aProcessRepository.findById(source.getObjectId("processId"));
-					DirectStdInBinder directStdInBinder = new DirectStdInBinder(new ProcessExecutionDetails(proc));
+					id = source.getObjectId("processId");
+					proc = id != null ? aProcessRepository.findById(id) : null;
+					DirectStdInBinder directStdInBinder = new DirectStdInBinder(
+							proc != null ? new ProcessExecutionDetails(proc) : null);
 					r = directStdInBinder;
 					break;
 				case "es.jovenesadventistas.arnion.process.binders.ExitCodeBinder":
-					proc = aProcessRepository.findById(source.getObjectId("processId"));
-					sub = aSubscriberRepository.findById(source.getObjectId("subscriberId"));
-					pub = aPublisherRepository.findById(source.getObjectId("publisherId"));
+					id = source.getObjectId("processId");
+					if (id != null)
+						proc = aProcessRepository.findById(id);
+					id = source.getObjectId("subscriberId");
+					if (id != null)
+						sub = aSubscriberRepository.findById(id);
+					id = source.getObjectId("publisherId");
+					if (id != null)
+						pub = aPublisherRepository.findById(id);
 					if (sub instanceof ConcurrentLinkedQueueSubscriber
 							&& pub instanceof ConcurrentLinkedQueuePublisher) {
-						ExitCodeBinder exitCodeBinder = new ExitCodeBinder(new ProcessExecutionDetails(proc),
+						r = new ExitCodeBinder(proc == null ? null : new ProcessExecutionDetails(proc),
 								(ConcurrentLinkedQueueSubscriber<IntegerTransfer>) sub,
 								(ConcurrentLinkedQueuePublisher<IntegerTransfer>) pub);
-						r = exitCodeBinder;
 					} else {
 						String err = "Error trying to convert to an ExitCodeBinder using a Subscriber or Publisher or another type: "
 								+ sub.getClass().getName();
@@ -176,13 +203,19 @@ public class BinderConverter {
 					Runnable runnable = null;
 					switch (source.getString("runnableType")) {
 					case "Binder":
-						runnable = binderRepository.findById(source.getObjectId("runnableId"));
+						id = source.getObjectId("runnableId");
+						if (id != null)
+							runnable = binderRepository.findById(id);
 						break;
 					case "APublisher":
-						runnable = (Runnable) aPublisherRepository.findById(source.getObjectId("runnableId"));
+						id = source.getObjectId("runnableId");
+						if (id != null)
+							runnable = (Runnable) aPublisherRepository.findById(id);
 						break;
 					case "ASubscriber":
-						runnable = (Runnable) aSubscriberRepository.findById(source.getObjectId("runnableId"));
+						id = source.getObjectId("runnableId");
+						if (id != null)
+							runnable = (Runnable) aSubscriberRepository.findById(id);
 						break;
 					default:
 						throw new IllegalArgumentException(
@@ -193,15 +226,23 @@ public class BinderConverter {
 					r = new RunnableBinder(runnable);
 					break;
 				case "es.jovenesadventistas.arnion.process.binders.StdInBinder":
-					proc = aProcessRepository.findById(source.getObjectId("processId"));
-					pub = aPublisherRepository.findById(source.getObjectId("stdInPublisherId"));
-					pub2 = aPublisherRepository.findById(source.getObjectId("stdInErrorPublisherId"));
-					r = new StdInBinder(new ProcessExecutionDetails(proc), (SubmissionPublisher<StringTransfer>) pub,
-							(SubmissionPublisher<StringTransfer>) pub2);
+					id = source.getObjectId("processId");
+					if (id != null)
+						proc = aProcessRepository.findById(id);
+					id = source.getObjectId("stdInPublisherId");
+					if (id != null)
+						pub = aPublisherRepository.findById(id);
+					id = source.getObjectId("stdInErrorPublisherId");
+					if (id != null)
+						pub2 = aPublisherRepository.findById(id);
+					r = new StdInBinder(proc == null ? null : new ProcessExecutionDetails(proc),
+							(SubmissionPublisher<StringTransfer>) pub, (SubmissionPublisher<StringTransfer>) pub2);
 					break;
 				case "es.jovenesadventistas.arnion.process.binders.StdOutBinder":
-					proc = aProcessRepository.findById(source.getObjectId("processId"));
-					r = new StdOutBinder(new ProcessExecutionDetails(proc));
+					id = source.getObjectId("processId");
+					if (id != null)
+						proc = aProcessRepository.findById(id);
+					r = new StdOutBinder(proc == null ? null : new ProcessExecutionDetails(proc));
 					break;
 				default:
 					throw new IllegalArgumentException("Unexpected value for binderType: " + binderType);
