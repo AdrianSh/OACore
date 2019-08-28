@@ -1,5 +1,6 @@
 import $ from "jquery";
 import Server from './../Server'
+import {app, saveWorkflow} from './../../index'
 
 class BinderProperties {
     constructor() {
@@ -9,6 +10,10 @@ class BinderProperties {
         this.process1 = undefined;
         this.process2 = undefined;
         this.binder = undefined;
+    }
+
+    hide() {
+        this.modal.modal('hide');
     }
 
     show() {
@@ -77,26 +82,57 @@ class BinderProperties {
         }
     }
 
-    collectValues(cb) {
+    _bId(key) {
+        return { "$oid": key };
+    }
+
+    _getbId(param) {
+        return param != undefined && param['$oid'] != undefined ? param['$oid'] : undefined;
+    }
+
+    async collectValues(cb) {
         let binder = {}
         binder['binderType'] = $(`#${this.id}binderTypeSelector`).val();
 
         switch (binder['binderType']) {
             case 'es.jovenesadventistas.arnion.process.binders.DirectStdInBinder':
-                binder['processId'] = $(`#${this.id}ProcessId`).val();
+                binder['processId'] = this._bId($(`#${this.id}ProcessId`).val());
                 cb(binder);
                 break;
             case 'es.jovenesadventistas.arnion.process.binders.ExitCodeBinder':
-                binder['processId'] = $(`#${this.id}ProcessId`).val();
+                binder['processId'] = this._bId($(`#${this.id}ProcessId`).val());
                 try {
-                    Server.postToServer(this.collectSubscriber(), 'admin/generic/ASubscriber', (data, status, jqXHR) => {
-                        binder['subscriberId'] = data._id['$oid'];
-
-                        Server.postToServer(this.collectPublisher(), 'admin/generic/APublisher', (data, status, jqXHR) => {
-                            binder['publisherId'] = data._id['$oid'];
-                            cb(binder);
-                        });
-                    });
+                    let subsData = this.collectSubscriber();
+                    if (subsData['subscriberType'] != undefined && subsData['subscriberType'].length > 0) {
+                        let sId = this._getbId(this.binder.binderData.subscriberId);
+                        if (sId != undefined) {
+                            subsData['_id'] = this._bId(sId);
+                            await Server.putToServer(subsData, 'admin/generic/ASubscriber', (data, status, jqXHR) => {
+                                binder['subscriberId'] = this._bId(data._id['$oid']);
+                            });
+                        } else {
+                            await Server.postToServer(subsData, 'admin/generic/ASubscriber', (data, status, jqXHR) => {
+                                binder['subscriberId'] = this._bId(data._id['$oid']);
+                            });
+                        }
+                    }
+                    let pubData = this.collectPublisher();
+                    if (pubData['publisherType'] != undefined && pubData['publisherType'].length > 0) {
+                        let pId = this._getbId(this.binder.binderData.subscriberId);
+                        if (pId != undefined) {
+                            pubData['_id'] = this._bId(pId);
+                            await Server.putToServer(pubData, 'admin/generic/APublisher', (data, status, jqXHR) => {
+                                binder['publisherId'] = this._bId(data._id['$oid']);
+                            });
+                        } else {
+                            await Server.postToServer(pubData, 'admin/generic/APublisher', (data, status, jqXHR) => {
+                                binder['publisherId'] = this._bId(data._id['$oid']);
+                            });
+                        }
+                    }
+                    console.log(`Subscriber: ${JSON.stringify(subsData)}`);
+                    console.log(`Publisher: ${JSON.stringify(pubData)}`);
+                    cb(binder);
                 } catch (e) {
                     this.alert(`An error ocurred while saving Publishers... ${e}`, 'danger');
                 }
@@ -104,32 +140,65 @@ class BinderProperties {
             case 'es.jovenesadventistas.arnion.process.binders.RunnableBinder':
                 binder['runnableType'] = $(`#${this.id}RunnableType`).val();
                 this.alert(`Pending to check if exists...`);
-                binder['runnableId'] = $(`#${this.id}RunnableId`).val();
+                binder['runnableId'] = this._bId($(`#${this.id}RunnableId`).val());
                 cb(binder);
                 break;
             case 'es.jovenesadventistas.arnion.process.binders.StdInBinder':
-                binder['processId'] = $(`#${this.id}ProcessId`).val();
+                binder['processId'] = this._bId($(`#${this.id}ProcessId`).val());
                 try {
-                    Server.postToServer(this.collectPublisher(1), 'admin/generic/APublisher', (data, status, jqXHR) => {
-                        binder['stdInPublisherId'] = data._id['$oid'];
+                    let pubData1 = this.collectPublisher(1);
+                    let pubData2 = this.collectPublisher(2);
 
-                        Server.postToServer(this.collectPublisher(2), 'admin/generic/APublisher', (data, status, jqXHR) => {
-                            binder['stdInErrorPublisherId'] = data._id['$oid'];
-                            cb(binder);
-                        }, (jqXHR, textStatus, errorThrown) => {
-                            this.alert(`Couldn't save the Publisher, ${errorThrown}`);
-                            binder = undefined;
-                        });
-                    }, (jqXHR, textStatus, errorThrown) => {
-                        this.alert(`Couldn't save the Publisher, ${errorThrown}`);
-                        binder = undefined;
-                    });
+                    console.log(`Publisher 1: ${JSON.stringify(pubData1)}`);
+                    console.log(`Publisher 2: ${JSON.stringify(pubData2)}`);
+
+                    if (pubData1['publisherType'] != undefined && pubData1['publisherType'].length > 0) {
+                        let pId = this._getbId(this.binder.binderData.stdInPublisherId);
+                        if (pId != undefined) {
+                            pubData1['_id'] = this._bId(pId);
+                            await Server.putToServer(pubData1, 'admin/generic/APublisher', (data, status, jqXHR) => {
+                                binder['stdInPublisherId'] = this._bId(data._id['$oid']);
+                            }, (jqXHR, textStatus, errorThrown) => {
+                                this.alert(`Couldn't save the Publisher, ${errorThrown}`);
+                                binder = undefined;
+                            });
+                        } else {
+                            await Server.postToServer(pubData1, 'admin/generic/APublisher', (data, status, jqXHR) => {
+                                binder['stdInPublisherId'] = this._bId(data._id['$oid']);
+                            }, (jqXHR, textStatus, errorThrown) => {
+                                this.alert(`Couldn't save the Publisher, ${errorThrown}`);
+                                binder = undefined;
+                            });
+                        }
+                    }
+
+                    if (pubData2['publisherType'] != undefined && pubData2['publisherType'].length > 0) {
+                        let pId = this._getbId(this.binder.binderData.stdInErrorPublisherId);
+                        if (pId != undefined) {
+                            pubData2['_id'] = this._bId(pId);
+                            await Server.putToServer(pubData2, 'admin/generic/APublisher', (data, status, jqXHR) => {
+                                binder['stdInErrorPublisherId'] = this._bId(data._id['$oid']);
+                            }, (jqXHR, textStatus, errorThrown) => {
+                                this.alert(`Couldn't save the Publisher, ${errorThrown}`);
+                                binder = undefined;
+                            });
+                        } else {
+                            await Server.postToServer(pubData2, 'admin/generic/APublisher', (data, status, jqXHR) => {
+                                binder['stdInErrorPublisherId'] = this._bId(data._id['$oid']);
+                            }, (jqXHR, textStatus, errorThrown) => {
+                                this.alert(`Couldn't save the Publisher, ${errorThrown}`);
+                                binder = undefined;
+                            });
+                        }
+                    }
+
+                    cb(binder);
                 } catch (e) {
                     this.alert(`An error ocurred while saving Publishers... ${e}`, 'danger');
                 }
                 break;
             case 'es.jovenesadventistas.arnion.process.binders.StdOutBinder':
-                binder['processId'] = $(`#${this.id}ProcessId`).val();
+                binder['processId'] = this._bId($(`#${this.id}ProcessId`).val());
                 cb(binder);
                 break;
             default:
@@ -151,6 +220,8 @@ class BinderProperties {
             case 'es.jovenesadventistas.arnion.process.binders.Publishers.SocketServerPublisher':
                 publisher['socket_port'] = parseInt($(`#${this.id}PublisherSocketPort${num}`).val());
                 break;
+            case '':
+                break;
             default:
                 this.alert(`Invalid publisher type ${publisher.publisherType}`, 'danger');
                 throw `Cannot collect publisher ${num}`;
@@ -170,6 +241,8 @@ class BinderProperties {
                 break;
             case 'es.jovenesadventistas.arnion.process.binders.Subscribers.SocketServerSubscriber':
                 subscriber['socket_port'] = parseInt($(`#${this.id}SubscriberSocketPort${num}`).val());
+                break;
+            case '':
                 break;
             default:
                 this.alert(`Invalid subscriber type ${subscriber.subscriberType}`, 'danger');
@@ -257,7 +330,7 @@ class BinderProperties {
                         <small id="${this.id}ProcessIdHelp" class="form-text text-muted">Process to read</small>
                     </div>
                     ${this.subscriberTypeSelector()}
-                    ${this.publisherTypeSelector()}`;
+                    ${this.publisherTypeSelector(1, 'Publisher, if a socket is involved it should be ready/available.')}`;
                 break;
             case 'es.jovenesadventistas.arnion.process.binders.RunnableBinder':
                 html += `
@@ -285,8 +358,8 @@ class BinderProperties {
                         </select>
                         <small id="${this.id}ProcessIdHelp" class="form-text text-muted">Process to read</small>
                     </div>
-                    ${this.publisherTypeSelector(1, 'Std in publisher')}
-                    ${this.publisherTypeSelector(2, 'Std in error publisher')}`
+                    ${this.publisherTypeSelector(1, 'Std in publisher, remember that socket should be ready/available.')}
+                    ${this.publisherTypeSelector(2, 'Std in error publisher, remember that socket should be ready/available.')}`
                 break;
             case 'es.jovenesadventistas.arnion.process.binders.StdOutBinder':
                 html += `
@@ -368,16 +441,20 @@ class BinderProperties {
             <option value="es.jovenesadventistas.arnion.process.binders.StdOutBinder">StdOutBinder</option>
         </select>`;
     }
-    subscriberTypeSelector() {
-        return `<div class="form-group">
-            <label for="${this.id}SubscriberTypeSelector">Subscriber</label>
-            <select class="form-control" id="${this.id}SubscriberTypeSelector">
+    subscriberTypeSelector(num = '', helpText = '') {
+        let html = `<div class="form-group">
+            <label for="${this.id}SubscriberTypeSelector${num}">Subscriber</label>
+            <select class="form-control" id="${this.id}SubscriberTypeSelector${num}">
                 <option value="">Select</option>
                 <option value="es.jovenesadventistas.arnion.process.binders.Subscribers.ConcurrentLinkedQueueSubscriber">ConcurrentLinkedQueueSubscriber</option>
                 <option value="es.jovenesadventistas.arnion.process.binders.Subscribers.SocketServerSubscriber">SocketServerSubscriber</option>
                 <option value="es.jovenesadventistas.arnion.process.binders.Subscribers.SocketSubscriber">SocketSubscriber</option>
                 <!-- <option value="es.jovenesadventistas.arnion.process.binders.Subscribers.TransferStoreSubscriber">TransferStoreSubscriber</option> -->
-            </select></div><div class="form-group" id="${this.id}SubscriberTypeInputs"></div>`;
+            </select>`;
+        if (helpText.length > 0)
+            html += `<small id="${this.id}SubscriberTypeSelector${num}Help" class="form-text text-muted">${helpText}</small>`;
+        html += `</div><div class="form-group" id="${this.id}SubscriberTypeInputs"></div>`;
+        return html;
     }
     publisherTypeSelector(num = '1', helpText = '') {
         let html = `<div class="form-group">
@@ -426,13 +503,32 @@ class BinderProperties {
             e.preventDefault();
             this.collectValues(b => {
                 if (b != undefined) {
-                    this.binder.binderData = b;
-                    Server.postToServer(b, 'admin/generic/binder', (data) => {
-                        this.binder.binderData = data;
-                        this.alert(`Binder saved!`);
-                    }, (jqXHR, status, e) => {
-                        this.alert(`Couldn't save the binder, ${e}`, 'danger');
-                    });
+                    console.log(`Binder values: ${JSON.stringify(b)}`);
+                    if (this.binder.binderData != undefined && this.binder.binderData._id != undefined && this.binder.binderData._id['$oid'] != undefined) {
+                        b['_id'] = {};
+                        b._id['$oid'] = this.binder.binderData._id['$oid'];
+                        console.log(`Updating binder: ${JSON.stringify(b)}`);
+                        Server.putToServer(b, 'admin/generic/binder', (data) => {
+                            this.binder.binderData = data;
+                            this.alert(`Binder updated!`);
+                            this.hide();
+                        }, (jqXHR, status, e) => {
+                            this.alert(`Couldn't save the binder, ${e}`, 'danger');
+                        });
+                    } else {
+                        console.log(`Saving a new binder: ${JSON.stringify(b)}`);
+                        Server.postToServer(b, 'admin/generic/binder', (data) => {
+                            this.binder.binderData = data;
+                            app.workflowData.binders[data['_id']['$oid']] = this.binder;
+                            app.workflowData.binderProcessesOrig[data['_id']['$oid']] = this.binder.origProcess._getId();
+                            app.workflowData.binderProcessesDest[data['_id']['$oid']] = this.binder.destProcess._getId();
+                            this.alert(`Binder saved!`);
+                            this.hide();
+                            saveWorkflow();
+                        }, (jqXHR, status, e) => {
+                            this.alert(`Couldn't save the binder, ${e}`, 'danger');
+                        });
+                    }
                 }
             })
         });

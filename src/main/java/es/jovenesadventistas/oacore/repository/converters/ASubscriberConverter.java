@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
@@ -91,8 +92,7 @@ public class ASubscriberConverter {
 				try {
 					SocketSubscriber<Transfer> socketSubscriber = new SocketSubscriber<Transfer>(
 							new Socket(sInetAddress, sPort));
-					socketSubscriber.setData(
-							new ConcurrentLinkedQueue<Transfer>(source.get("data", ArrayList.class)));
+					socketSubscriber.setData(new ConcurrentLinkedQueue<Transfer>(source.get("data", ArrayList.class)));
 					r = socketSubscriber;
 				} catch (IOException e) {
 					logger.error("Could not open socket with port: " + sPort + " and host: " + sInetAddress, e);
@@ -107,7 +107,9 @@ public class ASubscriberConverter {
 			default:
 				throw new IllegalArgumentException("Unexpected value for subscriberType: " + subscriberType);
 			}
-			r.setId(source.getObjectId("_id"));
+			ObjectId id = source.getObjectId("_id");
+			if (id != null && r != null)
+				r.setId(id);
 			return r;
 		}
 	}

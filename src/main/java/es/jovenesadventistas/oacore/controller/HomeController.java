@@ -20,7 +20,8 @@ import es.jovenesadventistas.oacore.UserDetails;
 
 @Controller
 public class HomeController {
-
+	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
+	
 	@Autowired
 	private Environment env;
 

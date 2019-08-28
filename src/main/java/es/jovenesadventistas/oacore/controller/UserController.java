@@ -23,8 +23,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
 import org.owasp.encoder.Encode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -54,7 +52,7 @@ import es.jovenesadventistas.oacore.repository.UserRepository;
 
 @Controller
 public class UserController {
-	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
 
 	@Autowired
 	private LocalData localData;

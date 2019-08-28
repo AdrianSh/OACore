@@ -1,6 +1,8 @@
 import * as PIXI from 'pixi.js'
 import boxBox from 'intersects/box-box'
 import { navbar } from '../html/Navbar';
+import Server from '../Server'
+import { app, saveWorkflow } from '../../index'
 
 const basicTextstyle = new PIXI.TextStyle({
     fontFamily: 'Arial',
@@ -17,15 +19,26 @@ const basicTextstyle = new PIXI.TextStyle({
 });
 
 class Process extends PIXI.Sprite {
-    constructor(x, y, commandLine) {
-
+    constructor(x, y, commandLine, id = undefined) {
         let processTexture = PIXI.Loader.shared.resources.tileset.texture.clone();
         processTexture.frame = new PIXI.Rectangle(0, 0, 250, 156);
         processTexture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST; // Scale mode for pixelation
 
         super(processTexture);
 
-        this.processData = undefined;
+        if (id != undefined) {
+            commandLine = 'Loading...';
+            Server.getFromServer((data) => {
+                this.processData = data;
+                this.updateCommandLineText(data.command.trim());
+                console.log(`Process loaded... ${JSON.stringify(data)}`);
+            }, `admin/generic/AProcess/${id}`, undefined, (xhr, status, err) => {
+                console.error(`Couldn't load AProcess ID: ${id}, ${err}`);
+            })
+        } else {
+            this.processData = undefined;
+        }
+
         this.interactive = true; // this will allow it to respond to mouse and touch events
         this.buttonMode = true; // this button mode will mean the hand cursor appears when you roll over the process with your mouse
         this.anchor.set(0.5); // center the process's anchor point
@@ -62,16 +75,34 @@ class Process extends PIXI.Sprite {
         this.moving = false;
     }
 
-    updateCommandLineText(commandLine){
+    updateCommandLineText(commandLine) {
         this.commandLineText.text = commandLine.length > 45 ? '...' + commandLine.substr(commandLine.length - 42, 42 - 1) : commandLine;
     }
 
-    destroy() {
-        this.binders.input.forEach(b => { b.destroy() })
-        this.binders.output.forEach(b => { b.destroy() })
-        navbar.process = navbar.lastProcess = undefined;
-        navbar.nav.hide();
-        super.destroy();
+    async destroy() {
+        if (this.processData != undefined && this.processData._id != undefined && this.processData._id['$oid'] != undefined) {
+            let pId = this.processData._id['$oid'];
+            await Server.deleteToServer(`admin/generic/AProcess/${pId}`, (data, status, jqXHR) => {
+                this.binders.input.forEach(b => { b.destroy() })
+                this.binders.output.forEach(b => { b.destroy() })
+                navbar.process = navbar.lastProcess = undefined;
+                navbar.nav.hide();
+
+                if (app.workflowData.processes[pId] != undefined)
+                    delete app.workflowData.processes[pId];
+                saveWorkflow();
+
+                super.destroy();
+            }, (jqXHR, status, err) => {
+                console.log(`Couldn't delete the Process ${err}`);
+            });
+        } else {
+            this.binders.input.forEach(b => { b.destroy() })
+            this.binders.output.forEach(b => { b.destroy() })
+            navbar.process = navbar.lastProcess = undefined;
+            navbar.nav.hide();
+            super.destroy();
+        }
     }
 
     upperCornerCoords() {
@@ -104,10 +135,21 @@ class Process extends PIXI.Sprite {
     }
 
     onDragEnd() {
+        if (this.dragging) {
+            saveWorkflow();
+        }
+
         this.alpha = 1;
         this.dragging = false;
         // set the interaction data to null
         this.draggingObjectData = null;
+
+    }
+
+    _getId(id = undefined) {
+        if (id == undefined)
+            id = this.processData != undefined ? this.processData._id : { '$oid': undefined };
+        return id['$oid'];
     }
 
     onDragMove(e) {
@@ -122,9 +164,19 @@ class Process extends PIXI.Sprite {
                 if (this.binders.output.length > 0)
                     this.binders.output.forEach(b => b.updatePoints());
 
+                if (app.workflowData != undefined && this._getId() != undefined) {
+                    let c = app.workflowData.objCoords[this._getId()];
+                    if (c == undefined) {
+                        app.workflowData.objCoords[this._getId()] = { x: newPosition.x, y: newPosition.y };
+                    } else {
+                        c.x = newPosition.x;
+                        c.y = newPosition.y;
+                    }
+                }
+
                 this._showNavbar(e.data.global.x, e.data.global.y);
             } catch (err) {
-                if(this.draggingObjectData == undefined || this.draggingObjectData == null)
+                if (this.draggingObjectData == undefined || this.draggingObjectData == null)
                     this.draggingObjectData = e.data;
             }
         }

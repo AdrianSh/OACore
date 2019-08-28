@@ -7,7 +7,7 @@ class Server {
         this.binderTypes = [];
         this.getCSRFToken();
 
-        if(this.CSRFToken == undefined || this.CSRFToken == null || this.CSRFToken.length < 1){
+        if (this.CSRFToken == undefined || this.CSRFToken == null || this.CSRFToken.length < 1) {
             this.CSRFToken = sampleToken;
             this.CSRFTokenHeader = 'X-CSRF-TOKEN';
         }
@@ -26,31 +26,85 @@ class Server {
         this.CSRFTokenHeader = $("meta[name='csrf_header']").attr("content");
     }
 
-    getFromServer(successCallBack = function (data, textStatus, jqXHR){}, url = 'admin/generic/x', data = undefined, thenFun = function () { }) {
-        $.ajax({
-            beforeSend: this.beforeSend.bind(this),
-            url: `${serverHost}/${url}`,
-            data: data,
-            success: function (data, textStatus, jqXHR){ successCallBack(JSON.parse(data), textStatus, jqXHR) },
-        }).then(thenFun);
+    async getFromServer(successCallBack = function (data, textStatus, jqXHR) { }, url = 'admin/generic/x', data = undefined, errorCallBack = function (jqXHR, textStatus, errorThrown) {
+        console.error(errorThrown);
+    }, thenFun = function () { }) {
+        try {
+            await $.ajax({
+                beforeSend: this.beforeSend.bind(this),
+                url: `${serverHost}/${url}`,
+                data: data,
+                success: function (data, textStatus, jqXHR) {
+                    try {
+                        let pData = JSON.parse(data);
+                        successCallBack(pData, textStatus, jqXHR);
+                    } catch (e) {
+                        console.error(`A response from the server doesn´t contains a valid JSON document: \n${data}`);
+                    }
+                },
+                error: errorCallBack
+            }).then(thenFun);
+        } catch (e) {
+            console.error(e);
+        }
     }
 
-    postToServer(data, url = 'admin/generic/x', successCallBack = function (data, textStatus, jqXHR){}, errorCallBack = function (jqXHR, textStatus, errorThrown){
+    async postToServer(data, url = 'admin/generic/x', successCallBack = function (data, textStatus, jqXHR) { }, errorCallBack = function (jqXHR, textStatus, errorThrown) {
         console.error(errorThrown);
     }, doneFun = function () { }) {
-        $.ajax({
-            beforeSend: this.beforeSend.bind(this),
-            method: 'POST',
-            url: `${serverHost}/${url}`,
-            data: data,
-            success: successCallBack
-        }).done(doneFun);
+        try {
+            await $.ajax({
+                beforeSend: this.beforeSend.bind(this),
+                method: 'POST',
+                url: `${serverHost}/${url}`,
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: successCallBack,
+                error: errorCallBack
+            }).done(doneFun);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async putToServer(data, url = 'admin/generic/x', successCallBack = function (data, textStatus, jqXHR) { }, errorCallBack = function (jqXHR, textStatus, errorThrown) {
+        console.error(errorThrown);
+    }, doneFun = function () { }) {
+        try {
+            await $.ajax({
+                beforeSend: this.beforeSend.bind(this),
+                method: 'PUT',
+                url: `${serverHost}/${url}`,
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: successCallBack,
+                error: errorCallBack
+            }).done(doneFun);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async deleteToServer(url = 'admin/generic/x', successCallBack = function (data, textStatus, jqXHR) { }, errorCallBack = function (jqXHR, textStatus, errorThrown) {
+        console.error(errorThrown);
+    }, doneFun = function () { }) {
+        try {
+            await $.ajax({
+                beforeSend: this.beforeSend.bind(this),
+                method: 'DELETE',
+                url: `${serverHost}/${url}`,
+                dataType: 'json',
+                contentType: 'application/json',
+                success: successCallBack,
+                error: errorCallBack
+            }).done(doneFun);
+        } catch (e) {
+            console.error(e);
+        }
     }
 }
 
 const server = new Server();
-
-window.Server = server;
-
-
 export default server;

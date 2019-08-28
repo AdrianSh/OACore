@@ -1,16 +1,17 @@
 package es.jovenesadventistas.oacore.repository.converters;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
-
+import com.google.gson.Gson;
 import es.jovenesadventistas.arnion.process.AProcess;
 import es.jovenesadventistas.arnion.process.binders.Binder;
 import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
@@ -24,6 +25,8 @@ public class WorkflowConverter {
 
 	@WritingConverter
 	public static class WorkflowWriteConverter implements Converter<Workflow, Document> {
+		private Gson gson = new Gson();
+
 		public Document convert(Workflow source) {
 			AProcessRepository rep = AdminController.getInstance().getaProcessRepository();
 			BinderRepository binRep = AdminController.getInstance().getBinderRepository();
@@ -48,14 +51,32 @@ public class WorkflowConverter {
 				binRep.save(binder);
 				binders.add(binder.getId());
 			}
-			document.put("binders", binders);
+			document.put("binder", binders);
+			document.put("objCoords", gson.toJson(source.getObjCoords()));
 
+			HashMap<String, String> binderProcessesPlainOrig = new HashMap<>();
+			HashMap<String, String> binderProcessesPlainDest = new HashMap<>();
+			HashMap<ObjectId, Workflow.Pair<ObjectId, ObjectId>> binderProcesses = source.getBinderProcesses();
+
+			if (binderProcesses != null) {
+				Set<ObjectId> binderIds = binderProcesses.keySet();
+				for (ObjectId key : binderIds) {
+					Workflow.Pair<ObjectId, ObjectId> coords = binderProcesses.get(key);
+					binderProcessesPlainOrig.put(key.toHexString(), coords.o1().toHexString());
+					binderProcessesPlainDest.put(key.toHexString(), coords.o2().toHexString());
+				}
+			}
+
+			document.put("binderProcessesOrig", gson.toJson(binderProcessesPlainOrig));
+			document.put("binderProcessesDest", gson.toJson(binderProcessesPlainDest));
 			return document;
 		}
 	}
 
 	@ReadingConverter
 	public static class WorkflowReadConverter implements Converter<Document, Workflow> {
+		private Gson gson = new Gson();
+
 		@SuppressWarnings("unchecked")
 		public Workflow convert(Document source) {
 			AProcessRepository rep = AdminController.getInstance().getaProcessRepository();
@@ -92,18 +113,36 @@ public class WorkflowConverter {
 			}
 
 			List<Binder> binders = new ArrayList<>();
-			List<ObjectId> binderIds = source.get("binders", List.class);
-			for (ObjectId bId : binderIds) {
-				Binder binder = binRep.findById(bId);
-				if (binder != null) {
-					binders.add(binder);
-				} else {
-					logger.error("Could not read Binder from MongoDB with ObjectID: " + bId);
+			List<ObjectId> binderIds = source.get("binder", List.class);
+			if (binderIds != null)
+				for (ObjectId bId : binderIds) {
+					Binder binder = binRep.findById(bId);
+					if (binder != null) {
+						binders.add(binder);
+					} else {
+						logger.error("Could not read Binder from MongoDB with ObjectID: " + bId);
+					}
+				}
+
+			HashMap<ObjectId, Workflow.Coord> objCoords = gson.fromJson(source.getString("objCoords"), HashMap.class);
+			HashMap<String, String> binderProcessesPlainOrig = gson.fromJson(source.getString("binderProcessesOrig"),
+					HashMap.class);
+			HashMap<String, String> binderProcessesPlainDest = gson.fromJson(source.getString("binderProcessesDest"),
+					HashMap.class);
+
+			HashMap<ObjectId, Workflow.Pair<ObjectId, ObjectId>> binderProcesses = new HashMap<ObjectId, Workflow.Pair<ObjectId, ObjectId>>();
+
+			if (binderProcessesPlainOrig != null) {
+				Set<String> bIds = binderProcessesPlainOrig.keySet();
+				for (String key : bIds) {
+					binderProcesses.put(new ObjectId(key),
+							new Workflow.Pair<ObjectId, ObjectId>(new ObjectId(binderProcessesPlainOrig.get(key)),
+									new ObjectId(binderProcessesPlainDest.get(key))));
 				}
 			}
-			
-			return new Workflow(source.getObjectId("_id"), source.getObjectId("userId"), process, processExecutionDetails, executorServices,
-					binders);
+
+			return new Workflow(source.getObjectId("_id"), source.getObjectId("userId"), process, objCoords,
+					processExecutionDetails, executorServices, binders, binderProcesses);
 		}
 	}
 

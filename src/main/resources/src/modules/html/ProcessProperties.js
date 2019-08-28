@@ -2,12 +2,17 @@ import $ from "jquery";
 import { menu } from '../../config'
 import { serverHost } from '../../serverConfig';
 import Server from '../Server'
+import {app, saveWorkflow} from './../../index'
 
 class ProcessProperties {
     constructor() {
         this.id = 'ProcessProperties';
         this.buildHtmlElement();
         this.modal.modal('handleUpdate');
+    }
+
+    hide() {
+        this.modal.modal('hide');
     }
 
     show() {
@@ -23,7 +28,7 @@ class ProcessProperties {
                     if (pData.modifiedEnvironment.hasOwnProperty(key)) {
                         const value = pData.modifiedEnvironment[key];
                         let container = $(`.${this.id}ModifiedVar:not(.updated)`).first();
-                        if(container == null || container == undefined || container.length < 1){
+                        if (container == null || container == undefined || container.length < 1) {
                             $(`#${this.id}ModifiedVar`).append(
                                 `<div class="form-row form-group ${this.id}ModifiedVar updated">
                                     <div class="col">
@@ -138,22 +143,38 @@ class ProcessProperties {
             }
 
             let processDef = {
-                "command": $(`#${this.id}Command`).val(),
+                "command": $(`#${this.id}Command`).val().trim(),
                 "workingdirectory": $(`#${this.id}WorkingDir`).val(),
                 "modifiedEnvironment": Object.getOwnPropertyNames(modifiedEnvironment).length > 0 ? modifiedEnvironment : "null",
                 "inheritIO": $(`#${this.id}InheritIO`).prop('checked') == true
             }
 
-            console.log(`Saving new process... ${JSON.stringify(processDef)}`);
+            if (this.process.processData != undefined && this.process.processData._id != undefined && this.process.processData._id['$oid'] != undefined) {
+                processDef['_id'] = {};
+                processDef._id['$oid'] = this.process.processData._id['$oid'];
+                console.log(`Updating process... ${JSON.stringify(processDef)}`);
+                Server.putToServer(processDef, 'admin/generic/aprocess', function (data, textStatus, jqXHR) {
+                    console.log('Process updated.');
+                    console.log(data);
+                    this.process.processData = data;
+                    this.process.updateCommandLineText(data.command.trim());
+                    this.hide();
+                }.bind(this))
+            } else {
+                console.log(`Saving new process... ${JSON.stringify(processDef)}`);
+                Server.postToServer(processDef, 'admin/generic/aprocess', function (data, textStatus, jqXHR) {
+                    this.process.processData = data;
+                    this.process.updateCommandLineText(data.command);
 
-            this.process.processData = processDef;
-            this.process.updateCommandLineText(processDef.command);
+                    app.workflowData.processes[data['_id']['$oid']] = this.process;
+                    saveWorkflow();
 
-            Server.postToServer(processDef, 'admin/generic/aprocess', function (data, textStatus, jqXHR) {
-                console.log('Process saved.');
-                console.log(data);
-                this.process.processData = data
-            }.bind(this))
+                    console.log('Process saved.');
+                    console.log(data);
+                    this.hide();
+                }.bind(this))
+            }
+
         }.bind(this));
 
         document.body.appendChild(this.modal[0]);

@@ -145,7 +145,7 @@ public class StdInBinder implements Binder {
 	}
 	
 	public APublisher getStdInAPublisher() throws Exception {
-		if (this.stdInPublisher instanceof APublisher)
+		if (this.stdInPublisher == null || this.stdInPublisher instanceof APublisher)
 			return (APublisher) this.stdInPublisher;
 		else
 			throw new Exception("It is not an instance of APublisher.");

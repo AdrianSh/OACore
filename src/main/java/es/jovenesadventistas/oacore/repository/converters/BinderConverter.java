@@ -250,10 +250,12 @@ public class BinderConverter {
 
 			} catch (Exception e) {
 				throw new IllegalArgumentException(
-						"Could not parse binder: " + binderType + " document: " + source.toJson(), e);
+						"Could not parse binder: " + binderType + " document: " + source.toJson() + ", " + e.getMessage(), e);
 			}
 
-			r.setId(source.getObjectId("_id"));
+			ObjectId pid = source.getObjectId("_id");
+			if (pid != null && r != null)
+				r.setId(pid);
 			return r;
 		}
 	}

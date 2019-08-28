@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
@@ -78,7 +79,10 @@ public class APublisherConverter {
 			default:
 				throw new IllegalArgumentException("Unexpected value for publisherType: " + publisherType);
 			}
-			r.setId(source.getObjectId("_id"));
+			ObjectId id = source.getObjectId("_id");
+			
+			if(id != null && r != null)
+				r.setId(id);
 			return r;
 		}
 	}
