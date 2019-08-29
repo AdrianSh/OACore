@@ -22,6 +22,10 @@ class ProcessProperties {
             let pData = this.process.processData;
             $(`#${this.id}Command`).val(pData.command);
             $(`#${this.id}WorkingDir`).val(pData.workingdirectory);
+            this.buildExecutorServicesOptions();
+            let execServ = app.workflowData.executorAssigned[this.process._getId()];
+            if(execServ != undefined)
+                $(`#${this.id}ExecutorService`).val(execServ);
 
             if (pData.modifiedEnvironment != "null" && pData.modifiedEnvironment != null)
                 for (const key in pData.modifiedEnvironment) {
@@ -50,6 +54,13 @@ class ProcessProperties {
         }
     }
 
+    buildExecutorServicesOptions(){
+        $(`#${this.id}ExecutorService`).empty();
+        for (let i = 0; i < app.workflowData.executorServices.length; i++) {
+            $(`#${this.id}ExecutorService`).append(`<option value="${i}">${i}: ${app.workflowData.executorServices[i]}</option>`);
+        }
+    }
+
     buildHtmlElement() {
         this.modal = $(`
         <div class="modal fade" id="${this.id}" tabindex="-1" role="dialog" aria-labelledby="${this.id}CenterTitle" aria-hidden="true">
@@ -73,7 +84,10 @@ class ProcessProperties {
                                 <input id="${this.id}WorkingDir" type="text" class="form-control" placeholder="C:\\Program Files\\nodejs\\node.exe">
                                 <small id="${this.id}WorkingDirHelp" class="form-text text-muted">A folder with resources.</small>
                             </div>
-
+                            <div class="form-group">
+                                <label for="${this.id}ExecutorService">Executor Service</lavel>
+                                <select class="form-control" id="${this.id}ExecutorService"></select>
+                            </div>
                             <div class="form-group" id="${this.id}ModifiedVar">
                                 <label for="${this.id}ModifiedVar">Modified Environment</label>
                                 <div class="form-row form-group ${this.id}ModifiedVar">
@@ -158,6 +172,8 @@ class ProcessProperties {
                     console.log(data);
                     this.process.processData = data;
                     this.process.updateCommandLineText(data.command.trim());
+                    app.workflowData.executorAssigned[this.process.processData._id['$oid']] = $(`#${this.id}ExecutorService`).val();
+                    saveWorkflow();
                     this.hide();
                 }.bind(this))
             } else {
@@ -167,6 +183,7 @@ class ProcessProperties {
                     this.process.updateCommandLineText(data.command);
 
                     app.workflowData.processes[data['_id']['$oid']] = this.process;
+                    app.workflowData.executorAssigned[data['_id']['$oid']] = $(`#${this.id}ExecutorService`).val();
                     saveWorkflow();
 
                     console.log('Process saved.');

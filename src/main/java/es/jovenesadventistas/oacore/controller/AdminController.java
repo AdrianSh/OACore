@@ -1,8 +1,6 @@
 package es.jovenesadventistas.oacore.controller;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.Socket;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,10 +8,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Flow.Publisher;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.Gson;
+
 import es.jovenesadventistas.arnion.process.AProcess;
 import es.jovenesadventistas.arnion.process.binders.Binder;
 import es.jovenesadventistas.arnion.process.binders.DirectStdInBinder;
@@ -40,11 +40,9 @@ import es.jovenesadventistas.arnion.process.binders.RunnableBinder;
 import es.jovenesadventistas.arnion.process.binders.StdInBinder;
 import es.jovenesadventistas.arnion.process.binders.StdOutBinder;
 import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
-import es.jovenesadventistas.arnion.process.binders.Publishers.ConcurrentLinkedQueuePublisher;
-import es.jovenesadventistas.arnion.process.binders.Publishers.SocketListenerPublisher;
 import es.jovenesadventistas.arnion.process.binders.Subscribers.ASubscriber;
-import es.jovenesadventistas.arnion.process.binders.Subscribers.SocketSubscriber;
 import es.jovenesadventistas.arnion.process.binders.Transfers.StringTransfer;
+import es.jovenesadventistas.arnion.process_executor.ProcessExecutor;
 import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
 import es.jovenesadventistas.arnion.workflow.Workflow;
 import es.jovenesadventistas.oacore.Messages;
@@ -75,6 +73,9 @@ public class AdminController {
 	// Making repositories accesible to other non-spring classes by using this
 	// instance
 	private static AdminController instance;
+	private ExecutorService executorService;
+	private ProcessExecutor pExecutor = ProcessExecutor.getInstance();
+	private HashMap<User, List<ObjectId>> executedObjs;
 
 	@Autowired
 	private WorkflowRepository workflowRepository;
@@ -108,6 +109,8 @@ public class AdminController {
 	@PostConstruct
 	public void initialize() {
 		AdminController.instance = this;
+		this.executorService = Executors.newSingleThreadExecutor();
+		this.executedObjs = new HashMap<>();
 	}
 
 	@ModelAttribute
@@ -168,70 +171,217 @@ public class AdminController {
 		}
 	}
 
-	@RequestMapping(value = { "/test" }, method = RequestMethod.GET)
-	public Object test(@RequestParam(name = "binder", required = false) String binder, Locale locale, Model model,
-			HttpServletResponse response, HttpServletRequest request) throws Exception {
-		if (!this.isAdmin(request, response)) {
-			return null;
-		} else {
-			User u = UserController.getInstance().getPrincipal().getUser();
-			Workflow w = new Workflow(u.getId());
-
-			ExecutorService executorService = Executors.newSingleThreadExecutor();
-			ExecutorService executorService2 = Executors.newSingleThreadExecutor();
-
-			w.getExecutorServices().add(executorService);
-			w.getExecutorServices().add(executorService2);
-
-			AProcess p1 = new AProcess("C:\\Program Files\\nodejs\\node.exe", "index.js", "read", "input0.txt");
-			p1.setWorkingDirectory(new File("C:\\Privado\\TFG\\Arnion-Processes\\File\\"));
-			AProcess p2 = new AProcess("C:\\\\Program Files\\\\nodejs\\\\node.exe", "index.js", "write", "output1.txt");
-			p2.setWorkingDirectory(new File("C:\\Privado\\TFG\\Arnion-Processes\\File\\"));
-
-			Map<String, String> modEnv = new HashMap<String, String>();
-			modEnv.put("test", "value");
-			modEnv.put("test2", "value2");
-			p1.setModifiedEnvironment(modEnv);
-
-			aProcessRepository.save(p1);
-			aProcessRepository.save(p2);
-
-			ProcessExecutionDetails pExec1 = new ProcessExecutionDetails(p1);
-			ProcessExecutionDetails pExec2 = new ProcessExecutionDetails(p2);
-
-			w.addProcess(p1);
-			w.addProcess(p2);
-
-			// Binder section
-			ConcurrentLinkedQueuePublisher<StringTransfer> pub1 = new ConcurrentLinkedQueuePublisher<StringTransfer>();
-			StdInBinder b1 = new StdInBinder(pExec1, pub1, null);
-			StdOutBinder b2 = new StdOutBinder(pExec2);
-
-			w.getBinders().add(b1);
-			w.getBinders().add(b2);
-
-			// Join the output of the process 1 to the input of the process 2
-			b1.markAsReady();
-			pExec1.setBinder(b1);
-			pExec2.setBinder(b2);
-			pub1.subscribe(b2);
-
-			aPublisherRepository.save(pub1);
-			binderRepository.save(b1);
-			binderRepository.save(b2);
-			workflowRepository.save(w);
-
-			ASubscriber<?> asub = new SocketSubscriber<StringTransfer>(new Socket("localhost", 21));
-			aSubscriberRepository.save(asub);
-
-			binderRepository.save(new DirectStdInBinder(null));
-			binderRepository.save(new ExitCodeBinder(null, null, null));
-			binderRepository.save(new RunnableBinder(new SocketListenerPublisher(new Socket("localhost", 21))));
-			binderRepository.save(new StdInBinder(null, pub1, pub1));
-			binderRepository.save(new StdOutBinder(null));
-
-			return this.workflowWriteConverter.convert(w).toJson();
+	private void addExecutedObj(User u, ObjectId id) {
+		List<ObjectId> executedObjs = this.executedObjs.get(u);
+		if (executedObjs == null) {
+			executedObjs = new ArrayList<>();
+			this.executedObjs.put(u, executedObjs);
 		}
+
+		executedObjs.add(id);
+	}
+
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = { "/start" }, method = RequestMethod.POST)
+	public Object test(Locale locale, Model model, HttpServletResponse response, HttpServletRequest request)
+			throws Exception {
+		response.setContentType("application/json");
+		if (!this.isAdmin(request, response) || !request.getContentType().equals("application/json")
+				|| request.getContentLengthLong() < 1) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return null;
+		}
+
+		User u = UserController.getInstance().getPrincipal().getUser();
+		Workflow w = workflowRepository.findByUserId(u.getId()).get(0);
+
+		if (w == null) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return null;
+		}
+
+		String json = new String(request.getInputStream().readAllBytes());
+		logger.debug(json);
+		Object r = null;
+		Gson gson = new Gson();
+		Integer numExecutors = Math.max(1, w.getExecutorServices().size());
+		List<ExecutorService> executorServices = new ArrayList<>();
+		List<ObjectId> startingProgramIds = new ArrayList<>();
+		List<String> startingProgramHIds = gson.fromJson(json, List.class);
+
+		startingProgramHIds.forEach(hId -> {
+			System.out.println("Starting program Id: " + hId);
+			startingProgramIds.add(new ObjectId(hId));
+		});
+
+		// Add executor services
+		for (int i = 0; i < numExecutors; i++)
+			executorServices.add(Executors.newSingleThreadExecutor());
+
+		try {
+			for (ObjectId pId : startingProgramIds) {
+				// Those programs doesn't have a prec. process
+				AProcess p = aProcessRepository.findById(pId);
+				if (p == null)
+					throw new NullPointerException("This process doesn't exists.");
+
+				// Does it has a binder linked?
+				List<Workflow.Pair<ObjectId, ObjectId>> binderAProcess = w.getBinderAProcessFromAProcess(pId);
+				ProcessExecutionDetails procExDtls = w.getProcExecDetls(pId);
+
+				this.executeHeap(u, procExDtls, pExecutor, executorServices, w, binderAProcess, null);
+			}
+
+			this.executorService.execute(() -> {
+				System.out.println("EVERYTHING DONE!!! ???");
+			});
+
+		} catch (Exception e) {
+			response.setStatus(HttpServletResponse.SC_CONFLICT);
+			r = gson.toJson(e);
+		}
+
+		return gson.toJson(r);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void executeHeap(User u, ProcessExecutionDetails pproc, ProcessExecutor pExecutor,
+			List<ExecutorService> executorServices, Workflow w, List<Workflow.Pair<ObjectId, ObjectId>> binderAProcess,
+			Binder lastBinder) {
+		this.executorService.execute(() -> {
+			try {
+				binderAProcess.forEach(p -> {
+					Binder b = binderRepository.findById(p.o1());
+
+					b.onFinish((Void) -> {
+						logger.debug("Binder executed: " + p.o1());
+						return Void;
+					});
+
+					// Could this first binder be ready for allowing the process to be executed?
+					switch (b.getClass().getName()) {
+					case "es.jovenesadventistas.arnion.process.binders.DirectStdInBinder":
+						if (lastBinder == null)
+							b.markAsReady();
+						else if (lastBinder instanceof DirectStdInBinder)
+							((DirectStdInBinder) lastBinder).subscribe((DirectStdInBinder) b);
+						else
+							throw new IllegalArgumentException(
+									"For now, you cannot subscribe DirectStdInBinder with other type of binders. Only DirectStdInBinder binders allowed.");
+						break;
+					case "es.jovenesadventistas.arnion.process.binders.ExitCodeBinder":
+						if (lastBinder == null)
+							b.markAsReady();
+						else if (lastBinder instanceof ExitCodeBinder) {
+							((ExitCodeBinder) lastBinder).subscribe((ExitCodeBinder) b);
+						} else {
+							logger.debug("Not yet implemented the union for ExitCodeBinder and "
+									+ lastBinder.getClass().getName());
+							b.markAsReady();
+						}
+						break;
+					case "es.jovenesadventistas.arnion.process.binders.RunnableBinder":
+						// It is already ready.
+						break;
+					case "es.jovenesadventistas.arnion.process.binders.StdInBinder":
+						if (lastBinder == null)
+							b.markAsReady();
+						else {
+							logger.debug("Not yet implemented the union for StdInBinder and "
+									+ lastBinder.getClass().getName());
+							b.markAsReady();
+						}
+						break;
+					case "es.jovenesadventistas.arnion.process.binders.StdOutBinder":
+						if (lastBinder == null)
+							b.markAsReady();
+						else if (lastBinder instanceof RunnableBinder) {
+							RunnableBinder runB = (RunnableBinder) lastBinder;
+							if (runB.getRunnable() == null) {
+								throw new IllegalArgumentException("Null runnable for RunnableBinder.");
+							} else if (runB.getRunnable() instanceof Publisher) {
+								((Publisher<StringTransfer>) runB.getRunnable()).subscribe((StdOutBinder) b);
+							} else {
+								logger.error("Not yet implemented the union for StdOutBinder and "
+										+ runB.getRunnable().getClass().getName());
+							}
+						} else if (lastBinder instanceof StdInBinder) {
+							StdInBinder stdInB = (StdInBinder) lastBinder;
+							stdInB.getStdInPublisher().subscribe((StdOutBinder) b);
+						} else
+							throw new IllegalArgumentException(
+									"For now, you cannot subscribe DirectStdInBinder with other type of binders. Only DirectStdInBinder binders allowed.");
+						break;
+					default:
+						throw new IllegalArgumentException("Unexpected value: " + b.getClass().getName());
+					}
+
+					pproc.setBinder(b);
+
+					// Run the process
+					if (this.pExecutor.canExecute(pproc)) {
+						try {
+							// Recursive call to follow the execution chain
+							List<Workflow.Pair<ObjectId, ObjectId>> nextBinderAProcess = w
+									.getBinderAProcessFromAProcess(p.o2());
+							ProcessExecutionDetails nextProcessExcDtls = w.getProcExecDetls(p.o2());
+							if (nextBinderAProcess.size() > 0) {
+								logger.debug("Following execution chain..." + p.o2());
+								this.executeHeap(u, nextProcessExcDtls, pExecutor, executorServices, w,
+										nextBinderAProcess, b);
+
+								this.executeObj(u, pproc, executorServices, w);
+								this.executeObj(u, b, executorServices, w);
+							} else {
+								this.executeObj(u, pproc, executorServices, w);
+								this.executeObj(u, b, executorServices, w);
+
+								RunnableBinder voidBinder = new RunnableBinder(null);
+								nextProcessExcDtls.setBinder(voidBinder);
+								logger.debug("Executing the last AProcess id: " + p.o2());
+								this.executeObj(u, nextProcessExcDtls, executorServices, w);
+							}
+
+						} catch (IOException e) {
+							logger.error("Execution fails... for AProcess id: " + pproc.getProcess().getId()
+									+ " or Binder id: " + b.getId(), e);
+						}
+
+					} else {
+						logger.error("Cannot execute AProcess id: " + pproc.getProcess().getId()
+								+ " binder is not ready. The chain of execution is stopped.");
+					}
+
+				});
+			} catch (Exception e) {
+				logger.error("An error ocurred when following the execution chain... ", e);
+			}
+		});
+
+	}
+
+	private void executeObj(User u, ProcessExecutionDetails procExcDetls, List<ExecutorService> executorServices,
+			Workflow w) throws IOException {
+		ObjectId id = procExcDetls.getProcess().getId();
+		this.pExecutor.execute(executorServices.get(w.getExecutorNumAssigned(id)), procExcDetls, (executed) -> {
+			if (executed)
+				this.addExecutedObj(u, id);
+			else
+				logger.error("Could not execute AProcess id: " + id);
+			return null;
+		});
+	}
+
+	private void executeObj(User u, Binder binder, List<ExecutorService> executorServices, Workflow w)
+			throws IOException {
+		ObjectId id = binder.getId();
+		this.pExecutor.execute(executorServices.get(w.getExecutorNumAssigned(id)), binder, (executed) -> {
+			if (executed)
+				this.addExecutedObj(u, id);
+			else
+				logger.error("Could not execute Binder id: " + id);
+			return null;
+		});
 	}
 
 	@RequestMapping(value = { "/generic/{type}" }, method = RequestMethod.GET)

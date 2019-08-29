@@ -70,6 +70,7 @@ export class Binder extends Arrow {
 
     onDragStart(e) {
         this._showNavbar(e.data.global.x, e.data.global.y);
+        console.log(`Binder ID: ${this._getId()}`);
     }
 
     _bestPos(p1, p2, margin = 0, cornerMargin = 0) {

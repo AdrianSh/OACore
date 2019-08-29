@@ -101,7 +101,7 @@ class Process extends PIXI.Sprite {
             this.binders.output.forEach(b => { b.destroy() })
             navbar.process = navbar.lastProcess = undefined;
             navbar.nav.hide();
-            super.destroy();
+            try { super.destroy(); } catch(e){ console.warn(`An error ocurred when destroying the process: ${e}`); }
         }
     }
 
@@ -110,11 +110,11 @@ class Process extends PIXI.Sprite {
     }
 
     addInputBinder(binder) {
-        this.binders.input.push(binder);
+        this.binders.output.push(binder);
     }
 
     addOutputBinder(binder) {
-        this.binders.output.push(binder);
+        this.binders.input.push(binder);
     }
 
     _showNavbar(x, y) {
@@ -132,6 +132,7 @@ class Process extends PIXI.Sprite {
         this.alpha = 0.5;
         this.dragging = true;
         this._showNavbar(event.data.global.x, event.data.global.y);
+        console.log(`Program ID: ${this._getId()}`);
     }
 
     onDragEnd() {

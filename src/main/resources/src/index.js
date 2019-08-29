@@ -84,6 +84,7 @@ async function saveWorkflow() {
   wData['objCoords'] = JSON.stringify(app.workflowData.objCoords);
   wData['binderProcessesOrig'] = JSON.stringify(app.workflowData.binderProcessesOrig);
   wData['binderProcessesDest'] = JSON.stringify(app.workflowData.binderProcessesDest);
+  wData['executorAssigned'] = JSON.stringify(app.workflowData.executorAssigned);
 
   console.log(`Saving workflow... ${JSON.stringify(wData)}`);
 
@@ -103,6 +104,14 @@ async function setup() {
     w.objCoords = JSON.parse(w.objCoords);
     w.binderProcessesOrig = JSON.parse(w.binderProcessesOrig);
     w.binderProcessesDest = JSON.parse(w.binderProcessesDest);
+    w.executorAssigned = JSON.parse(w.executorAssigned);
+
+    if (w.executorAssigned == null || w.executorAssigned == "null")
+      w.executorAssigned = {};
+      
+    if(w.executorServices == null || w.executorServices == 'null')
+      w.executorServices = ['java.util.concurrent.Executors$FinalizableDelegatedExecutorService'];
+
     w.processes = {};
     w.binders = {};
 
@@ -138,7 +147,7 @@ async function setup() {
           setTimeout(() => {
             console.log(`Adding a binder: ${b.binderData}`);
           }, 1000);
-          
+
           mainContainer.addChild(b);
         }
       }

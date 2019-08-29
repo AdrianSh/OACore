@@ -53,6 +53,7 @@ public class WorkflowConverter {
 			}
 			document.put("binder", binders);
 			document.put("objCoords", gson.toJson(source.getObjCoords()));
+			document.put("executorAssigned", gson.toJson(source.getExecutorAssigned()));
 
 			HashMap<String, String> binderProcessesPlainOrig = new HashMap<>();
 			HashMap<String, String> binderProcessesPlainDest = new HashMap<>();
@@ -82,7 +83,7 @@ public class WorkflowConverter {
 			AProcessRepository rep = AdminController.getInstance().getaProcessRepository();
 			BinderRepository binRep = AdminController.getInstance().getBinderRepository();
 			List<AProcess> process = new ArrayList<AProcess>();
-			List<ProcessExecutionDetails> processExecutionDetails = new ArrayList<ProcessExecutionDetails>();
+			HashMap<ObjectId, ProcessExecutionDetails> processExecutionDetails = new HashMap<>();
 			List<ObjectId> processIds = source.get("process", List.class);
 			// if (processIds != null) {
 			for (ObjectId pId : processIds) {
@@ -90,7 +91,7 @@ public class WorkflowConverter {
 				if (proc != null)
 					process.add(proc);
 				try {
-					processExecutionDetails.add(new ProcessExecutionDetails(proc));
+					processExecutionDetails.put(pId, new ProcessExecutionDetails(proc));
 				} catch (Exception e) {
 					logger.error("Could not read AProcess from MongoDB with ObjectID: " + pId);
 				}
@@ -125,6 +126,7 @@ public class WorkflowConverter {
 				}
 
 			HashMap<ObjectId, Workflow.Coord> objCoords = gson.fromJson(source.getString("objCoords"), HashMap.class);
+			HashMap<ObjectId, Integer> executorAssigned = gson.fromJson(source.getString("executorAssigned"), HashMap.class);
 			HashMap<String, String> binderProcessesPlainOrig = gson.fromJson(source.getString("binderProcessesOrig"),
 					HashMap.class);
 			HashMap<String, String> binderProcessesPlainDest = gson.fromJson(source.getString("binderProcessesDest"),
@@ -142,7 +144,7 @@ public class WorkflowConverter {
 			}
 
 			return new Workflow(source.getObjectId("_id"), source.getObjectId("userId"), process, objCoords,
-					processExecutionDetails, executorServices, binders, binderProcesses);
+					processExecutionDetails, executorServices, binders, binderProcesses, executorAssigned);
 		}
 	}
 
