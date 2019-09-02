@@ -10,6 +10,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 
 import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process.AProcess;
 import es.jovenesadventistas.arnion.process.binders.Publishers.ConcurrentLinkedQueuePublisher;
 import es.jovenesadventistas.arnion.process.binders.Subscribers.ConcurrentLinkedQueueSubscriber;
 import es.jovenesadventistas.arnion.process.binders.Transfers.IntegerTransfer;
@@ -22,13 +23,14 @@ public class ExitCodeBinder extends SplitBinder<IntegerTransfer, IntegerTransfer
 	private CompletableFuture<Boolean> futureReady;
 	private Function<Void, Void> onFinishFunc;
 
-	public ExitCodeBinder(ProcessExecutionDetails procExecDetails,
+	public ExitCodeBinder(ProcessExecutionDetails procExecDetails, AProcess associatedProcess,
 			ConcurrentLinkedQueueSubscriber<IntegerTransfer> inputSubscriber,
 			ConcurrentLinkedQueuePublisher<IntegerTransfer> outputPublisher) {
-		super(inputSubscriber, outputPublisher);
+		super(inputSubscriber, outputPublisher, associatedProcess);
 		this.procExecDetails = procExecDetails;
 		this.futureReady = new CompletableFuture<Boolean>();
 		this.onFinishFunc = null;
+		this.associatedProcess = associatedProcess;
 	}
 
 	@Override

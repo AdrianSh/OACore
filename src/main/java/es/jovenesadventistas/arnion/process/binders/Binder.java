@@ -9,6 +9,8 @@ import java.util.function.Function;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import es.jovenesadventistas.arnion.process.AProcess;
+
 
 @Document
 public interface Binder extends Runnable {
@@ -61,4 +63,8 @@ public interface Binder extends Runnable {
 	public ObjectId getId();
 	
 	public void setId(ObjectId id);
+	
+	public void setAProcess(AProcess proc);
+	
+	public AProcess getAProcess();
 }

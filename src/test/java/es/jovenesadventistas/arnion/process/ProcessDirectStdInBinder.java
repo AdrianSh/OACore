@@ -41,8 +41,8 @@ public class ProcessDirectStdInBinder {
 			ProcessExecutionDetails pExec2 = new ProcessExecutionDetails(p2);
 			
 			// Binder section
-			DirectStdInBinder b1 = new DirectStdInBinder(pExec1);
-			DirectStdInBinder b2 = new DirectStdInBinder(pExec2);
+			DirectStdInBinder b1 = new DirectStdInBinder(pExec1, p1);
+			DirectStdInBinder b2 = new DirectStdInBinder(pExec2, p2);
 
 			// Join the output of the process 1 to the input of the process 2
 			b1.markAsReady();

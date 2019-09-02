@@ -5,6 +5,7 @@ import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import es.jovenesadventistas.arnion.process.AProcess;
 import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
 import es.jovenesadventistas.arnion.process.binders.Subscribers.ASubscriber;
 import es.jovenesadventistas.arnion.process.binders.Transfers.Transfer;
@@ -22,12 +23,14 @@ public abstract class SplitBinder<T extends Transfer, S extends Transfer> implem
 	protected SubmissionPublisher<S> publisher;
 	protected AtomicBoolean ready;
 	protected AtomicBoolean join;
+	protected AProcess associatedProcess;
 
-	public SplitBinder(ASubscriber<T> inputSubscriber, SubmissionPublisher<S> outputPublisher) {
+	public SplitBinder(ASubscriber<T> inputSubscriber, SubmissionPublisher<S> outputPublisher, AProcess associatedProcess) {
 		this.subscriber = inputSubscriber;
 		this.publisher = outputPublisher;
 		this.ready = new AtomicBoolean(false);
 		this.join = new AtomicBoolean(false);
+		this.associatedProcess = associatedProcess;
 	}
 
 	@Override
@@ -127,5 +130,15 @@ public abstract class SplitBinder<T extends Transfer, S extends Transfer> implem
 
 	public void setJoin(AtomicBoolean join) {
 		this.join = join;
+	}
+	
+	@Override
+	public void setAProcess(AProcess proc) {
+		this.associatedProcess = proc;
+	}
+
+	@Override
+	public AProcess getAProcess() {
+		return associatedProcess;
 	}
 }

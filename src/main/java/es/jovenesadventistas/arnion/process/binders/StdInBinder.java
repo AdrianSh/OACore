@@ -12,6 +12,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 
 import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process.AProcess;
 import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
 import es.jovenesadventistas.arnion.process.binders.Transfers.StringTransfer;
 
@@ -25,14 +26,16 @@ public class StdInBinder implements Binder {
 	private InputStream in;
 	private InputStream inError;
 	private Function<Void, Void> onFinishFunc;
+	private AProcess associatedProcess;
 
 	public StdInBinder(ProcessExecutionDetails procExecDetails, SubmissionPublisher<StringTransfer> stdInPublisher,
-			SubmissionPublisher<StringTransfer> stdInErrorPublisher) {
+			SubmissionPublisher<StringTransfer> stdInErrorPublisher, AProcess associatedProcess) {
 		this.procExecDetails = procExecDetails;
 		this.futureReady = new CompletableFuture<Boolean>();
 		this.stdInPublisher = stdInPublisher;
 		this.stdInErrorPublisher = stdInErrorPublisher;
 		this.onFinishFunc = null;
+		this.associatedProcess = associatedProcess;
 	}
 
 	@Override
@@ -193,5 +196,15 @@ public class StdInBinder implements Binder {
 	public void setId(ObjectId id) {
 		if (id != null)
 			this.id = id;
+	}
+
+	@Override
+	public void setAProcess(AProcess proc) {
+		this.associatedProcess = proc;
+	}
+
+	@Override
+	public AProcess getAProcess() {
+		return associatedProcess;
 	}
 }

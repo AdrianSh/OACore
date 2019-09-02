@@ -36,8 +36,8 @@ public class ProcessSocketListenerBinder {
 				e.printStackTrace();
 			}
 
-			RunnableBinder b1 = new RunnableBinder(sPub);
-			StdOutBinder b2 = new StdOutBinder(pExec2);
+			RunnableBinder b1 = new RunnableBinder(sPub, null);
+			StdOutBinder b2 = new StdOutBinder(pExec2, p2);
 
 			sPub.subscribe(b2);
 			b1.markAsReady();

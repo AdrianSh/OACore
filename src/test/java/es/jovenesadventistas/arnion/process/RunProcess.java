@@ -42,8 +42,8 @@ public class RunProcess {
 			ProcessExecutionDetails pExec2 = new ProcessExecutionDetails(p2);
 			
 			// Binder section			
-			ExitCodeBinder b1 = new ExitCodeBinder(pExec1, new ConcurrentLinkedQueueSubscriber<>(), new ConcurrentLinkedQueuePublisher<>());
-			ExitCodeBinder b2 = new ExitCodeBinder(pExec2, new ConcurrentLinkedQueueSubscriber<>(), new ConcurrentLinkedQueuePublisher<>());
+			ExitCodeBinder b1 = new ExitCodeBinder(pExec1, p1, new ConcurrentLinkedQueueSubscriber<>(), new ConcurrentLinkedQueuePublisher<>());
+			ExitCodeBinder b2 = new ExitCodeBinder(pExec2, p2, new ConcurrentLinkedQueueSubscriber<>(), new ConcurrentLinkedQueuePublisher<>());
 			
 			// Join the output of the process 1 to the input of the process 2
 			b1.markAsReady();

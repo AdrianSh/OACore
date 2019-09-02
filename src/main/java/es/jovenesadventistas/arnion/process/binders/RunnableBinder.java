@@ -5,16 +5,19 @@ import java.util.function.Function;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 
+import es.jovenesadventistas.arnion.process.AProcess;
+
 public class RunnableBinder implements Binder {
 	@Id
 	private ObjectId id = new ObjectId();
-	
+	private AProcess associatedProcess;
 	private Runnable runnable;
 	private Function<Void, Void> onFinishFunc;
 
-	public RunnableBinder(Runnable runnable) {
+	public RunnableBinder(Runnable runnable, AProcess associatedProcess) {
 		this.runnable = runnable;
 		this.onFinishFunc = null;
+		this.associatedProcess = associatedProcess;
 	}
 
 	@Override
@@ -72,5 +75,15 @@ public class RunnableBinder implements Binder {
 
 	public void setRunnable(Runnable runnable) {
 		this.runnable = runnable;
+	}
+
+	@Override
+	public void setAProcess(AProcess proc) {
+		this.associatedProcess = proc;
+	}
+
+	@Override
+	public AProcess getAProcess() {
+		return associatedProcess;
 	}
 }

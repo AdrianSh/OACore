@@ -11,6 +11,7 @@ import java.util.function.Function;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 
+import es.jovenesadventistas.arnion.process.AProcess;
 import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
 import es.jovenesadventistas.arnion.process.binders.Subscribers.ASubscriber;
 import es.jovenesadventistas.arnion.process.binders.Transfers.StringTransfer;
@@ -32,8 +33,9 @@ public class StdOutBinder implements Binder, ASubscriber<StringTransfer> {
 	// private InputStream in;
 	private Function<Void, Void> onFinishFunc;
 	private APublisher subscription;
+	private AProcess associatedProcess;
 
-	public StdOutBinder(ProcessExecutionDetails procExecDetails) {
+	public StdOutBinder(ProcessExecutionDetails procExecDetails, AProcess associatedProcess) {
 		this.procExecDetails = procExecDetails;
 		this.futureReady = new CompletableFuture<Boolean>();
 		this.transferingStore = new AtomicBoolean(false);
@@ -42,6 +44,7 @@ public class StdOutBinder implements Binder, ASubscriber<StringTransfer> {
 		this.onFinishFunc = null;
 		this.out = null;
 		// this.in = null;
+		this.associatedProcess = associatedProcess;
 	}
 
 	@Override
@@ -239,5 +242,15 @@ public class StdOutBinder implements Binder, ASubscriber<StringTransfer> {
 	public void setId(ObjectId id) {
 		if (id != null)
 			this.id = id;
+	}
+
+	@Override
+	public void setAProcess(AProcess proc) {
+		this.associatedProcess = proc;
+	}
+
+	@Override
+	public AProcess getAProcess() {
+		return associatedProcess;
 	}
 }

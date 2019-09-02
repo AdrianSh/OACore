@@ -45,6 +45,7 @@ public class BinderConverter {
 			document.put("_id", source.getId());
 			String binderType = source.getClass().getName();
 			document.put("binderType", binderType);
+			document.put("associatedProcess", source.getAProcess() != null ? source.getAProcess().getId() : null);
 			ASubscriber<?> sub = null;
 			APublisher pub = null;
 			AProcess proc = null;
@@ -162,11 +163,11 @@ public class BinderConverter {
 			BinderRepository binderRepository = adminController.getBinderRepository();
 
 			Binder r = null;
-			AProcess proc = null;
 			ASubscriber<?> sub = null;
 			APublisher pub = null, pub2 = null;
 			String binderType = source.getString("binderType");
-			ObjectId id = null;
+			ObjectId id = null, associatedProcessId = source.getObjectId("associatedProcess");
+			AProcess proc = null, associatedProcess = associatedProcessId != null ? aProcessRepository.findById(associatedProcessId) : null;
 
 			try {
 				switch (binderType) {
@@ -174,7 +175,7 @@ public class BinderConverter {
 					id = source.getObjectId("processId");
 					proc = id != null ? aProcessRepository.findById(id) : null;
 					DirectStdInBinder directStdInBinder = new DirectStdInBinder(
-							proc != null ? new ProcessExecutionDetails(proc) : null);
+							proc != null ? new ProcessExecutionDetails(proc) : null, associatedProcess);
 					r = directStdInBinder;
 					break;
 				case "es.jovenesadventistas.arnion.process.binders.ExitCodeBinder":
@@ -189,12 +190,12 @@ public class BinderConverter {
 						pub = aPublisherRepository.findById(id);
 					if (sub instanceof ConcurrentLinkedQueueSubscriber
 							&& pub instanceof ConcurrentLinkedQueuePublisher) {
-						r = new ExitCodeBinder(proc == null ? null : new ProcessExecutionDetails(proc),
+						r = new ExitCodeBinder(proc == null ? null : new ProcessExecutionDetails(proc), associatedProcess,
 								(ConcurrentLinkedQueueSubscriber<IntegerTransfer>) sub,
 								(ConcurrentLinkedQueuePublisher<IntegerTransfer>) pub);
 					} else {
 						String err = "Error trying to convert to an ExitCodeBinder using a Subscriber or Publisher or another type: "
-								+ sub.getClass().getName();
+								+ sub != null ? sub.getClass().getName() : " null";
 						logger.error(err);
 						throw new IllegalArgumentException(err);
 					}
@@ -223,7 +224,7 @@ public class BinderConverter {
 										+ source.getString("runnableTypeName"));
 					}
 
-					r = new RunnableBinder(runnable);
+					r = new RunnableBinder(runnable, associatedProcess);
 					break;
 				case "es.jovenesadventistas.arnion.process.binders.StdInBinder":
 					id = source.getObjectId("processId");
@@ -236,13 +237,13 @@ public class BinderConverter {
 					if (id != null)
 						pub2 = aPublisherRepository.findById(id);
 					r = new StdInBinder(proc == null ? null : new ProcessExecutionDetails(proc),
-							(SubmissionPublisher<StringTransfer>) pub, (SubmissionPublisher<StringTransfer>) pub2);
+							(SubmissionPublisher<StringTransfer>) pub, (SubmissionPublisher<StringTransfer>) pub2, associatedProcess);
 					break;
 				case "es.jovenesadventistas.arnion.process.binders.StdOutBinder":
 					id = source.getObjectId("processId");
 					if (id != null)
 						proc = aProcessRepository.findById(id);
-					r = new StdOutBinder(proc == null ? null : new ProcessExecutionDetails(proc));
+					r = new StdOutBinder(proc == null ? null : new ProcessExecutionDetails(proc), associatedProcess);
 					break;
 				default:
 					throw new IllegalArgumentException("Unexpected value for binderType: " + binderType);

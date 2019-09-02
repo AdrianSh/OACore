@@ -1,27 +1,26 @@
 import $ from "jquery";
 import Server from './../Server'
-import {app, saveWorkflow} from './../../index'
+import { app, saveWorkflow } from './../../index'
 
 class BinderProperties {
     constructor() {
         this.id = 'binderProperties';
         this.buildHtmlElement();
         this.modal.modal('handleUpdate');
-        this.process1 = undefined;
-        this.process2 = undefined;
-        this.binder = undefined;
     }
 
     hide() {
         this.modal.modal('hide');
+        delete this.binderButton;
+        delete this.joiningArrow;
     }
 
     show() {
         this.modal.find('.modal-body').replaceWith(this.buildModalBodyHtml());
         this.modal.modal('show');
 
-        if (this.binder.binderData != undefined) {
-            let d = this.binder.binderData;
+        if (this.binderData != undefined) {
+            let d = this.binderData;
             console.log(`Showing binder from data: ${JSON.stringify(d)}`);
             this.modal.find(`#${this.id}binderTypeSelector`).val(d.binderType);
             this.buildBinderInputs(d.binderType);
@@ -104,7 +103,7 @@ class BinderProperties {
                 try {
                     let subsData = this.collectSubscriber();
                     if (subsData['subscriberType'] != undefined && subsData['subscriberType'].length > 0) {
-                        let sId = this._getbId(this.binder.binderData.subscriberId);
+                        let sId = this._getbId(this.binderData.subscriberId);
                         if (sId != undefined) {
                             subsData['_id'] = this._bId(sId);
                             await Server.putToServer(subsData, 'admin/generic/ASubscriber', (data, status, jqXHR) => {
@@ -118,7 +117,7 @@ class BinderProperties {
                     }
                     let pubData = this.collectPublisher();
                     if (pubData['publisherType'] != undefined && pubData['publisherType'].length > 0) {
-                        let pId = this._getbId(this.binder.binderData.subscriberId);
+                        let pId = this._getbId(this.binderData.subscriberId);
                         if (pId != undefined) {
                             pubData['_id'] = this._bId(pId);
                             await Server.putToServer(pubData, 'admin/generic/APublisher', (data, status, jqXHR) => {
@@ -153,7 +152,7 @@ class BinderProperties {
                     console.log(`Publisher 2: ${JSON.stringify(pubData2)}`);
 
                     if (pubData1['publisherType'] != undefined && pubData1['publisherType'].length > 0) {
-                        let pId = this._getbId(this.binder.binderData.stdInPublisherId);
+                        let pId = this._getbId(this.binderData.stdInPublisherId);
                         if (pId != undefined) {
                             pubData1['_id'] = this._bId(pId);
                             await Server.putToServer(pubData1, 'admin/generic/APublisher', (data, status, jqXHR) => {
@@ -173,7 +172,7 @@ class BinderProperties {
                     }
 
                     if (pubData2['publisherType'] != undefined && pubData2['publisherType'].length > 0) {
-                        let pId = this._getbId(this.binder.binderData.stdInErrorPublisherId);
+                        let pId = this._getbId(this.binderData.stdInErrorPublisherId);
                         if (pId != undefined) {
                             pubData2['_id'] = this._bId(pId);
                             await Server.putToServer(pubData2, 'admin/generic/APublisher', (data, status, jqXHR) => {
@@ -501,15 +500,25 @@ class BinderProperties {
 
         this.modal.on('click', `#${this.id}Save`, e => {
             e.preventDefault();
+            if (this.joiningArrow == undefined)
+                console.log(`The joining arrow element has to be associated with the Binder properties.`);
             this.collectValues(b => {
                 if (b != undefined) {
+                    b.associatedProcess = { '_id': { '$oid': this.binderButton != undefined ? this.binderButton.process._getId() : this.joiningArrow.origProcess._getId() } }
                     console.log(`Binder values: ${JSON.stringify(b)}`);
-                    if (this.binder.binderData != undefined && this.binder.binderData._id != undefined && this.binder.binderData._id['$oid'] != undefined) {
+                    if (this.binderData != undefined && this.binderData._id != undefined && this.binderData._id['$oid'] != undefined) {
                         b['_id'] = {};
-                        b._id['$oid'] = this.binder.binderData._id['$oid'];
+                        b._id['$oid'] = this.binderData._id['$oid'];
                         console.log(`Updating binder: ${JSON.stringify(b)}`);
                         Server.putToServer(b, 'admin/generic/binder', (data) => {
-                            this.binder.binderData = data;
+                            this.binderData = data;
+                            if (this.binderButton != undefined)
+                                this.binderButton.binderData = data;
+                            else {
+                                console.log(`As there wasn't a binderButton associated, then this binder data will be associated with the one from the origin of the arrow.`);
+                                this.joiningArrow.binderOrig.binderData = data;
+                            }
+
                             this.alert(`Binder updated!`);
                             this.hide();
                         }, (jqXHR, status, e) => {
@@ -518,13 +527,24 @@ class BinderProperties {
                     } else {
                         console.log(`Saving a new binder: ${JSON.stringify(b)}`);
                         Server.postToServer(b, 'admin/generic/binder', (data) => {
-                            this.binder.binderData = data;
-                            app.workflowData.binders[data['_id']['$oid']] = this.binder;
-                            app.workflowData.binderProcessesOrig[data['_id']['$oid']] = this.binder.origProcess._getId();
-                            app.workflowData.binderProcessesDest[data['_id']['$oid']] = this.binder.destProcess._getId();
+                            this.binderData = data;
+                            if (this.binderButton != undefined) {
+                                this.binderButton.binderData = data;
+                            } else {
+                                console.log(`As there wasn't a binderButton associated, then this binder data will be associated with the one from the origin of the arrow.`);
+                                this.joiningArrow.binderOrig.binderData = data;
+                            }
+
+                            if (this.joiningArrow == undefined)
+                                console.error(`The orig/dest for the binder could not be set because the Joining Arrow object is missing.`);
+
+                            app.workflowData.binders[data['_id']['$oid']] = this.binderData;
+                            app.workflowData.binderProcessesOrig[data['_id']['$oid']] = this.joiningArrow.origProcess._getId();
+                            app.workflowData.binderProcessesDest[data['_id']['$oid']] = this.joiningArrow.destProcess._getId();
+                            saveWorkflow();
                             this.alert(`Binder saved!`);
                             this.hide();
-                            saveWorkflow();
+
                         }, (jqXHR, status, e) => {
                             this.alert(`Couldn't save the binder, ${e}`, 'danger');
                         });

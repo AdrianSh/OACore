@@ -17,6 +17,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.SubmissionPublisher;
 
 import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process.AProcess;
 import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
 import es.jovenesadventistas.arnion.process.binders.Subscribers.ASubscriber;
 import es.jovenesadventistas.arnion.process.binders.Transfers.StreamTransfer;
@@ -31,11 +32,15 @@ public class DirectStdInBinder extends SubmissionPublisher<StreamTransfer> imple
 	private AtomicBoolean join;
 	private APublisher subscription;
 	private Function<Void, Void> onFinishFunc;
+	private AProcess associatedProcess;
 
-	public DirectStdInBinder(ProcessExecutionDetails procExecDetails) {
+	public DirectStdInBinder(ProcessExecutionDetails procExecDetails, AProcess associatedProcess) {
 		this.procExecDetails = procExecDetails;
 		this.futureReady = new CompletableFuture<Boolean>();
 		this.onFinishFunc = null;
+		this.ready = new AtomicBoolean();
+		this.join = new AtomicBoolean();
+		this.associatedProcess = associatedProcess;
 	}
 
 	@Override
@@ -205,5 +210,15 @@ public class DirectStdInBinder extends SubmissionPublisher<StreamTransfer> imple
 	public void setId(ObjectId id) {
 		if(id != null)
 			this.id = id;		
+	}
+
+	@Override
+	public void setAProcess(AProcess proc) {
+		this.associatedProcess = proc;
+	}
+
+	@Override
+	public AProcess getAProcess() {
+		return this.associatedProcess;
 	}
 }

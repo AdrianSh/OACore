@@ -42,9 +42,9 @@ public class ProcessStdInBinder {
 
 			// Binder section
 			ConcurrentLinkedQueuePublisher<StringTransfer> pub1 = new ConcurrentLinkedQueuePublisher<StringTransfer>();
-			StdInBinder b1 = new StdInBinder(pExec1, pub1, null);
+			StdInBinder b1 = new StdInBinder(pExec1, pub1, null, p1);
 
-			StdOutBinder b2 = new StdOutBinder(pExec2);
+			StdOutBinder b2 = new StdOutBinder(pExec2, p2);
 
 			// Join the output of the process 1 to the input of the process 2
 			b1.markAsReady();

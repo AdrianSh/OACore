@@ -12,10 +12,14 @@ class Navbar extends PIXI.Sprite {
         backgroundTexture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST; // Scale mode for pixelation
         super(backgroundTexture);
 
+        this.width = 58;
+        this.height = 159;
+        this.buttonSize = { w: 40, h: 40 * (this.height / this.width) + ( this.height - this.width)};
+        this.buttonMargin = 5;
         this.x = 0;
         this.y = 0;
-        this.width = 50;
-        this.height = window.innerHeight;
+        
+        this.zIndex = -1;
 
         this.addProcessButton();
         this.addExecutorButton();
@@ -23,16 +27,13 @@ class Navbar extends PIXI.Sprite {
     }
 
     addProcessButton() {
-        let textureButton = PIXI.Loader.shared.resources.tileset.texture.clone();
-        textureButton.frame = new PIXI.Rectangle(0, 158, 39, 33);
+        let textureButton = PIXI.Loader.shared.resources.navigation.texture.clone();
         textureButton.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST; // Scale mode for pixelation
 
-        let textureButtonOver = PIXI.Loader.shared.resources.tileset.texture.clone();
-        textureButtonOver.frame = new PIXI.Rectangle(40, 157, 39, 33);
+        let textureButtonOver = PIXI.Loader.shared.resources.navigationOver.texture.clone();
         textureButtonOver.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST; // Scale mode for pixelation
 
-
-        let button = new Button(textureButton, textureButtonOver, textureButtonOver, 4, 3, 39, 34, () => {
+        let button = new Button(textureButton, textureButtonOver, textureButtonOver, this.buttonMargin, this.buttonMargin, this.buttonSize.w, this.buttonSize.h, () => {
             let mousePos = app.renderer.plugins.interaction.mouse.global;
             let pro = new Process(mousePos.x, mousePos.y, '');
             processProperties.process = pro;
@@ -45,16 +46,13 @@ class Navbar extends PIXI.Sprite {
     }
 
     addExecutorButton() {
-        let textureButton = PIXI.Loader.shared.resources.tileset.texture.clone();
-        textureButton.frame = new PIXI.Rectangle(82, 158, 38, 33);
+        let textureButton = PIXI.Loader.shared.resources.cooker.texture.clone();
         textureButton.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST; // Scale mode for pixelation
 
-        let textureButtonOver = PIXI.Loader.shared.resources.tileset.texture.clone();
-        textureButtonOver.frame = new PIXI.Rectangle(123, 157, 38, 33);
+        let textureButtonOver = PIXI.Loader.shared.resources.cookerOver.texture.clone();
         textureButtonOver.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST; // Scale mode for pixelation
 
-
-        let button = new Button(textureButton, textureButtonOver, textureButtonOver, 4, 41, 38, 35, () => {
+        let button = new Button(textureButton, textureButtonOver, textureButtonOver, this.buttonMargin, 2*this.buttonMargin + this.buttonSize.h, this.buttonSize.w, this.buttonSize.h, () => {
             console.log(`Added! For now we just support single thread executors... java.util.concurrent.Executors$FinalizableDelegatedExecutorService`);
             app.workflowData.executorServices.push('java.util.concurrent.Executors$FinalizableDelegatedExecutorService');
             saveWorkflow();
@@ -64,16 +62,13 @@ class Navbar extends PIXI.Sprite {
     }
 
     addExecuteButton() {
-        let textureButton = PIXI.Loader.shared.resources.tileset.texture.clone();
-        textureButton.frame = new PIXI.Rectangle(165, 158, 37, 33);
+        let textureButton = PIXI.Loader.shared.resources.play.texture.clone();
         textureButton.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST; // Scale mode for pixelation
 
-        let textureButtonOver = PIXI.Loader.shared.resources.tileset.texture.clone();
-        textureButtonOver.frame = new PIXI.Rectangle(206, 157, 37, 33);
+        let textureButtonOver = PIXI.Loader.shared.resources.playOver.texture.clone();
         textureButtonOver.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST; // Scale mode for pixelation
 
-
-        let button = new Button(textureButton, textureButtonOver, textureButtonOver, 4, 79, 37, 35, async () => {
+        let button = new Button(textureButton, textureButtonOver, textureButtonOver, this.buttonMargin, 3*this.buttonMargin + 2*this.buttonSize.h, this.buttonSize.w, this.buttonSize.h, async () => {
             console.log(`It should now run the workflow on the server.`);
             
             let startingPoints = [];
