@@ -10,12 +10,12 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
 
-import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
-import es.jovenesadventistas.arnion.process.binders.Publishers.ConcurrentLinkedQueuePublisher;
-import es.jovenesadventistas.arnion.process.binders.Publishers.SocketListenerPublisher;
-import es.jovenesadventistas.arnion.process.binders.Publishers.SocketServerPublisher;
-import es.jovenesadventistas.arnion.process.binders.Transfers.SocketTransfer;
-import es.jovenesadventistas.arnion.process.binders.Transfers.Transfer;
+import es.jovenesadventistas.arnion.process.binders.publishers.APublisher;
+import es.jovenesadventistas.arnion.process.binders.publishers.ConcurrentLinkedQueuePublisher;
+import es.jovenesadventistas.arnion.process.binders.publishers.SocketListenerPublisher;
+import es.jovenesadventistas.arnion.process.binders.publishers.SocketServerPublisher;
+import es.jovenesadventistas.arnion.process.binders.transfers.SocketTransfer;
+import es.jovenesadventistas.arnion.process.binders.transfers.Transfer;
 
 public class APublisherConverter {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();

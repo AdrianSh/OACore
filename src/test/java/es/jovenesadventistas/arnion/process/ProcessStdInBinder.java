@@ -12,12 +12,12 @@ import com.google.common.base.Charsets;
 import com.google.common.io.ByteSource;
 
 import es.jovenesadventistas.arnion.process_executor.ProcessExecutor;
-import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process_executor.process_execution.ProcessExecutionDetails;
 import es.jovenesadventistas.arnion.process.AProcess;
 import es.jovenesadventistas.arnion.process.binders.StdInBinder;
 import es.jovenesadventistas.arnion.process.binders.StdOutBinder;
-import es.jovenesadventistas.arnion.process.binders.Publishers.ConcurrentLinkedQueuePublisher;
-import es.jovenesadventistas.arnion.process.binders.Transfers.StringTransfer;
+import es.jovenesadventistas.arnion.process.binders.publishers.ConcurrentLinkedQueuePublisher;
+import es.jovenesadventistas.arnion.process.binders.transfers.StringTransfer;
 import es.jovenesadventistas.arnion.process.persistence.TransferService;
 
 public class ProcessStdInBinder {
@@ -62,7 +62,7 @@ public class ProcessStdInBinder {
 
 			executorService2.execute(() -> {
 				try {
-					System.out.println("Al parecer no ha terminado el proceso 1");
+					System.out.println("Process 1 has not finished...");
 
 					// printStreams(pExec1);
 					System.out.println(pExec1.getSystemProcess().get().info());

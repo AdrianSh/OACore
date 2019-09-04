@@ -11,10 +11,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import es.jovenesadventistas.arnion.process.AProcess;
 import es.jovenesadventistas.arnion.process.binders.Binder;
-import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process_executor.process_execution.ProcessExecutionDetails;
 
 @Document
 public class Workflow {
+
+	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
+	
 	public static class Coord {
 		protected int x, y;
 		
@@ -58,8 +61,8 @@ public class Workflow {
 	protected List<Binder> binders;
 	protected HashMap<ObjectId, Coord> objCoords;
 	protected HashMap<ObjectId, Pair<ObjectId, ObjectId>> binderProcesses;
-	protected HashMap<ObjectId, Integer> executorAssigned;
-	private HashMap<ObjectId, List<Pair<ObjectId, ObjectId>>> bindersFromAProcessOrig = new HashMap<>();
+	protected HashMap<String, String> executorAssigned;
+	private HashMap<ObjectId, HashMap<ObjectId, Pair<ObjectId, ObjectId>>> bindersFromAProcessOrig = new HashMap<>();
 
 	private ObjectId userId;
 	
@@ -77,7 +80,7 @@ public class Workflow {
 	}
 
 	public Workflow(ObjectId id, ObjectId userId, List<AProcess> process, HashMap<ObjectId, Coord> objCoords, HashMap<ObjectId, ProcessExecutionDetails> processExecutionDetails,
-			List<ExecutorService> executorServices, List<Binder> binders, HashMap<ObjectId, Pair<ObjectId, ObjectId>> binderProcesses, HashMap<ObjectId, Integer> executorAssigned) {
+			List<ExecutorService> executorServices, List<Binder> binders, HashMap<ObjectId, Pair<ObjectId, ObjectId>> binderProcesses, HashMap<String, String> executorAssigned) {
 		if(id != null)
 			this.id = id;
 		this.userId = userId;
@@ -92,7 +95,7 @@ public class Workflow {
 	}
 	
 	public Workflow(ObjectId userId, List<AProcess> process, HashMap<ObjectId, Coord> objCoords, HashMap<ObjectId, ProcessExecutionDetails> processExecutionDetails,
-			List<ExecutorService> executorServices, List<Binder> binders, HashMap<ObjectId, Pair<ObjectId, ObjectId>> binderProcesses, HashMap<ObjectId, Integer> executorAssigned) {
+			List<ExecutorService> executorServices, List<Binder> binders, HashMap<ObjectId, Pair<ObjectId, ObjectId>> binderProcesses, HashMap<String, String> executorAssigned) {
 		this.userId = userId;
 		this.process = process;
 		this.objCoords = objCoords;
@@ -108,22 +111,31 @@ public class Workflow {
 		for (ObjectId binId : this.binderProcesses.keySet()) {
 			Pair<ObjectId, ObjectId> processOrgDst = this.binderProcesses.get(binId); 
 			ObjectId p1 = processOrgDst.o1(), p2 = processOrgDst.o2();
-			List<Pair<ObjectId, ObjectId>> p1List = this.bindersFromAProcessOrig.get(p1);
+			HashMap<ObjectId, Pair<ObjectId, ObjectId>> p1List = this.bindersFromAProcessOrig.get(p1);
 			
 			if(p1List == null)
-				p1List = new ArrayList<>();
-			
-			p1List.add(new Pair<>(binId, p2));
+				p1List = new HashMap<>();
+			if(p1List.get(p2) == null) {
+				p1List.put(p2, new Pair<>(binId, null));
+			} else {
+				Pair<ObjectId, ObjectId> pr = p1List.get(p2);
+				if(pr.o2 == null)
+					pr.o2 = binId;
+				else
+					logger.error("It doesn't look nice... there is only possible 2 binders for the same link between two processes.");
+			}
 			this.bindersFromAProcessOrig.put(p1, p1List);
 		}
 	}
 	
-	public List<Pair<ObjectId, ObjectId>> getBinderAProcessFromAProcess(ObjectId pId){
+	public HashMap<ObjectId, Pair<ObjectId, ObjectId>> getBinderAProcessFromAProcess(ObjectId pId){
 		return this.bindersFromAProcessOrig.get(pId);
 	}
 	
 	public Integer getExecutorNumAssigned(ObjectId pId) {
-		return this.executorAssigned.get(pId);
+		String in = pId != null ? this.executorAssigned.get(pId.toHexString()) : null;
+		Integer r = Integer.parseInt(in == null ? "0": in);
+		return r != null ? r : 0;
 	}
 	
 	public ProcessExecutionDetails getProcExecDetls(ObjectId pId) {
@@ -203,11 +215,11 @@ public class Workflow {
 		this.binderProcesses = binderProcesses;
 	}
 
-	public HashMap<ObjectId, Integer> getExecutorAssigned() {
+	public HashMap<String, String> getExecutorAssigned() {
 		return executorAssigned;
 	}
 
-	public void setExecutorAssigned(HashMap<ObjectId, Integer> executorAssigned) {
+	public void setExecutorAssigned(HashMap<String, String> executorAssigned) {
 		this.executorAssigned = executorAssigned;
 	}
 

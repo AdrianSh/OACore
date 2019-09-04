@@ -81,7 +81,7 @@ class ProcessProperties {
                             </div>
                             <div class="form-group">
                                 <label for="${this.id}WorkingDir">Working Directory</label>
-                                <input id="${this.id}WorkingDir" type="text" class="form-control" placeholder="C:\\Program Files\\nodejs\\node.exe">
+                                <input id="${this.id}WorkingDir" type="text" class="form-control" placeholder="C:\\Program Files\\nodejs\\">
                                 <small id="${this.id}WorkingDirHelp" class="form-text text-muted">A folder with resources.</small>
                             </div>
                             <div class="form-group">

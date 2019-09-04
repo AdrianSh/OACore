@@ -24,7 +24,13 @@ class BinderProperties {
             console.log(`Showing binder from data: ${JSON.stringify(d)}`);
             this.modal.find(`#${this.id}binderTypeSelector`).val(d.binderType);
             this.buildBinderInputs(d.binderType);
-            this.modal.find(`#${this.id}ProcessId`).val(d.processId['$oid']);
+            this.buildExecutorServicesOptions();
+            let execServ = d['_id'] == undefined || d['_id']['$oid'] == undefined ? undefined : app.workflowData.executorAssigned[d['_id']['$oid']];
+            if(execServ != undefined)
+                $(`#${this.id}ExecutorService`).val(execServ);
+
+            if (d.processId != undefined)
+                this.modal.find(`#${this.id}ProcessId`).val(d.processId['$oid']);
 
             if (d.runnableType != undefined)
                 this.modal.find(`#${this.id}RunnableType`).val(d.runnableType);
@@ -139,7 +145,8 @@ class BinderProperties {
             case 'es.jovenesadventistas.arnion.process.binders.RunnableBinder':
                 binder['runnableType'] = $(`#${this.id}RunnableType`).val();
                 this.alert(`Pending to check if exists...`);
-                binder['runnableId'] = this._bId($(`#${this.id}RunnableId`).val());
+                let runnableId = $(`#${this.id}RunnableId`).val()
+                binder['runnableId'] = runnableId == null || runnableId == undefined || runnableId == '' ? 0 : this._bId(runnableId);
                 cb(binder);
                 break;
             case 'es.jovenesadventistas.arnion.process.binders.StdInBinder':
@@ -276,11 +283,22 @@ class BinderProperties {
                                 ${this.binderTypeSelector()}
                                 <small id="emailHelp" class="form-text text-muted">Defines the link between the processes</small>
                             </div>
+                            <div class="form-group">
+                                <label for="${this.id}ExecutorService">Executor Service</lavel>
+                                <select class="form-control" id="${this.id}ExecutorService"></select>
+                            </div>
                             <div class="form-group" id="${this.id}BinderInputs">
                                 
                             </div>
                         </form>
                     </div>`
+    }
+
+    buildExecutorServicesOptions(){
+        $(`#${this.id}ExecutorService`).empty();
+        for (let i = 0; i < app.workflowData.executorServices.length; i++) {
+            $(`#${this.id}ExecutorService`).append(`<option value="${i}">${i}: ${app.workflowData.executorServices[i]}</option>`);
+        }
     }
 
     buildHtml() {
@@ -339,6 +357,7 @@ class BinderProperties {
                             <option value="Binder">Binder</option>
                             <option value="APublisher">Publisher</option>
                             <option value="ASubscriber">Subscriber</option>
+                            <option value="Void" selected>Void</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -504,7 +523,7 @@ class BinderProperties {
                 console.log(`The joining arrow element has to be associated with the Binder properties.`);
             this.collectValues(b => {
                 if (b != undefined) {
-                    b.associatedProcess = { '_id': { '$oid': this.binderButton != undefined ? this.binderButton.process._getId() : this.joiningArrow.origProcess._getId() } }
+                    b.associatedProcess = { '$oid': this.binderButton != undefined ? this.binderButton.process._getId() : this.joiningArrow.origProcess._getId() }
                     console.log(`Binder values: ${JSON.stringify(b)}`);
                     if (this.binderData != undefined && this.binderData._id != undefined && this.binderData._id['$oid'] != undefined) {
                         b['_id'] = {};
@@ -520,7 +539,13 @@ class BinderProperties {
                             }
 
                             this.alert(`Binder updated!`);
+
+                            app.workflowData.executorAssigned[data['_id']['$oid']] = $(`#${this.id}ExecutorService`).val();
+                            saveWorkflow();
+
                             this.hide();
+
+                            
                         }, (jqXHR, status, e) => {
                             this.alert(`Couldn't save the binder, ${e}`, 'danger');
                         });
@@ -541,6 +566,7 @@ class BinderProperties {
                             app.workflowData.binders[data['_id']['$oid']] = this.binderData;
                             app.workflowData.binderProcessesOrig[data['_id']['$oid']] = this.joiningArrow.origProcess._getId();
                             app.workflowData.binderProcessesDest[data['_id']['$oid']] = this.joiningArrow.destProcess._getId();
+                            app.workflowData.executorAssigned[data['_id']['$oid']] = $(`#${this.id}ExecutorService`).val();
                             saveWorkflow();
                             this.alert(`Binder saved!`);
                             this.hide();

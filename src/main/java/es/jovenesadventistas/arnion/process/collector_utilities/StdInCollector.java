@@ -7,8 +7,8 @@ import java.io.OutputStream;
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteSource;
 
-import es.jovenesadventistas.arnion.process.binders.Transfers.StreamTransfer;
-import es.jovenesadventistas.arnion.process.binders.Transfers.StringTransfer;
+import es.jovenesadventistas.arnion.process.binders.transfers.StreamTransfer;
+import es.jovenesadventistas.arnion.process.binders.transfers.StringTransfer;
 
 /**
  * 

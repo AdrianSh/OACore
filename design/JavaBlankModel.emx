@@ -16,62 +16,6 @@
       <contents xmi:type="umlnotation:UMLDiagram" xmi:id="_IfpoUaJrEem144s7M8tvgQ" type="Freeform" name="Main">
         <element xsi:nil="true"/>
       </contents>
-      <contents xmi:type="umlnotation:UMLDiagram" xmi:id="_OJimYK8LEemTuYfC7BGjsA" type="Class" name="Process">
-        <children xmi:type="umlnotation:UMLShape" xmi:id="_RBuUcK8LEemTuYfC7BGjsA" fontName="Segoe UI" fontHeight="8" transparency="0" lineColor="14263149" lineWidth="1" showStereotype="Label">
-          <children xmi:type="notation:DecorationNode" xmi:id="_RBuUcq8LEemTuYfC7BGjsA" type="ImageCompartment">
-            <layoutConstraint xmi:type="notation:Size" xmi:id="_RBuUc68LEemTuYfC7BGjsA" width="1320" height="1320"/>
-          </children>
-          <children xmi:type="notation:BasicDecorationNode" xmi:id="_RFmu4K8LEemTuYfC7BGjsA" type="Stereotype"/>
-          <children xmi:type="notation:BasicDecorationNode" xmi:id="_RFmu4a8LEemTuYfC7BGjsA" type="Name"/>
-          <children xmi:type="notation:BasicDecorationNode" xmi:id="_RFmu4q8LEemTuYfC7BGjsA" type="Parent"/>
-          <children xmi:type="notation:ListCompartment" xmi:id="_RFmu468LEemTuYfC7BGjsA" visible="false" type="ANNOTATION_COMPARTMENT"/>
-          <children xmi:type="notation:ListCompartment" xmi:id="_RFv40K8LEemTuYfC7BGjsA" type="ANNOTATED_ATTRIBUTE_COMPARTMENT" showTitle="true"/>
-          <children xmi:type="notation:ListCompartment" xmi:id="_RFv40a8LEemTuYfC7BGjsA" type="ANNOTATED_OPERATION_COMPARTMENT" showTitle="true">
-            <children xmi:type="notation:BasicCompartment" xmi:id="_RbCzYK8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=AProcess%5Esign=(%255bQString;)V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
-            </children>
-            <children xmi:type="notation:BasicCompartment" xmi:id="_RbCzYq8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=buildProcess%5Esign=()V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
-            </children>
-            <children xmi:type="notation:BasicCompartment" xmi:id="_RbCzZK8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=execute%5Esign=()Qjava.lang.Process;%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
-            </children>
-            <children xmi:type="notation:BasicCompartment" xmi:id="_RbCzZq8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=getCommand%5Esign=()QArrayList%3CQString;%3E;%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
-            </children>
-            <children xmi:type="notation:BasicCompartment" xmi:id="_RbCzaK8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=setCommand%5Esign=(QArrayList%3CQString;%3E;)V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
-            </children>
-            <children xmi:type="notation:BasicCompartment" xmi:id="_RbCzaq8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=getWorkingDirectory%5Esign=()QFile;%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
-            </children>
-            <children xmi:type="notation:BasicCompartment" xmi:id="_RbCzbK8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=setWorkingDirectory%5Esign=(QFile;)V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
-            </children>
-            <children xmi:type="notation:BasicCompartment" xmi:id="_RbMkYa8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=getModifiedEnvironment%5Esign=()QMap%3CQString;QString;%3E;%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
-            </children>
-            <children xmi:type="notation:BasicCompartment" xmi:id="_RbMkY68LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=setModifiedEnvironment%5Esign=(QMap%3CQString;QString;%3E;)V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
-            </children>
-            <children xmi:type="notation:BasicCompartment" xmi:id="_RbMkZa8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=isInheritIO%5Esign=()Z%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
-            </children>
-            <children xmi:type="notation:BasicCompartment" xmi:id="_RbMkZ68LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=setInheritIO%5Esign=(Z)V%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
-            </children>
-            <children xmi:type="notation:BasicCompartment" xmi:id="_RbMkaa8LEemTuYfC7BGjsA" type="OPERATION_ITEM" collapsed="true">
-              <element xmi:type="uml:Operation" href="mmi:///#jmethod%5Ename=toString%5Esign=()QString;%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.Operation"/>
-            </children>
-          </children>
-          <children xmi:type="notation:SemanticListCompartment" xmi:id="_RV_URa8LEemTuYfC7BGjsA" type="TemplateCompartment">
-            <element xmi:type="uml:RedefinableTemplateSignature" href="mmi:///#jtsig%5Ename=AProcess%5Bjsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D%5D$uml.RedefinableTemplateSignature"/>
-          </children>
-          <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=AProcess%5Bjcu%5Ename=AProcess.java%5Bjpack%5Ename=es.jovenesadventistas.arnion.process%5Bjsrcroot%5Esrcfolder=src/main/java%5Bproject%5Eid=Arnion%5D%5D%5D%5D$uml.Class"/>
-          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_RBuUca8LEemTuYfC7BGjsA" x="9510" y="3170"/>
-        </children>
-        <element xsi:nil="true"/>
-      </contents>
     </eAnnotations>
   </packagedElement>
   <packagedElement xmi:type="uml:Package" xmi:id="_2y_ucKJsEem144s7M8tvgQ" name="Binder">
@@ -702,7 +646,7 @@
         <body>&lt;p>After process execution&lt;/p></body>
       </ownedComment>
       <ownedComment xmi:id="_me8e8LoXEemCPKcEC-xgSQ" annotatedElement="_dUC1oboXEemCPKcEC-xgSQ">
-        <body>&lt;p>It a function is passed to, it will be called WHEN THE PROGRAM FINISHES.&lt;/p></body>
+        <body>&lt;p>If a function is passed to, it will be called WHEN THE PROGRAM FINISHES.&lt;/p></body>
       </ownedComment>
       <ownedConnector xmi:id="_YQi7g6fMEemee54fztM9Wg">
         <end xmi:id="_YQi7hKfMEemee54fztM9Wg" role="_S1HNkafMEemee54fztM9Wg"/>

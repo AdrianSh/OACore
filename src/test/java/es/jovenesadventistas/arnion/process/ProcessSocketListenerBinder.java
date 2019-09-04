@@ -7,11 +7,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import es.jovenesadventistas.arnion.process_executor.ProcessExecutor;
-import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process_executor.process_execution.ProcessExecutionDetails;
 import es.jovenesadventistas.arnion.process.AProcess;
 import es.jovenesadventistas.arnion.process.binders.RunnableBinder;
 import es.jovenesadventistas.arnion.process.binders.StdOutBinder;
-import es.jovenesadventistas.arnion.process.binders.Publishers.SocketListenerPublisher;
+import es.jovenesadventistas.arnion.process.binders.publishers.SocketListenerPublisher;
 
 public class ProcessSocketListenerBinder {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();

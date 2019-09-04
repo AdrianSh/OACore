@@ -6,9 +6,9 @@ import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import es.jovenesadventistas.arnion.process.AProcess;
-import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
-import es.jovenesadventistas.arnion.process.binders.Subscribers.ASubscriber;
-import es.jovenesadventistas.arnion.process.binders.Transfers.Transfer;
+import es.jovenesadventistas.arnion.process.binders.publishers.APublisher;
+import es.jovenesadventistas.arnion.process.binders.subscribers.ASubscriber;
+import es.jovenesadventistas.arnion.process.binders.transfers.Transfer;
 
 /**
  * This binder uses an Implementation of a Subscriber<T> and Publisher<S> of

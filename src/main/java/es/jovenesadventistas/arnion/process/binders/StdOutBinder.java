@@ -12,11 +12,10 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 
 import es.jovenesadventistas.arnion.process.AProcess;
-import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
-import es.jovenesadventistas.arnion.process.binders.Subscribers.ASubscriber;
-import es.jovenesadventistas.arnion.process.binders.Transfers.StringTransfer;
+import es.jovenesadventistas.arnion.process.binders.subscribers.ASubscriber;
+import es.jovenesadventistas.arnion.process.binders.transfers.StringTransfer;
 import es.jovenesadventistas.arnion.process.persistence.TransferStore;
-import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process_executor.process_execution.ProcessExecutionDetails;
 
 public class StdOutBinder implements Binder, ASubscriber<StringTransfer> {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
@@ -32,7 +31,7 @@ public class StdOutBinder implements Binder, ASubscriber<StringTransfer> {
 	private OutputStream out;
 	// private InputStream in;
 	private Function<Void, Void> onFinishFunc;
-	private APublisher subscription;
+	private Subscription subscription;
 	private AProcess associatedProcess;
 
 	public StdOutBinder(ProcessExecutionDetails procExecDetails, AProcess associatedProcess) {
@@ -108,12 +107,13 @@ public class StdOutBinder implements Binder, ASubscriber<StringTransfer> {
 
 	@Override
 	public void onSubscribe(Subscription subscription) {
-		if(subscription instanceof APublisher) {
-			this.subscription = (APublisher) subscription;
+		// if(subscription instanceof APublisher) {
+			this.subscription = subscription;
 			this.futureReady.complete(true);
-		} else {
-			logger.error("Cannot onSubscribe using an unknown subscription. It should implements APublisher.");
-		}
+		// } else {
+		//	logger.error("Cannot onSubscribe using an unknown subscription. It should implements APublisher.");
+		//	logger.error(subscription == null ? "null" : subscription.getClass().getName());
+		//}
 	}
 
 	@Override
@@ -231,11 +231,11 @@ public class StdOutBinder implements Binder, ASubscriber<StringTransfer> {
 		this.onFinishFunc = onFinishFunc;
 	}
 
-	public APublisher getSubscription() {
+	public Subscription getSubscription() {
 		return subscription;
 	}
 
-	public void setSubscription(APublisher subscription) {
+	public void setSubscription(Subscription subscription) {
 		this.subscription = subscription;
 	}
 

@@ -13,12 +13,12 @@ import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
 
 import es.jovenesadventistas.arnion.process.binders.Binder;
-import es.jovenesadventistas.arnion.process.binders.Subscribers.ASubscriber;
-import es.jovenesadventistas.arnion.process.binders.Subscribers.ConcurrentLinkedQueueSubscriber;
-import es.jovenesadventistas.arnion.process.binders.Subscribers.SocketServerSubscriber;
-import es.jovenesadventistas.arnion.process.binders.Subscribers.SocketSubscriber;
-import es.jovenesadventistas.arnion.process.binders.Subscribers.TransferStoreSubscriber;
-import es.jovenesadventistas.arnion.process.binders.Transfers.Transfer;
+import es.jovenesadventistas.arnion.process.binders.subscribers.ASubscriber;
+import es.jovenesadventistas.arnion.process.binders.subscribers.ConcurrentLinkedQueueSubscriber;
+import es.jovenesadventistas.arnion.process.binders.subscribers.SocketServerSubscriber;
+import es.jovenesadventistas.arnion.process.binders.subscribers.SocketSubscriber;
+import es.jovenesadventistas.arnion.process.binders.subscribers.TransferStoreSubscriber;
+import es.jovenesadventistas.arnion.process.binders.transfers.Transfer;
 
 public class ASubscriberConverter {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();

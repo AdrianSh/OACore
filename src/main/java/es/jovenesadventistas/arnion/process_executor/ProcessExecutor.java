@@ -7,11 +7,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
-import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
 import es.jovenesadventistas.arnion.process.binders.Binder;
-import es.jovenesadventistas.arnion.process.binders.Transfers.Transfer;
+import es.jovenesadventistas.arnion.process.binders.transfers.Transfer;
 import es.jovenesadventistas.arnion.process.definitions.ExitCode;
 import es.jovenesadventistas.arnion.process.definitions.ExitCode.ExitCodes;
+import es.jovenesadventistas.arnion.process_executor.process_execution.ProcessExecutionDetails;
 
 /**
  * 
@@ -111,12 +111,20 @@ public class ProcessExecutor {
 			running.set(true);
 			Process proc = p.getProcess().execute();
 			p.setSystemProcess(proc);
-			callBack.apply(true);
+			logger.debug("Process set {}", p);
+			
+			proc.onExit().thenApply((pr) -> {
+				logger.debug("Process execution finishes {}", p);
+				callBack.apply(true);
+				running.set(false);
+				return null;
+			});			
 		} catch (IOException e) {
+			logger.error("Error while executing the process...", e);
 			p.setExitCode(new ExitCode(e));
 			callBack.apply(false);
-		} finally {
 			running.set(false);
+		} finally {
 			p.executed();
 		}
 	}

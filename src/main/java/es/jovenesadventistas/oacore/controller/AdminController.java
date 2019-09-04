@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Flow.Publisher;
+import java.util.concurrent.Flow.Subscriber;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -33,17 +34,14 @@ import com.google.gson.Gson;
 
 import es.jovenesadventistas.arnion.process.AProcess;
 import es.jovenesadventistas.arnion.process.binders.Binder;
-import es.jovenesadventistas.arnion.process.binders.DirectStdInBinder;
-import es.jovenesadventistas.arnion.process.binders.ExitCodeBinder;
 import es.jovenesadventistas.arnion.process.binders.ReactiveStreamBinder;
 import es.jovenesadventistas.arnion.process.binders.RunnableBinder;
 import es.jovenesadventistas.arnion.process.binders.StdInBinder;
-import es.jovenesadventistas.arnion.process.binders.StdOutBinder;
-import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
-import es.jovenesadventistas.arnion.process.binders.Subscribers.ASubscriber;
-import es.jovenesadventistas.arnion.process.binders.Transfers.StringTransfer;
+import es.jovenesadventistas.arnion.process.binders.publishers.APublisher;
+import es.jovenesadventistas.arnion.process.binders.subscribers.ASubscriber;
+import es.jovenesadventistas.arnion.process.binders.transfers.Transfer;
 import es.jovenesadventistas.arnion.process_executor.ProcessExecutor;
-import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process_executor.process_execution.ProcessExecutionDetails;
 import es.jovenesadventistas.arnion.workflow.Workflow;
 import es.jovenesadventistas.oacore.Messages;
 import es.jovenesadventistas.oacore.model.User;
@@ -63,6 +61,7 @@ import es.jovenesadventistas.oacore.repository.converters.WorkflowConverter;
 @RequestMapping("/admin")
 public class AdminController {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
+	// private static final org.slf4j.Logger logger = LoggerFactory.getLogger(AdminController.class);
 
 	@Autowired
 	private Environment env;
@@ -210,7 +209,7 @@ public class AdminController {
 		List<String> startingProgramHIds = gson.fromJson(json, List.class);
 
 		startingProgramHIds.forEach(hId -> {
-			System.out.println("Starting program Id: " + hId);
+			logger.info("Starting program Id: " + hId);
 			startingProgramIds.add(new ObjectId(hId));
 		});
 
@@ -226,15 +225,13 @@ public class AdminController {
 					throw new NullPointerException("This process doesn't exists.");
 
 				// Does it has a binder linked?
-				List<Workflow.Pair<ObjectId, ObjectId>> binderAProcess = w.getBinderAProcessFromAProcess(pId);
+				HashMap<ObjectId, Workflow.Pair<ObjectId, ObjectId>> binderAProcess = w
+						.getBinderAProcessFromAProcess(pId);
 				ProcessExecutionDetails procExDtls = w.getProcExecDetls(pId);
 
-				this.executeHeap(u, procExDtls, pExecutor, executorServices, w, binderAProcess, null);
+				this.execute(u, procExDtls, pExecutor, executorServices, w, binderAProcess,
+						new RunnableBinder(null, procExDtls.getProcess()), null);
 			}
-
-			this.executorService.execute(() -> {
-				System.out.println("EVERYTHING DONE!!! ???");
-			});
 
 		} catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
@@ -245,125 +242,108 @@ public class AdminController {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void executeHeap(User u, ProcessExecutionDetails pproc, ProcessExecutor pExecutor,
-			List<ExecutorService> executorServices, Workflow w, List<Workflow.Pair<ObjectId, ObjectId>> binderAProcess,
-			Binder lastBinder) {
+	private void execute(User u, ProcessExecutionDetails pproc, ProcessExecutor pExecutor,
+			List<ExecutorService> executorServices, Workflow w,
+			HashMap<ObjectId, Workflow.Pair<ObjectId, ObjectId>> binderAProcess, Binder lastBinder,
+			Publisher<Transfer> publisher) {
+		logger.debug("Execution chain... Process:" + pproc + ", binderAProcess: " + binderAProcess + ", last Binder: " + lastBinder + ", Publisher: " + publisher);
 		this.executorService.execute(() -> {
 			try {
-				binderAProcess.forEach(p -> {
-					Binder b = binderRepository.findById(p.o1());
+				pproc.setBinder(lastBinder);
 
-					b.onFinish((Void) -> {
-						logger.debug("Binder executed: " + p.o1());
-						return Void;
-					});
+				if (publisher != null && lastBinder instanceof ASubscriber) {
+					logger.debug("Subscribing the last binder {} to publisher {}", lastBinder, publisher);
+					publisher.subscribe((Subscriber<? super Transfer>) lastBinder);
+				}
 
-					// Could this first binder be ready for allowing the process to be executed?
-					switch (b.getClass().getName()) {
-					case "es.jovenesadventistas.arnion.process.binders.DirectStdInBinder":
-						if (lastBinder == null)
-							b.markAsReady();
-						else if (lastBinder instanceof DirectStdInBinder)
-							((DirectStdInBinder) lastBinder).subscribe((DirectStdInBinder) b);
-						else
-							throw new IllegalArgumentException(
-									"For now, you cannot subscribe DirectStdInBinder with other type of binders. Only DirectStdInBinder binders allowed.");
-						break;
-					case "es.jovenesadventistas.arnion.process.binders.ExitCodeBinder":
-						if (lastBinder == null)
-							b.markAsReady();
-						else if (lastBinder instanceof ExitCodeBinder) {
-							((ExitCodeBinder) lastBinder).subscribe((ExitCodeBinder) b);
+				logger.debug("# Executing Binder (1) {}", lastBinder);
+				this.executeObj(u, lastBinder, executorServices, w); // Execute Binder (1)
+
+				if (this.pExecutor.canExecute(pproc)) {
+					logger.debug("# Executing Process {}", pproc);
+					this.executeObj(u, pproc, executorServices, w); // Execute Process
+				} else {
+					throw new Exception("Cannot execute AProcess id: " + pproc.getProcess().getId()
+							+ " binder is not ready. The chain of execution is stopped.");
+				}
+
+				if (binderAProcess != null) {
+					binderAProcess.forEach((p2, binders) -> {
+						Binder b1 = binderRepository.findById(binders.o1()),
+								b2 = binderRepository.findById(binders.o2()), bOrg, bDest;
+
+						if (b1 != null && b1.getAProcess().getId().equals(pproc.getProcess().getId())) {
+							bOrg = b1;
+							bDest = b2;
 						} else {
-							logger.debug("Not yet implemented the union for ExitCodeBinder and "
-									+ lastBinder.getClass().getName());
-							b.markAsReady();
+							bOrg = b2;
+							bDest = b1;
 						}
-						break;
-					case "es.jovenesadventistas.arnion.process.binders.RunnableBinder":
-						// It is already ready.
-						break;
-					case "es.jovenesadventistas.arnion.process.binders.StdInBinder":
-						if (lastBinder == null)
-							b.markAsReady();
-						else {
-							logger.debug("Not yet implemented the union for StdInBinder and "
-									+ lastBinder.getClass().getName());
-							b.markAsReady();
+
+						bOrg.onFinish((Void) -> {
+							logger.debug("Binder executed: " + bOrg.getId());
+							return Void;
+						});
+
+						bDest.onFinish((Void) -> {
+							logger.debug("Binder executed: " + bOrg.getId());
+							return Void;
+						});
+
+						if (publisher != null && bOrg instanceof ASubscriber) {
+							logger.debug("Subscribing the bOrg binder {} to publisher {}", bOrg, publisher);
+							publisher.subscribe((Subscriber<? super Transfer>) bOrg);
 						}
-						break;
-					case "es.jovenesadventistas.arnion.process.binders.StdOutBinder":
-						if (lastBinder == null)
-							b.markAsReady();
-						else if (lastBinder instanceof RunnableBinder) {
-							RunnableBinder runB = (RunnableBinder) lastBinder;
-							if (runB.getRunnable() == null) {
-								throw new IllegalArgumentException("Null runnable for RunnableBinder.");
-							} else if (runB.getRunnable() instanceof Publisher) {
-								((Publisher<StringTransfer>) runB.getRunnable()).subscribe((StdOutBinder) b);
-							} else {
-								logger.error("Not yet implemented the union for StdOutBinder and "
-										+ runB.getRunnable().getClass().getName());
-							}
-						} else if (lastBinder instanceof StdInBinder) {
-							StdInBinder stdInB = (StdInBinder) lastBinder;
-							stdInB.getStdInPublisher().subscribe((StdOutBinder) b);
-						} else
-							throw new IllegalArgumentException(
-									"For now, you cannot subscribe DirectStdInBinder with other type of binders. Only DirectStdInBinder binders allowed.");
-						break;
-					default:
-						throw new IllegalArgumentException("Unexpected value: " + b.getClass().getName());
-					}
-
-					pproc.setBinder(b);
-
-					// Run the process
-					if (this.pExecutor.canExecute(pproc)) {
+						
 						try {
-							// Recursive call to follow the execution chain
-							List<Workflow.Pair<ObjectId, ObjectId>> nextBinderAProcess = w
-									.getBinderAProcessFromAProcess(p.o2());
-							ProcessExecutionDetails nextProcessExcDtls = w.getProcExecDetls(p.o2());
-							if (nextBinderAProcess.size() > 0) {
-								logger.debug("Following execution chain..." + p.o2());
-								this.executeHeap(u, nextProcessExcDtls, pExecutor, executorServices, w,
-										nextBinderAProcess, b);
-
-								this.executeObj(u, pproc, executorServices, w);
-								this.executeObj(u, b, executorServices, w);
-							} else {
-								this.executeObj(u, pproc, executorServices, w);
-								this.executeObj(u, b, executorServices, w);
-
-								RunnableBinder voidBinder = new RunnableBinder(null);
-								nextProcessExcDtls.setBinder(voidBinder);
-								logger.debug("Executing the last AProcess id: " + p.o2());
-								this.executeObj(u, nextProcessExcDtls, executorServices, w);
-							}
-
-						} catch (IOException e) {
-							logger.error("Execution fails... for AProcess id: " + pproc.getProcess().getId()
-									+ " or Binder id: " + b.getId(), e);
+							logger.debug("# Executing Binder (2) {}", bOrg);
+							this.executeObj(u, bOrg, executorServices, w); // Execute Binder (2)
+						} catch (Exception e) {
+							logger.error("Could not execute the second binder: " + bOrg, e);
 						}
 
-					} else {
-						logger.error("Cannot execute AProcess id: " + pproc.getProcess().getId()
-								+ " binder is not ready. The chain of execution is stopped.");
-					}
+						// Recursive call to follow the execution chain
+						HashMap<ObjectId, Workflow.Pair<ObjectId, ObjectId>> nextBinderAProcess = w
+								.getBinderAProcessFromAProcess(p2);
+						ProcessExecutionDetails nextProcessExcDtls = w.getProcExecDetls(p2);
 
-				});
+						logger.debug("Following execution chain to AProcess: " + p2);
+
+						Publisher<Transfer> pub = bOrg instanceof Publisher ? (Publisher<Transfer>) bOrg : null;
+
+						try {
+							if (bOrg instanceof RunnableBinder && ((RunnableBinder) bOrg).getRunnable() != null
+									&& ((RunnableBinder) bOrg).getRunnable() instanceof Publisher)
+								pub = (Publisher<Transfer>) ((RunnableBinder) bOrg).getRunnable();
+							else if (bOrg instanceof StdInBinder && ((StdInBinder) bOrg).getStdInAPublisher() != null)
+								pub = (Publisher<Transfer>) ((StdInBinder) bOrg).getStdInAPublisher();
+						} catch (Exception e) {
+							logger.error("Could not set the Publisher for the next execution...", e);
+						}
+
+						this.execute(u, nextProcessExcDtls, pExecutor, executorServices, w, nextBinderAProcess, bDest,
+								pub);
+					});
+				} else {
+					this.executorService.execute(() -> {
+						logger.info("Turning everything off...");
+						executorServices.forEach(e -> {
+							e.shutdown();
+						});
+					});
+				}
 			} catch (Exception e) {
 				logger.error("An error ocurred when following the execution chain... ", e);
 			}
 		});
-
 	}
 
 	private void executeObj(User u, ProcessExecutionDetails procExcDetls, List<ExecutorService> executorServices,
 			Workflow w) throws IOException {
 		ObjectId id = procExcDetls.getProcess().getId();
-		this.pExecutor.execute(executorServices.get(w.getExecutorNumAssigned(id)), procExcDetls, (executed) -> {
+		Integer executorNum = w.getExecutorNumAssigned(id);
+		logger.debug("Execute AProcess on executor num: " + executorNum + ", ProcessExecutionDetails: " + procExcDetls);
+		this.pExecutor.execute(executorServices.get(executorNum), procExcDetls, (executed) -> {
 			if (executed)
 				this.addExecutedObj(u, id);
 			else
@@ -375,7 +355,9 @@ public class AdminController {
 	private void executeObj(User u, Binder binder, List<ExecutorService> executorServices, Workflow w)
 			throws IOException {
 		ObjectId id = binder.getId();
-		this.pExecutor.execute(executorServices.get(w.getExecutorNumAssigned(id)), binder, (executed) -> {
+		Integer executorNum = w.getExecutorNumAssigned(id);
+		logger.debug("Execute Binder on executor num: " + executorNum + ", Binder: " + binder);
+		this.pExecutor.execute(executorServices.get(executorNum), binder, (executed) -> {
 			if (executed)
 				this.addExecutedObj(u, id);
 			else
@@ -456,7 +438,7 @@ public class AdminController {
 					response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				logger.error("Error while getting " + type, e);
 			}
 		}
 
@@ -518,7 +500,7 @@ public class AdminController {
 					response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				logger.error("Error while deleting " + type, e);
 			}
 		}
 
@@ -594,7 +576,7 @@ public class AdminController {
 					response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				logger.error("Error while putting " + type, e);
 			}
 			if (r == null)
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -693,7 +675,7 @@ public class AdminController {
 					response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				logger.error("Error while post-ing " + type, e);
 			}
 			if (r == null)
 				response.setStatus(HttpServletResponse.SC_NOT_FOUND);

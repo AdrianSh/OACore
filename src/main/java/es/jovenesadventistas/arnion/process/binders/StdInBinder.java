@@ -11,10 +11,10 @@ import java.util.function.Function;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 
-import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
 import es.jovenesadventistas.arnion.process.AProcess;
-import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
-import es.jovenesadventistas.arnion.process.binders.Transfers.StringTransfer;
+import es.jovenesadventistas.arnion.process.binders.publishers.APublisher;
+import es.jovenesadventistas.arnion.process.binders.transfers.StringTransfer;
+import es.jovenesadventistas.arnion.process_executor.process_execution.ProcessExecutionDetails;
 
 public class StdInBinder implements Binder {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();
@@ -64,7 +64,7 @@ public class StdInBinder implements Binder {
 				reader.close();
 				publisher.close();
 			} else {
-				logger.info("Cannot read from a null InputStream {}.", in);
+				logger.debug("Cannot read from a null InputStream {}.", in);
 			}
 		} catch (final Exception e) {
 			e.printStackTrace();

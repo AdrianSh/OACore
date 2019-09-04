@@ -9,11 +9,11 @@ import java.util.function.Function;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 
-import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
 import es.jovenesadventistas.arnion.process.AProcess;
-import es.jovenesadventistas.arnion.process.binders.Publishers.ConcurrentLinkedQueuePublisher;
-import es.jovenesadventistas.arnion.process.binders.Subscribers.ConcurrentLinkedQueueSubscriber;
-import es.jovenesadventistas.arnion.process.binders.Transfers.IntegerTransfer;
+import es.jovenesadventistas.arnion.process.binders.publishers.ConcurrentLinkedQueuePublisher;
+import es.jovenesadventistas.arnion.process.binders.subscribers.ConcurrentLinkedQueueSubscriber;
+import es.jovenesadventistas.arnion.process.binders.transfers.IntegerTransfer;
+import es.jovenesadventistas.arnion.process_executor.process_execution.ProcessExecutionDetails;
 
 public class ExitCodeBinder extends SplitBinder<IntegerTransfer, IntegerTransfer> {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();

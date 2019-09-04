@@ -11,11 +11,11 @@ import com.google.common.base.Charsets;
 import com.google.common.io.ByteSource;
 
 import es.jovenesadventistas.arnion.process_executor.ProcessExecutor;
-import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process_executor.process_execution.ProcessExecutionDetails;
 import es.jovenesadventistas.arnion.process.AProcess;
 import es.jovenesadventistas.arnion.process.binders.ExitCodeBinder;
-import es.jovenesadventistas.arnion.process.binders.Publishers.ConcurrentLinkedQueuePublisher;
-import es.jovenesadventistas.arnion.process.binders.Subscribers.ConcurrentLinkedQueueSubscriber;
+import es.jovenesadventistas.arnion.process.binders.publishers.ConcurrentLinkedQueuePublisher;
+import es.jovenesadventistas.arnion.process.binders.subscribers.ConcurrentLinkedQueueSubscriber;
 
 
 public class RunProcess {

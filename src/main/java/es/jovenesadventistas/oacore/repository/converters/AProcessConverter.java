@@ -40,9 +40,11 @@ public class AProcessConverter {
 
 		@SuppressWarnings("unchecked")
 		public AProcess convert(Document source) {
-			AProcess p = new AProcess(source.getString("command"));
+			String command = source.getString("command").trim();
+			AProcess p = new AProcess(command);
 			p.setId(source.getObjectId("_id"));
 			String workingDirectory = source.getString("workingdirectory");
+			
 			if (workingDirectory != null && workingDirectory.length() > 0)
 				p.setWorkingDirectory(new File(workingDirectory));
 

@@ -3,7 +3,7 @@ package es.jovenesadventistas.arnion.process.persistence;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import es.jovenesadventistas.arnion.process.binders.Transfers.Transfer;
+import es.jovenesadventistas.arnion.process.binders.transfers.Transfer;
 
 public class TransferStore<E extends Transfer> extends LinkedList<E> {
 	private static final long serialVersionUID = 2134842386414451013L;

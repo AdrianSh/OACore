@@ -1,7 +1,5 @@
 package es.jovenesadventistas.oacore.repository.converters;
 
-import java.util.concurrent.SubmissionPublisher;
-
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.core.convert.converter.Converter;
@@ -15,14 +13,15 @@ import es.jovenesadventistas.arnion.process.binders.ExitCodeBinder;
 import es.jovenesadventistas.arnion.process.binders.RunnableBinder;
 import es.jovenesadventistas.arnion.process.binders.StdInBinder;
 import es.jovenesadventistas.arnion.process.binders.StdOutBinder;
-import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
-import es.jovenesadventistas.arnion.process.binders.Publishers.ConcurrentLinkedQueuePublisher;
-import es.jovenesadventistas.arnion.process.binders.Subscribers.ASubscriber;
-import es.jovenesadventistas.arnion.process.binders.Subscribers.ConcurrentLinkedQueueSubscriber;
-import es.jovenesadventistas.arnion.process.binders.Transfers.IntegerTransfer;
-import es.jovenesadventistas.arnion.process.binders.Transfers.StringTransfer;
-import es.jovenesadventistas.arnion.process.binders.Transfers.Transfer;
-import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process.binders.publishers.APublisher;
+import es.jovenesadventistas.arnion.process.binders.publishers.ASubmissionPublisher;
+import es.jovenesadventistas.arnion.process.binders.publishers.ConcurrentLinkedQueuePublisher;
+import es.jovenesadventistas.arnion.process.binders.subscribers.ASubscriber;
+import es.jovenesadventistas.arnion.process.binders.subscribers.ConcurrentLinkedQueueSubscriber;
+import es.jovenesadventistas.arnion.process.binders.transfers.IntegerTransfer;
+import es.jovenesadventistas.arnion.process.binders.transfers.StringTransfer;
+import es.jovenesadventistas.arnion.process.binders.transfers.Transfer;
+import es.jovenesadventistas.arnion.process_executor.process_execution.ProcessExecutionDetails;
 import es.jovenesadventistas.oacore.controller.AdminController;
 import es.jovenesadventistas.oacore.repository.AProcessRepository;
 import es.jovenesadventistas.oacore.repository.APublisherRepository;
@@ -89,7 +88,7 @@ public class BinderConverter {
 				case "es.jovenesadventistas.arnion.process.binders.RunnableBinder":
 					RunnableBinder runnableBinder = (RunnableBinder) source;
 					Runnable runnable = runnableBinder.getRunnable();
-					document.put("runnableTypeName", runnable.getClass().getName());
+					document.put("runnableTypeName", runnable == null ? null : runnable.getClass().getName());
 					if (runnable instanceof Binder) {
 						document.put("runnableType", "Binder");
 						binderRepository.save((Binder) runnable);
@@ -103,9 +102,12 @@ public class BinderConverter {
 						aSubscriberRepository.save((ASubscriber<Transfer>) runnable);
 						document.put("runnableId", ((ASubscriber<Transfer>) runnable).getId());
 					} else {
-						if (runnable != null)
+						document.put("runnableType", "Void");
+						document.put("runnableId", null);
+						if (runnable != null) {
 							throw new IllegalArgumentException(
 									"Runnable type cannot be saved: " + runnable.getClass().getName());
+						}
 					}
 					break;
 				case "es.jovenesadventistas.arnion.process.binders.StdInBinder":
@@ -167,7 +169,9 @@ public class BinderConverter {
 			APublisher pub = null, pub2 = null;
 			String binderType = source.getString("binderType");
 			ObjectId id = null, associatedProcessId = source.getObjectId("associatedProcess");
-			AProcess proc = null, associatedProcess = associatedProcessId != null ? aProcessRepository.findById(associatedProcessId) : null;
+			AProcess proc = null,
+					associatedProcess = associatedProcessId != null ? aProcessRepository.findById(associatedProcessId)
+							: null;
 
 			try {
 				switch (binderType) {
@@ -190,8 +194,8 @@ public class BinderConverter {
 						pub = aPublisherRepository.findById(id);
 					if (sub instanceof ConcurrentLinkedQueueSubscriber
 							&& pub instanceof ConcurrentLinkedQueuePublisher) {
-						r = new ExitCodeBinder(proc == null ? null : new ProcessExecutionDetails(proc), associatedProcess,
-								(ConcurrentLinkedQueueSubscriber<IntegerTransfer>) sub,
+						r = new ExitCodeBinder(proc == null ? null : new ProcessExecutionDetails(proc),
+								associatedProcess, (ConcurrentLinkedQueueSubscriber<IntegerTransfer>) sub,
 								(ConcurrentLinkedQueuePublisher<IntegerTransfer>) pub);
 					} else {
 						String err = "Error trying to convert to an ExitCodeBinder using a Subscriber or Publisher or another type: "
@@ -218,6 +222,9 @@ public class BinderConverter {
 						if (id != null)
 							runnable = (Runnable) aSubscriberRepository.findById(id);
 						break;
+					case "Void":
+						// null
+						break;
 					default:
 						throw new IllegalArgumentException(
 								"Unexpected runnable type value: " + source.getString("runnableType") + " className: "
@@ -237,7 +244,8 @@ public class BinderConverter {
 					if (id != null)
 						pub2 = aPublisherRepository.findById(id);
 					r = new StdInBinder(proc == null ? null : new ProcessExecutionDetails(proc),
-							(SubmissionPublisher<StringTransfer>) pub, (SubmissionPublisher<StringTransfer>) pub2, associatedProcess);
+							(ASubmissionPublisher<StringTransfer>) pub, (ASubmissionPublisher<StringTransfer>) pub2,
+							associatedProcess);
 					break;
 				case "es.jovenesadventistas.arnion.process.binders.StdOutBinder":
 					id = source.getObjectId("processId");
@@ -250,8 +258,8 @@ public class BinderConverter {
 				}
 
 			} catch (Exception e) {
-				throw new IllegalArgumentException(
-						"Could not parse binder: " + binderType + " document: " + source.toJson() + ", " + e.getMessage(), e);
+				throw new IllegalArgumentException("Could not parse binder: " + binderType + " document: "
+						+ source.toJson() + ", " + e.getMessage(), e);
 			}
 
 			ObjectId pid = source.getObjectId("_id");

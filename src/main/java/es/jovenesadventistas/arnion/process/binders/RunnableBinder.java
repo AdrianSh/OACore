@@ -22,8 +22,10 @@ public class RunnableBinder implements Binder {
 
 	@Override
 	public void run() {
-		this.runnable.run();
-		this.onFinishFunc.apply(null);
+		if (this.runnable != null)
+			this.runnable.run();
+		if (this.onFinishFunc != null)
+			this.onFinishFunc.apply(null);
 	}
 
 	@Override
@@ -62,7 +64,7 @@ public class RunnableBinder implements Binder {
 	public ObjectId getId() {
 		return this.id;
 	}
-	
+
 	@Override
 	public void setId(ObjectId id) {
 		if (id != null)

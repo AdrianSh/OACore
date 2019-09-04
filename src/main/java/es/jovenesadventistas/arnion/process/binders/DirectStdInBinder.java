@@ -16,11 +16,11 @@ import org.springframework.data.annotation.Id;
 import java.util.concurrent.Future;
 import java.util.concurrent.SubmissionPublisher;
 
-import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
 import es.jovenesadventistas.arnion.process.AProcess;
-import es.jovenesadventistas.arnion.process.binders.Publishers.APublisher;
-import es.jovenesadventistas.arnion.process.binders.Subscribers.ASubscriber;
-import es.jovenesadventistas.arnion.process.binders.Transfers.StreamTransfer;
+import es.jovenesadventistas.arnion.process.binders.publishers.APublisher;
+import es.jovenesadventistas.arnion.process.binders.subscribers.ASubscriber;
+import es.jovenesadventistas.arnion.process.binders.transfers.StreamTransfer;
+import es.jovenesadventistas.arnion.process_executor.process_execution.ProcessExecutionDetails;
 
 public class DirectStdInBinder extends SubmissionPublisher<StreamTransfer> implements Binder, ASubscriber<StreamTransfer> {
 	private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger();

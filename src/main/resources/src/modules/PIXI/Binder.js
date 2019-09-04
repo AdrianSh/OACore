@@ -14,7 +14,7 @@ export class Binder extends Button {
         let textureButtonOver = PIXI.Loader.shared.resources.gearOver.texture.clone();
         textureButtonOver.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST; // Scale mode for pixelation
 
-        super(textureButton, textureButtonOver, textureButtonOver, x, y, 48, 48, () => {
+        super(textureButton, textureButtonOver, textureButtonOver, x, y, 24, 24, () => {
             console.log(`Click on binder....`);
             callback();
             binderProperties.binderData = this.binderData;
@@ -25,5 +25,11 @@ export class Binder extends Button {
         this.process = process;
         this.interactive = true;
         this.buttonMode = true;
+
+        this.binderData = {
+            binderType: 'es.jovenesadventistas.arnion.process.binders.RunnableBinder',
+            runnableType: 'Void',
+            runnableId: '0'
+        };
     }
 }

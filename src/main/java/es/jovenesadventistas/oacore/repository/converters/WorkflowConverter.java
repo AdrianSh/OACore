@@ -14,7 +14,7 @@ import org.springframework.data.convert.WritingConverter;
 import com.google.gson.Gson;
 import es.jovenesadventistas.arnion.process.AProcess;
 import es.jovenesadventistas.arnion.process.binders.Binder;
-import es.jovenesadventistas.arnion.process_executor.ProcessExecution.ProcessExecutionDetails;
+import es.jovenesadventistas.arnion.process_executor.process_execution.ProcessExecutionDetails;
 import es.jovenesadventistas.arnion.workflow.Workflow;
 import es.jovenesadventistas.oacore.controller.AdminController;
 import es.jovenesadventistas.oacore.repository.AProcessRepository;
@@ -126,7 +126,10 @@ public class WorkflowConverter {
 				}
 
 			HashMap<ObjectId, Workflow.Coord> objCoords = gson.fromJson(source.getString("objCoords"), HashMap.class);
-			HashMap<ObjectId, Integer> executorAssigned = gson.fromJson(source.getString("executorAssigned"), HashMap.class);
+			HashMap<String, String> executorAssigned = gson.fromJson(source.getString("executorAssigned"), HashMap.class);
+			
+			logger.debug("executors assigned: "+source.getString("executorAssigned"));
+			
 			HashMap<String, String> binderProcessesPlainOrig = gson.fromJson(source.getString("binderProcessesOrig"),
 					HashMap.class);
 			HashMap<String, String> binderProcessesPlainDest = gson.fromJson(source.getString("binderProcessesDest"),

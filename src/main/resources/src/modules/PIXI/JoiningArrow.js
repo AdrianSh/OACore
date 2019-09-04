@@ -146,11 +146,11 @@ export class JoiningArrow extends Arrow {
         let pDest = this._bestPos(this.origProcess, this.destProcess, - this.triangle.length / 2, 2 + this.triangle.length / 2);
         let pOrig = this._bestPos(this.destProcess, this.origProcess, 0, 4);
         this.binderOrig.x = pOrig.x;
-        this.binderOrig.y = pOrig.y;
-        this.binderDest.x = pDest.x;
-        this.binderDest.y = pDest.y;
-        this.removeButton.x = pOrig.x + 50;
-        this.removeButton.y = pOrig.y + 5;
+        this.binderOrig.y = pOrig.y + 5;
+        this.binderDest.x = pDest.x - 24;
+        this.binderDest.y = pDest.y + 5;
+        this.removeButton.x = pOrig.x + 24;
+        this.removeButton.y = pOrig.y + 10;
         super.updatePoints([pOrig.x, pOrig.y, pDest.x, pDest.y]);
         return this;
     }
