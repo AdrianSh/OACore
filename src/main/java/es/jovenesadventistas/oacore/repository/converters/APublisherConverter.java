@@ -29,15 +29,15 @@ public class APublisherConverter {
 			String publisherType = source.getClass().getName();
 			document.put("publisherType", publisherType);
 			switch (publisherType) {
-			case "es.jovenesadventistas.arnion.process.binders.Publishers.ConcurrentLinkedQueuePublisher":
+			case "es.jovenesadventistas.arnion.process.binders.publishers.ConcurrentLinkedQueuePublisher":
 				// Subscriptions are made on execution time.
 				break;
-			case "es.jovenesadventistas.arnion.process.binders.Publishers.SocketListenerPublisher":
+			case "es.jovenesadventistas.arnion.process.binders.publishers.SocketListenerPublisher":
 				SocketListenerPublisher socketListenerPublisher = (SocketListenerPublisher) source;
 				document.put("socket_port", socketListenerPublisher.getSocket().getPort());
 				document.put("socket_host", socketListenerPublisher.getSocket().getInetAddress().getHostAddress());
 				break;
-			case "es.jovenesadventistas.arnion.process.binders.Publishers.SocketServerPublisher":
+			case "es.jovenesadventistas.arnion.process.binders.publishers.SocketServerPublisher":
 				@SuppressWarnings("unchecked")
 				SocketServerPublisher<SocketTransfer> socketServerPublisher = (SocketServerPublisher<SocketTransfer>) source;
 				document.put("socket_port", socketServerPublisher.getSs().getLocalPort());
@@ -55,10 +55,10 @@ public class APublisherConverter {
 			APublisher r = null;
 			String publisherType = source.getString("publisherType");
 			switch (publisherType) {
-			case "es.jovenesadventistas.arnion.process.binders.Publishers.ConcurrentLinkedQueuePublisher":
+			case "es.jovenesadventistas.arnion.process.binders.publishers.ConcurrentLinkedQueuePublisher":
 				r = new ConcurrentLinkedQueuePublisher<Transfer>();
 				break;
-			case "es.jovenesadventistas.arnion.process.binders.Publishers.SocketListenerPublisher":
+			case "es.jovenesadventistas.arnion.process.binders.publishers.SocketListenerPublisher":
 				SocketListenerPublisher socketListenerPublisher = null;
 				try {
 					socketListenerPublisher = new SocketListenerPublisher(new Socket(source.getString("socket_host"), source.getInteger("socket_port")));
@@ -67,7 +67,7 @@ public class APublisherConverter {
 				}
 				r = socketListenerPublisher;
 				break;
-			case "es.jovenesadventistas.arnion.process.binders.Publishers.SocketServerPublisher":
+			case "es.jovenesadventistas.arnion.process.binders.publishers.SocketServerPublisher":
 				SocketServerPublisher<SocketTransfer> socketServerPublisher = null;
 				try {
 					socketServerPublisher = new SocketServerPublisher<>(new ServerSocket(source.getInteger("socket_port")));

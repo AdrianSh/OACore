@@ -10,7 +10,7 @@
 <div class="container">
 <c:choose>
 	<c:when test="${not empty user}">
-	<h1>Welcome please read about us!</h1>
+	<h1>Welcome!</h1>
 	</c:when>
 	<c:otherwise>
 	<section class="col-md-12">

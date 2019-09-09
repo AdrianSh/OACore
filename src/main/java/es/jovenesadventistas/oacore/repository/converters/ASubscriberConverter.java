@@ -31,26 +31,26 @@ public class ASubscriberConverter {
 			String subscriberType = source.getClass().getName();
 			document.put("subscriberType", subscriberType);
 			switch (subscriberType) {
-			case "es.jovenesadventistas.arnion.process.binders.Subscribers.ConcurrentLinkedQueueSubscriber":
+			case "es.jovenesadventistas.arnion.process.binders.subscribers.ConcurrentLinkedQueueSubscriber":
 				// Subscriptions are realized when running.
 				@SuppressWarnings("unchecked")
 				ConcurrentLinkedQueueSubscriber<Transfer> concurrentLinkedQueueSubscriber = (ConcurrentLinkedQueueSubscriber<Transfer>) source;
 				document.put("data", concurrentLinkedQueueSubscriber.getAllData());
 				break;
-			case "es.jovenesadventistas.arnion.process.binders.Subscribers.SocketServerSubscriber":
+			case "es.jovenesadventistas.arnion.process.binders.subscribers.SocketServerSubscriber":
 				@SuppressWarnings("unchecked")
 				SocketServerSubscriber<Transfer> socketServerSubscriber = (SocketServerSubscriber<Transfer>) source;
 				document.put("data", socketServerSubscriber.getAllData());
 				document.put("socket_port", socketServerSubscriber.getSs().getLocalPort());
 				break;
-			case "es.jovenesadventistas.arnion.process.binders.Subscribers.SocketSubscriber":
+			case "es.jovenesadventistas.arnion.process.binders.subscribers.SocketSubscriber":
 				@SuppressWarnings("unchecked")
 				SocketSubscriber<Transfer> socketSubscriber = (SocketSubscriber<Transfer>) source;
 				document.put("data", socketSubscriber.getAllData());
 				document.put("socket_port", socketSubscriber.getS().getPort());
 				document.put("socket_host", socketSubscriber.getS().getInetAddress().getHostAddress());
 				break;
-			case "es.jovenesadventistas.arnion.process.binders.Subscribers.TransferStoreSubscriber":
+			case "es.jovenesadventistas.arnion.process.binders.subscribers.TransferStoreSubscriber":
 				break;
 			case "es.jovenesadventistas.arnion.process.binders.ExitCodeBinder":
 				return new BinderConverter.BinderWriteConverter().convert((Binder) source);
@@ -68,13 +68,13 @@ public class ASubscriberConverter {
 			ASubscriber<?> r = null;
 			String subscriberType = source.getString("subscriberType");
 			switch (subscriberType) {
-			case "es.jovenesadventistas.arnion.process.binders.Subscribers.ConcurrentLinkedQueueSubscriber":
+			case "es.jovenesadventistas.arnion.process.binders.subscribers.ConcurrentLinkedQueueSubscriber":
 				ConcurrentLinkedQueueSubscriber<Transfer> concurrentLinkedQueueSubscriber = new ConcurrentLinkedQueueSubscriber<Transfer>();
 				concurrentLinkedQueueSubscriber
 						.setData((ConcurrentLinkedQueue<Transfer>) source.get("data", ConcurrentLinkedQueue.class));
 				r = concurrentLinkedQueueSubscriber;
 				break;
-			case "es.jovenesadventistas.arnion.process.binders.Subscribers.SocketServerSubscriber":
+			case "es.jovenesadventistas.arnion.process.binders.subscribers.SocketServerSubscriber":
 				Integer ssPort = source.getInteger("socket_port");
 				try {
 					SocketServerSubscriber<Transfer> socketServerSubscriber = new SocketServerSubscriber<Transfer>(
@@ -86,7 +86,7 @@ public class ASubscriberConverter {
 					logger.error("Could not open server socket with port: " + ssPort, e);
 				}
 				break;
-			case "es.jovenesadventistas.arnion.process.binders.Subscribers.SocketSubscriber":
+			case "es.jovenesadventistas.arnion.process.binders.subscribers.SocketSubscriber":
 				Integer sPort = source.getInteger("socket_port");
 				String sInetAddress = source.getString("socket_host");
 				try {
@@ -98,7 +98,7 @@ public class ASubscriberConverter {
 					logger.error("Could not open socket with port: " + sPort + " and host: " + sInetAddress, e);
 				}
 				break;
-			case "es.jovenesadventistas.arnion.process.binders.Subscribers.TransferStoreSubscriber":
+			case "es.jovenesadventistas.arnion.process.binders.subscribers.TransferStoreSubscriber":
 				TransferStoreSubscriber<Transfer> transferStoreSubscriber = new TransferStoreSubscriber<Transfer>();
 				r = transferStoreSubscriber;
 				break;
